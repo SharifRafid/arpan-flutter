@@ -1,3 +1,6 @@
+import 'package:arpan_app_new/ui/auth/auth_main.dart';
+import 'package:arpan_app_new/ui/main/home_page_main.dart';
+import 'package:arpan_app_new/ui/onboard/on_board_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'ui/resources/colored_status_bar.dart';
@@ -21,83 +24,15 @@ class MyApp extends StatelessWidget {
         color: MainColors.blue,
         child: mainContent(),
       ),
+      initialRoute: '/',
+      routes: {
+        '/auth' : (context) => const AuthMain(),
+        '/homePage' : (context) => const HomePageMain(),
+      },
     );
   }
 }
 
 Widget mainContent() {
-  return Scaffold(
-    backgroundColor: MainColors.blue,
-    body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Image(
-          width: 600,
-          height: 120,
-          image: AssetImage('assets/images/arpan_logo.png'),
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 40),
-          child: SizedBox(
-              height: 43,
-              width: 220,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-                  padding: MaterialStateProperty.all<EdgeInsets>(
-                      const EdgeInsets.fromLTRB(20, 0, 20, 0)),
-                  backgroundColor: MaterialStateProperty.all<Color>(MainColors.white),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
-                ),
-                child: const Center(
-                  child: Text(
-                    'রেজিস্টার/লগইন করুন',
-                    style: TextStyle(
-                        color: MainColors.blue,
-                        fontSize: 16
-                    ),
-                  ),
-                ),
-                onPressed: () {},
-              )
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 20),
-          child: SizedBox(
-              height: 43,
-              width: 220,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-                  padding: MaterialStateProperty.all<EdgeInsets>(
-                      const EdgeInsets.fromLTRB(10, 0, 10, 0)),
-                  backgroundColor: MaterialStateProperty.all<Color>(MainColors.white),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
-                ),
-                child: const Center(
-                  child: Text(
-                    'রেজিস্ট্রেশন ছাড়াই ব্যবহার করুন',
-                    style: TextStyle(
-                        color: MainColors.blue,
-                        fontSize: 16
-                    ),
-                  ),
-                ),
-                onPressed: () {},
-              )
-          ),
-        ),
-      ],
-    ),
-  );
+  return const OnBoardPage();
 }
