@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.arpan_app_new">
+    package="arpan.delivery">
    <application
-        android:label="arpan_app_new"
+        android:label="অর্পণ"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

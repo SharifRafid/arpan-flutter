@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1041809532425",
+    "firebase_url": "https://ecommerce-app-e20e4-default-rtdb.firebaseio.com",
+    "project_id": "ecommerce-app-e20e4",
+    "storage_bucket": "ecommerce-app-e20e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041809532425:android:85d599cfb4af90fafc7ad8",
+        "android_client_info": {
+          "package_name": "arpan.delivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041809532425-o5qk9oe42rbkps0se4k4efqt2bckad5c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "arpan.delivery",
+            "certificate_hash": "b50af1b8e8ef62fc3b478e88080918fbd1b425bb"
+          }
+        },
+        {
+          "client_id": "1041809532425-ubr198jml9blsqo3l1u662g9ppivm06k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAb3Ri2mvfH827YUh2A5JO5lF-tvWSq46k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041809532425-ubr198jml9blsqo3l1u662g9ppivm06k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

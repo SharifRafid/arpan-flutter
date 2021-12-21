@@ -1,4 +1,4 @@
-package com.example.arpan_app_new
+package arpan.delivery
 
 import io.flutter.embedding.android.FlutterActivity
 

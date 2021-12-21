@@ -1,9 +1,84 @@
+import 'package:arpan_app_new/services/utils/show_toast.dart';
 import 'package:arpan_app_new/ui/resources/theme_data.dart';
+import 'package:arpan_app_new/widgets/text_field_number.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:arpan_app_new/widgets/verify_button.dart';
 
 class AuthMain extends StatelessWidget {
   const AuthMain({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _AuthMain();
+  }
+}
+
+class _AuthMain extends StatefulWidget {
+  _AuthMain({Key? key}) : super(key: key);
+
+  @override
+  _AuthMainState createState() => _AuthMainState();
+}
+
+class _AuthMainState extends State<_AuthMain> {
+
+  final auth = FirebaseAuth.instance;
+
+  final phoneController = TextEditingController();
+  final codeController = TextEditingController();
+
+  var verificationId = "";
+  var resendToken = 0;
+
+  // Visibility
+  var showLoading = false;
+  var showPhoneTextField = true;
+  var showCodeTextField = false;
+  var showSendButton = true;
+  var showVerifyButton = false;
+
+  void verifyCode(String code) async{
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: code);
+    await auth.signInWithCredential(credential);
+  }
+
+  void verifyPhone(String number) async{
+    await auth.verifyPhoneNumber(
+        phoneNumber: "+88"+number,
+        verificationCompleted: (PhoneAuthCredential credential) async{
+          await auth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e){
+          showToast("ভেরিফিকেশন ব্যর্থ হয়েছে! --"+e.code);
+          setState(() {
+            showLoading = false;
+            showPhoneTextField = true;
+            showCodeTextField = false;
+            showSendButton = true;
+            showVerifyButton = false;
+          });
+        },
+        codeSent: (String verificationId, int? resendToken){
+          this.verificationId = verificationId;
+          if(resendToken!=null){
+            this.resendToken = resendToken;
+          }
+          setState(() {
+            showPhoneTextField = false;
+            showLoading = false;
+            showSendButton = false;
+            showCodeTextField = true;
+            showVerifyButton = true;
+          });
+        },
+        codeAutoRetrievalTimeout: (String verificationId){
+
+        }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,69 +90,58 @@ class AuthMain extends StatelessWidget {
         children: [
           AnimatedContainer(
             duration: const Duration(milliseconds: 1000),
-            child: GestureDetector(
-                onTap: () {
-                }, // Image tapped
-                child: const Image(
-                  width: 600,
-                  height: 120,
-                  image: AssetImage('assets/images/person_icon.png'),
-                )
+            child: const Image(
+              width: 600,
+              height: 120,
+              image: AssetImage('assets/images/person_icon.png'),
             ),
           ),
-          Padding(
+          showPhoneTextField ? Padding(
             padding: const EdgeInsets.fromLTRB(40, 60, 40, 0),
-            child: TextField(
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: MainColors.white,
-              ),
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(0),
-                  hintText: "  ফোন নম্বর লিখুন",
-                hintStyle: TextStyle(
-                  fontSize: 15,
-                  color: MainColors.white,
-                ),
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            child: textFieldNumber(
+              hint: "  ফোন নম্বর লিখুন",
+              controller: phoneController,
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 20),
-            child: SizedBox(
-                height: 43, //43
-                width: 220, //220
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(const Size(0, 0)),
-                    padding: MaterialStateProperty.all<EdgeInsets>(
-                        const EdgeInsets.fromLTRB(10, 0, 10, 0)),
-                    backgroundColor: MaterialStateProperty.all<Color>(MainColors.white),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                    ),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'কোড পাঠান',
-                      style: TextStyle(
-                          color: MainColors.blue,
-                          fontSize: 16
-                      ),
-                    ),
-                  ),
-                  onPressed: () {
-
-                  },
-                )
+          ) : Container(),
+          showCodeTextField ? Padding(
+            padding: const EdgeInsets.fromLTRB(40, 60, 40, 0),
+            child: textFieldNumber(
+              hint: "  ভেরিফিকেশন কোড দিন",
+              controller: codeController,
             ),
-          ),
+          ) : Container(),
+          showSendButton & !showLoading ? buttonMain(
+            onClickAction: (){
+              if(phoneController.text.isEmpty){
+                showToast("ফোন নম্বর দিন");
+              }else{
+                setState(() {
+                  showLoading = true;
+                  showSendButton = false;
+                });
+                verifyPhone(phoneController.text);
+              }
+            },
+            title: 'কোড পাঠান',
+          ) : Container(),
+          showVerifyButton & !showLoading ? buttonMain(
+            onClickAction: (){
+              if(codeController.text.isEmpty){
+                showToast("ভেরিফিকেশন কোড দিন");
+              }else{
+                setState(() {
+                  showLoading = true;
+                  showVerifyButton = false;
+                });
+                verifyCode(codeController.text);
+              }
+            },
+            title: 'ভেরিফাই করুন',
+          ) : Container(),
+          showLoading ? const CircularProgressIndicator() : Container()
         ],
       ),
     );
   }
 }
+
