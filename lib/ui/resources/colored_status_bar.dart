@@ -20,12 +20,12 @@ class ColoredStatusBar extends StatelessWidget {
     brightness == Brightness.dark ? Brightness.light : Brightness.dark;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: color ?? defaultColor,
+        statusBarColor: color,
         statusBarIconBrightness: androidIconBrightness,
         statusBarBrightness: brightness,
       ),
       child: Container(
-        color: color ?? defaultColor,
+        color: color,
         child: SafeArea(
           bottom: false,
           child: Container(
