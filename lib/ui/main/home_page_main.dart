@@ -3,6 +3,7 @@ import 'package:arpan_app_new/data/models/home_response.dart';
 import 'package:arpan_app_new/services/network/home_api.dart';
 import 'package:arpan_app_new/services/utils/show_toast.dart';
 import 'package:arpan_app_new/ui/resources/theme_data.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -58,9 +59,6 @@ class _HomePageMainState extends State<_HomePageMain> {
       backgroundColor: MainColors.white,
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.all(18),
-          ),
           Container(
             decoration: BoxDecoration(
               color: MainColors.blue,
@@ -98,7 +96,10 @@ class _HomePageMainState extends State<_HomePageMain> {
                     )
                 ),
                 _iconButton(
-                    onClickAction: (){},
+                    onClickAction: (){
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
+                    },
                     iconData: Icons.shopping_cart
                 ),
               ],

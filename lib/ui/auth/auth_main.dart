@@ -43,6 +43,11 @@ class _AuthMainState extends State<_AuthMain> {
         verificationId: verificationId,
         smsCode: code);
     await auth.signInWithCredential(credential);
+    if(FirebaseAuth.instance.currentUser != null){
+      Navigator.pushNamedAndRemoveUntil(context, "/homePage", (r) => false);
+    }else{
+      showToast("ভেরিফিকেশন ব্যর্থ হয়েছে! ");
+    }
   }
 
   void verifyPhone(String number) async{
@@ -50,6 +55,11 @@ class _AuthMainState extends State<_AuthMain> {
         phoneNumber: "+88"+number,
         verificationCompleted: (PhoneAuthCredential credential) async{
           await auth.signInWithCredential(credential);
+          if(FirebaseAuth.instance.currentUser != null){
+            Navigator.pushNamedAndRemoveUntil(context, "/homePage", (r) => false);
+          }else{
+            showToast("ভেরিফিকেশন ব্যর্থ হয়েছে! ");
+          }
         },
         verificationFailed: (FirebaseAuthException e){
           showToast("ভেরিফিকেশন ব্যর্থ হয়েছে! --"+e.code);
@@ -75,7 +85,11 @@ class _AuthMainState extends State<_AuthMain> {
           });
         },
         codeAutoRetrievalTimeout: (String verificationId){
-
+          if(FirebaseAuth.instance.currentUser != null){
+            Navigator.pushNamedAndRemoveUntil(context, "/homePage", (r) => false);
+          }else{
+            showToast("ভেরিফিকেশন ব্যর্থ হয়েছে! ");
+          }
         }
     );
   }
@@ -138,7 +152,8 @@ class _AuthMainState extends State<_AuthMain> {
             },
             title: 'ভেরিফাই করুন',
           ) : Container(),
-          showLoading ? const CircularProgressIndicator() : Container()
+          showLoading ? Padding(padding: EdgeInsets.all(20),child:
+          const CircularProgressIndicator(),) : Container()
         ],
       ),
     );
