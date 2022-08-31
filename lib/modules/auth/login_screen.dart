@@ -260,7 +260,7 @@ class _ResendCodeTimerState extends State<_ResendCodeTimer> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
-          "রিসেন্ড করুন $_start সেকেন্ড পর",
+          "Resend after $_start seconds",
           style: const TextStyle(
             fontSize: 14,
             color: textWhite,
