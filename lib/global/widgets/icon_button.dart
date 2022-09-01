@@ -4,7 +4,7 @@ import 'package:ui_test/global/utils/theme_data.dart';
 Widget iconButton(
     {required Function onClickAction, required IconData iconData}) {
   return Padding(
-    padding: const EdgeInsets.only(left: 10, right: 10, bottom: 13, top: 10),
+    padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
     child: SizedBox(
       height: 32,
       width: 32,

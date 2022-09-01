@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   curve: Curves.easeInQuad,
                   child: const Image(
                     height: 120,
-                    image: AssetImage("images/arpan_logo.png"),
+                    image: AssetImage("assets/images/arpan_logo.png"),
                   ),
                 ),
               ),
