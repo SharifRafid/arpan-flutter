@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -100,8 +101,7 @@ class _HomeScreenState extends State<HomeScreen>
           filteredShops = _homeResponse.shops!;
         } else {
           filteredShops = _homeResponse.shops!
-              .where((element) =>
-              element.categories!.contains(
+              .where((element) => element.categories!.contains(
                   _homeResponse.shopCategories![currentSelectedCategory].id))
               .toList();
         }
@@ -109,17 +109,18 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  void openShop(String shopId, String name, String icon, String coverPhoto) {
+  void openShop(String shopId, String name, String icon, String shopLocation,
+      String coverPhoto) {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              ProductsPage(
-                shopId: shopId,
-                shopName: name,
-                shopIcon: icon,
-                shopCoverPhoto: coverPhoto,
-              ),
+          builder: (context) => ProductsPage(
+            shopId: shopId,
+            shopName: name,
+            shopIcon: icon,
+            shopLocation: shopLocation,
+            shopCoverPhoto: coverPhoto,
+          ),
         ));
   }
 
@@ -137,11 +138,13 @@ class _HomeScreenState extends State<HomeScreen>
         title: "Arpan",
       ),
       backgroundColor: bgOffWhite,
-      body: loadingMain ?
-      const Center(
-        child: CircularProgressIndicator(color: textBlue,),
-      ) :
-      buildSliverScrollView(),
+      body: loadingMain
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: textBlue,
+              ),
+            )
+          : buildSliverScrollView(),
     );
   }
 
@@ -157,19 +160,18 @@ class _HomeScreenState extends State<HomeScreen>
   SliverList buildBody() {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-            (context, index) =>
-            buildShopCard(
-                serverFilesBaseURL +
-                    filteredShops[index].icon.toString(),
-                filteredShops[index].name.toString(),
-                filteredShops[index].location.toString(), () {
-              openShop(
-                filteredShops[index].id.toString(),
-                filteredShops[index].name.toString(),
-                filteredShops[index].icon.toString(),
-                filteredShops[index].coverPhoto.toString(),
-              );
-            }),
+        (context, index) => buildShopCard(
+            serverFilesBaseURL + filteredShops[index].icon.toString(),
+            filteredShops[index].name.toString(),
+            filteredShops[index].location.toString(), () {
+          openShop(
+            filteredShops[index].id.toString(),
+            filteredShops[index].name.toString(),
+            filteredShops[index].icon.toString(),
+            filteredShops[index].location.toString(),
+            filteredShops[index].coverPhoto.toString(),
+          );
+        }),
         childCount: filteredShops.length,
       ),
     );
@@ -197,8 +199,8 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Card buildShopCard(String image, String name, String location,
-      VoidCallback onClick) {
+  Card buildShopCard(
+      String image, String name, String location, VoidCallback onClick) {
     return Card(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -214,10 +216,13 @@ class _HomeScreenState extends State<HomeScreen>
               borderRadius: BorderRadius.circular(10),
               child: SizedBox.fromSize(
                 size: const Size.fromRadius(50),
-                child: Image(
+                child: CachedNetworkImage(
                   height: 100,
                   width: 100,
-                  image: NetworkImage(image),
+                  imageUrl: image,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
             ),
@@ -260,21 +265,22 @@ class _HomeScreenState extends State<HomeScreen>
   }
 }
 
-List<Widget> getImageSliders(List<banner_model.Banner> carouselResponse,
-    BuildContext context) {
+List<Widget> getImageSliders(
+    List<banner_model.Banner> carouselResponse, BuildContext context) {
   return carouselResponse
       .map(
-        (item) =>
-        Padding(
+        (item) => Padding(
           padding: const EdgeInsets.only(top: 10),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
-            child: Image.network(
-              serverFilesBaseURL + item.icon!,
+            child: CachedNetworkImage(
+              imageUrl: serverFilesBaseURL + item.icon!,
               fit: BoxFit.cover,
+              placeholder: (context, url) => const CircularProgressIndicator(),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
           ),
         ),
-  )
+      )
       .toList();
 }
