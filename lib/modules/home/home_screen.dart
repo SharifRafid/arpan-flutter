@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:rect_getter/rect_getter.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:ui_test/global/models/shop_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
@@ -12,6 +14,7 @@ import 'products_screen.dart';
 import 'services/home_service.dart';
 import '../../global/models/banner_model.dart' as banner_model;
 import '../../global/models/category_model.dart' as category_model;
+import 'widgets/home_sticky_tabs.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,10 +23,18 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   late HomeResponse _homeResponse;
   late List<Widget> imageSliders;
   final homeService = HomeService();
+  late TabController tabController;
+  final double expandedHeight = 200.0;
+  final double collapsedHeight = 5;
+  Map<int, dynamic> itemKeys = {};
+
+  // prevent animate when press on tab bar
+  bool pauseRectGetterIndex = false;
 
   // States
   var loadingMain = true;
@@ -33,6 +44,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   var currentSelectedCategory = 0;
   var filteredShops = <Shop>[];
+
+  bool isCollapsed = false;
 
   void getHomeResponse() async {
     if (mounted) {
@@ -60,6 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
             if (_homeResponse.shopCategories != null) {
               _homeResponse.shopCategories!
                   .insert(0, category_model.Category(name: "All", id: "ALL"));
+              tabController = TabController(
+                  length: _homeResponse.shopCategories!.length, vsync: this);
               showShopCategories = true;
             }
           });
@@ -85,7 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
           filteredShops = _homeResponse.shops!;
         } else {
           filteredShops = _homeResponse.shops!
-              .where((element) => element.categories!.contains(
+              .where((element) =>
+              element.categories!.contains(
                   _homeResponse.shopCategories![currentSelectedCategory].id))
               .toList();
         }
@@ -97,17 +113,15 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ProductsPage(
-            shopId: shopId,
-            shopName: name,
-            shopIcon: icon,
-            shopCoverPhoto: coverPhoto,
-          ),
+          builder: (context) =>
+              ProductsPage(
+                shopId: shopId,
+                shopName: name,
+                shopIcon: icon,
+                shopCoverPhoto: coverPhoto,
+              ),
         ));
   }
-
-  int _current = 0;
-  final CarouselController _controller = CarouselController();
 
   @override
   void initState() {
@@ -123,138 +137,68 @@ class _HomeScreenState extends State<HomeScreen> {
         title: "Arpan",
       ),
       backgroundColor: bgOffWhite,
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            enableCarouselSlider
-                ? CarouselSlider(
-                    items: imageSliders,
-                    carouselController: _controller,
-                    options: CarouselOptions(
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        aspectRatio: 2.0,
-                        height: 150,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _current = index;
-                          });
-                        }),
-                  )
-                : Container(),
-            enableCarouselSlider
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: imageSliders.asMap().entries.map((entry) {
-                      return GestureDetector(
-                        onTap: () => _controller.animateToPage(entry.key),
-                        child: Container(
-                          width: 7.0,
-                          height: 7.0,
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 4.0),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: (Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? bgWhite
-                                      : bgBlue)
-                                  .withOpacity(
-                                      _current == entry.key ? 0.9 : 0.4)),
-                        ),
-                      );
-                    }).toList(),
-                  )
-                : Container(),
-            showShopCategories
-                ? SizedBox(
-                    height: 45,
-                    child: ListView.builder(
-                      physics: const ClampingScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _homeResponse.shopCategories!.length,
-                      itemBuilder: (BuildContext context, int index) => Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                            child: currentSelectedCategory != index
-                                ? InkWell(
-                                    onTap: () {
-                                      filterShops(index);
-                                    },
-                                    child: Text(
-                                      _homeResponse.shopCategories![index].name
-                                          .toString(),
-                                      style: const TextStyle(
-                                          color: textBlue, fontSize: 15),
-                                    ),
-                                  )
-                                : IntrinsicWidth(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          _homeResponse
-                                              .shopCategories![index].name
-                                              .toString(),
-                                          style: const TextStyle(
-                                              color: textBlue, fontSize: 15),
-                                        ),
-                                        ConstrainedBox(
-                                          constraints: BoxConstraints.loose(
-                                              Size.infinite),
-                                          child: Container(
-                                            height: 5,
-                                            decoration: BoxDecoration(
-                                                color: textBlue,
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : Container(),
-            filteredShops.isNotEmpty
-                ? ListView.builder(
-                    physics: const ClampingScrollPhysics(),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: filteredShops.length,
-                    itemBuilder: (BuildContext context, int index) => Container(
-                          child: buildShopCard(
-                              serverFilesBaseURL +
-                                  filteredShops[index].icon.toString(),
-                              filteredShops[index].name.toString(),
-                              filteredShops[index].location.toString(), () {
-                            openShop(
-                              filteredShops[index].id.toString(),
-                              filteredShops[index].name.toString(),
-                              filteredShops[index].icon.toString(),
-                              filteredShops[index].coverPhoto.toString(),
-                            );
-                          }),
-                        ))
-                : Container(),
-          ],
-        ),
+      body: loadingMain ?
+      const Center(
+        child: CircularProgressIndicator(color: textBlue,),
+      ) :
+      buildSliverScrollView(),
+    );
+  }
+
+  Widget buildSliverScrollView() {
+    return CustomScrollView(
+      slivers: [
+        buildHomeStickyTabs(),
+        buildBody(),
+      ],
+    );
+  }
+
+  SliverList buildBody() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+            (context, index) =>
+            buildShopCard(
+                serverFilesBaseURL +
+                    filteredShops[index].icon.toString(),
+                filteredShops[index].name.toString(),
+                filteredShops[index].location.toString(), () {
+              openShop(
+                filteredShops[index].id.toString(),
+                filteredShops[index].name.toString(),
+                filteredShops[index].icon.toString(),
+                filteredShops[index].coverPhoto.toString(),
+              );
+            }),
+        childCount: filteredShops.length,
       ),
     );
   }
 
-  Card buildShopCard(
-      String image, String name, String location, VoidCallback onClick) {
+  void onCollapsed(bool value) {
+    if (isCollapsed == value) return;
+    setState(() => isCollapsed = value);
+  }
+
+  Widget buildHomeStickyTabs() {
+    return HomeStickyTabs(
+      tabController: tabController,
+      categories: _homeResponse.shopCategories!,
+      currentSelectedCategory: currentSelectedCategory,
+      enableCarouselSlider: enableCarouselSlider,
+      imageSliders: imageSliders,
+      isCollapsed: isCollapsed,
+      onCollapsed: onCollapsed,
+      expandedHeight: expandedHeight,
+      collapsedHeight: collapsedHeight,
+      onSelected: (int index) {
+        filterShops(index);
+      },
+    );
+  }
+
+  Card buildShopCard(String image, String name, String location,
+      VoidCallback onClick) {
     return Card(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -316,11 +260,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-List<Widget> getImageSliders(
-    List<banner_model.Banner> carouselResponse, BuildContext context) {
+List<Widget> getImageSliders(List<banner_model.Banner> carouselResponse,
+    BuildContext context) {
   return carouselResponse
       .map(
-        (item) => Padding(
+        (item) =>
+        Padding(
           padding: const EdgeInsets.only(top: 10),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
@@ -330,6 +275,6 @@ List<Widget> getImageSliders(
             ),
           ),
         ),
-      )
+  )
       .toList();
 }
