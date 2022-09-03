@@ -40,6 +40,7 @@ class Product {
     order = json['order'];
     shortDescription = json['shortDescription'];
     description = json['description'];
+    categories = json['categories'].cast<String>();
     offerDetails = json['offerDetails'];
     coverPhoto = json['coverPhoto'];
     icon = json['icon'];

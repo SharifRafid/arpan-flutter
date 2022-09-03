@@ -5,6 +5,7 @@ import 'package:ui_test/modules/auth/splash_screen.dart';
 import 'package:ui_test/modules/home/home_screen.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var accessToken = prefs.getString("accessToken") ?? '';
   var refreshToken = prefs.getString("refreshToken") ?? '';
