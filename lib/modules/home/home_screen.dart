@@ -220,9 +220,8 @@ class _HomeScreenState extends State<HomeScreen>
                   height: 100,
                   width: 100,
                   imageUrl: image,
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
+                  errorWidget: (context, url, error) => Image.asset("assets/images/Default_Image_Thumbnail.png", fit: BoxFit.cover,),
                 ),
               ),
             ),
@@ -276,8 +275,8 @@ List<Widget> getImageSliders(
             child: CachedNetworkImage(
               imageUrl: serverFilesBaseURL + item.icon!,
               fit: BoxFit.cover,
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+              placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
+              errorWidget: (context, url, error) => Image.asset("assets/images/Default_Image_Thumbnail.png", fit: BoxFit.cover,),
             ),
           ),
         ),

@@ -112,10 +112,8 @@ class ProductStickyTab extends SliverAppBar {
                             height: 130,
                             imageUrl: serverFilesBaseURL + shopCoverPhoto,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                            placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
+                            errorWidget: (context, url, error) => Image.asset("assets/images/Default_Image_Thumbnail.png", fit: BoxFit.cover,),
                           ),
                         ],
                       ),
@@ -137,10 +135,8 @@ class ProductStickyTab extends SliverAppBar {
                               child: CachedNetworkImage(
                                 height: 60,
                                 width: 60,
-                                placeholder: (context, url) =>
-                                    const CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
+                                placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
+                                errorWidget: (context, url, error) => Image.asset("assets/images/Default_Image_Thumbnail.png", fit: BoxFit.cover,),
                                 imageUrl: serverFilesBaseURL + shopIcon,
                                 fit: BoxFit.cover,
                               ),
