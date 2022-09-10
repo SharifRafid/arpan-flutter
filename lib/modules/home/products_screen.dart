@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rect_getter/rect_getter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:ui_test/global/models/shop_model.dart';
 import 'package:ui_test/global/utils/show_toast.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/global/widgets/custom_app_bar.dart';
@@ -19,6 +20,7 @@ class ProductsPage extends StatefulWidget {
   final String shopIcon;
   final String shopCoverPhoto;
   final String shopLocation;
+  final List<Notices>? notices;
 
   const ProductsPage(
       {Key? key,
@@ -26,7 +28,8 @@ class ProductsPage extends StatefulWidget {
       required this.shopName,
       required this.shopIcon,
       required this.shopLocation,
-      required this.shopCoverPhoto})
+      required this.shopCoverPhoto,
+        required this.notices})
       : super(key: key);
 
   @override
@@ -93,7 +96,7 @@ class _ProductsPageState extends State<ProductsPage>
   bool isCollapsed = false;
   late AutoScrollController scrollController;
   late TabController tabController;
-  final double expandedHeight = 300.0;
+  final double expandedHeight = 270.0;
   final double collapsedHeight = 0;
 
   final listViewKey = RectGetter.createGlobalKey();
@@ -209,6 +212,7 @@ class _ProductsPageState extends State<ProductsPage>
       shopName: widget.shopName,
       shopIcon: widget.shopIcon,
       shopLocation: widget.shopLocation,
+      shopNotices: widget.notices
     );
   }
 

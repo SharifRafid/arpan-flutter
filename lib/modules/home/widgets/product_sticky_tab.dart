@@ -1,8 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+import 'package:ui_test/global/models/shop_model.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
+import 'package:ui_test/global/widgets/notice_slider_text.dart';
 import 'package:ui_test/modules/home/models/product_category_file.dart';
 
 import '../../../global/utils/constants.dart';
@@ -19,6 +20,7 @@ class ProductStickyTab extends SliverAppBar {
   final String shopIcon;
   final String shopLocation;
   final String shopName;
+  final List<Notices>? shopNotices;
 
   ProductStickyTab({
     required this.data,
@@ -32,6 +34,7 @@ class ProductStickyTab extends SliverAppBar {
     required this.shopIcon,
     required this.shopLocation,
     required this.shopName,
+    required this.shopNotices,
   }) : super(
             elevation: 4.0,
             pinned: true,
@@ -101,7 +104,7 @@ class ProductStickyTab extends SliverAppBar {
           background: Column(
             children: [
               SizedBox(
-                height: 200,
+                height: 220,
                 child: Column(
                   children: [
                     Expanded(
@@ -109,11 +112,15 @@ class ProductStickyTab extends SliverAppBar {
                         fit: StackFit.expand,
                         children: [
                           CachedNetworkImage(
-                            height: 130,
+                            height: 150,
                             imageUrl: serverFilesBaseURL + shopCoverPhoto,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
-                            errorWidget: (context, url, error) => Image.asset("assets/images/Default_Image_Thumbnail.png", fit: BoxFit.cover,),
+                            placeholder: (context, url) =>
+                                Image.asset("assets/images/transparent.png"),
+                            errorWidget: (context, url, error) => Image.asset(
+                              "assets/images/Default_Image_Thumbnail.png",
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ],
                       ),
@@ -135,8 +142,13 @@ class ProductStickyTab extends SliverAppBar {
                               child: CachedNetworkImage(
                                 height: 60,
                                 width: 60,
-                                placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
-                                errorWidget: (context, url, error) => Image.asset("assets/images/Default_Image_Thumbnail.png", fit: BoxFit.cover,),
+                                placeholder: (context, url) => Image.asset(
+                                    "assets/images/transparent.png"),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                  "assets/images/Default_Image_Thumbnail.png",
+                                  fit: BoxFit.cover,
+                                ),
                                 imageUrl: serverFilesBaseURL + shopIcon,
                                 fit: BoxFit.cover,
                               ),
@@ -177,7 +189,12 @@ class ProductStickyTab extends SliverAppBar {
                           ),
                         ],
                       ),
-                    )
+                    ),
+                    shopNotices != null
+                        ? shopNotices!.isNotEmpty
+                            ? NoticeSliderText(shopNotices![0])
+                            : Container()
+                        : Container()
                   ],
                 ),
               ),

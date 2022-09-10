@@ -110,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void openShop(String shopId, String name, String icon, String shopLocation,
-      String coverPhoto) {
+      String coverPhoto, List<Notices>? notices) {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -120,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen>
             shopIcon: icon,
             shopLocation: shopLocation,
             shopCoverPhoto: coverPhoto,
+            notices: notices
           ),
         ));
   }
@@ -170,6 +171,7 @@ class _HomeScreenState extends State<HomeScreen>
             filteredShops[index].icon.toString(),
             filteredShops[index].location.toString(),
             filteredShops[index].coverPhoto.toString(),
+            filteredShops[index].notices
           );
         }),
         childCount: filteredShops.length,
