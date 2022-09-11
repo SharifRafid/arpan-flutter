@@ -165,6 +165,7 @@ class _HomeScreenState extends State<HomeScreen>
             serverFilesBaseURL + filteredShops[index].icon.toString(),
             filteredShops[index].name.toString(),
             filteredShops[index].location.toString(), () {
+          print("TEST" + filteredShops[index].notices.toString());
           openShop(
             filteredShops[index].id.toString(),
             filteredShops[index].name.toString(),

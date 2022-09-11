@@ -53,7 +53,7 @@ class Shop {
     if (json['notices'] != null) {
       notices = <Notices>[];
       json['notices'].forEach((v) {
-        notices!.add(new Notices.fromJson(v));
+        notices!.add(Notices.fromJson(v));
       });
     }
     id = json['id'];
