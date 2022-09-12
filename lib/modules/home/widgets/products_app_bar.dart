@@ -5,11 +5,11 @@ import 'package:ui_test/global/widgets/icon_button.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ui_test/modules/home/cart_screen.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class ProductsAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
   final String title;
 
-  const CustomAppBar({Key? key, required this.height, required this.title})
+  const ProductsAppBar({Key? key, required this.height, required this.title})
       : super(key: key);
 
   @override
@@ -37,10 +37,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: IconButton(
                       icon: const Icon(
-                        Icons.menu,
+                        Icons.arrow_back,
                         color: textWhite,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
                   ),
                   Expanded(

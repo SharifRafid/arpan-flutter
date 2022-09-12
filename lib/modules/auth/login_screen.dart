@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/modules/auth/widgets/resend_button.dart';
 import 'package:ui_test/modules/home/home_screen.dart';
@@ -47,14 +47,15 @@ class _AuthMainState extends State<_AuthMain> {
   var showResendButton = false;
 
   void verifyCode(String code) async {
-    final prefs = await SharedPreferences.getInstance();
+    var box = await Hive.openBox('authBox');
     LoginResponse loginResponse =
         await authService.getLoginResponse(phoneNumber, code);
     if (loginResponse.user != null && loginResponse.tokens != null) {
-      await prefs.setString(
+      await box.put(
           "accessToken", loginResponse.tokens!.access!.token!);
-      await prefs.setString(
+      await box.put(
           "refreshToken", loginResponse.tokens!.refresh!.token!);
+      await box.close();
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
         context,

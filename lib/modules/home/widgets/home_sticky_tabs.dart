@@ -40,6 +40,17 @@ class HomeStickyTabs extends SliverAppBar {
   Color? get backgroundColor => bgOffWhite;
 
   @override
+  Widget? get title => Container();
+
+  @override
+  Widget? get leading => Container();
+
+  @override
+  List<Widget>? get actions {
+    return <Widget>[Container()];
+  }
+
+  @override
   Widget? get flexibleSpace {
     return LayoutBuilder(
       builder: (BuildContext context,

@@ -3,14 +3,49 @@ import 'package:ui_test/global/models/cart_item_model.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/global/widgets/icon_button.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:ui_test/modules/home/cart_screen.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
   final String title;
 
-  const CustomAppBar({Key? key, required this.height, required this.title})
+  const CartAppBar({Key? key, required this.height, required this.title})
       : super(key: key);
+
+  Future<void> _showDeleteDialog(
+      BuildContext context, Box<CartItemMain> box) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Clear cart?'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Are you sure you want to delete all items from cart?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                box.clear();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.pop(context, 'Cancel');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +72,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: IconButton(
                       icon: const Icon(
-                        Icons.menu,
+                        Icons.arrow_back,
                         color: textWhite,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
                   ),
                   Expanded(
@@ -55,16 +92,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                     ),
                   ),
-                  iconButton(
-                    onClickAction: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const CartScreen()));
-                    },
-                    iconData: Icons.shopping_cart,
-                    cartCount: box.length,
-                  )
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.delete,
+                        color: textWhite,
+                      ),
+                      onPressed: () {
+                        _showDeleteDialog(context, box as Box<CartItemMain>);
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),

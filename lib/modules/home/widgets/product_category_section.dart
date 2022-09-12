@@ -7,10 +7,12 @@ import 'package:ui_test/modules/home/models/product_category_file.dart';
 
 class CategorySection extends StatelessWidget {
   final ProductCategorized category;
+  final void Function(Product product) onClickAdd;
 
   const CategorySection({
     Key? key,
     required this.category,
+    required this.onClickAdd,
   }) : super(key: key);
 
   @override
@@ -94,7 +96,10 @@ class CategorySection extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [_buildFoodImage(food.icon), _buildAddIcon()],
+                  children: [
+                    _buildFoodImage(food.icon),
+                    _buildAddIcon(food),
+                  ],
                 )
               ],
             ),
@@ -105,7 +110,7 @@ class CategorySection extends StatelessWidget {
     );
   }
 
-  Widget _buildAddIcon() {
+  Widget _buildAddIcon(Product food) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -113,7 +118,9 @@ class CategorySection extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
         color: bgBlue,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            onClickAdd(food);
+          },
           child: const Padding(
             padding: EdgeInsets.all(14.0),
             child: Icon(
@@ -138,8 +145,8 @@ class CategorySection extends StatelessWidget {
           imageUrl: serverFilesBaseURL + url.toString(),
           width: 76,
           height: 76,
-          placeholder: (context, url) => const CircularProgressIndicator(),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
+          placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
+          errorWidget: (context, url, error) => Image.asset("assets/images/transparent.png"),
         ),
       ),
     );

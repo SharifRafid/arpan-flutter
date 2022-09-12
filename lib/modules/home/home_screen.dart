@@ -1,9 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:rect_getter/rect_getter.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:ui_test/global/models/shop_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
@@ -165,7 +162,6 @@ class _HomeScreenState extends State<HomeScreen>
             serverFilesBaseURL + filteredShops[index].icon.toString(),
             filteredShops[index].name.toString(),
             filteredShops[index].location.toString(), () {
-          print("TEST" + filteredShops[index].notices.toString());
           openShop(
             filteredShops[index].id.toString(),
             filteredShops[index].name.toString(),
@@ -218,10 +214,10 @@ class _HomeScreenState extends State<HomeScreen>
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: SizedBox.fromSize(
-                size: const Size.fromRadius(50),
+                size: const Size.fromRadius(45),
                 child: CachedNetworkImage(
-                  height: 100,
-                  width: 100,
+                  height: 90,
+                  width: 90,
                   imageUrl: image,
                   placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
                   errorWidget: (context, url, error) => Image.asset("assets/images/Default_Image_Thumbnail.png", fit: BoxFit.cover,),
@@ -230,15 +226,15 @@ class _HomeScreenState extends State<HomeScreen>
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       name,
                       style: const TextStyle(
-                        fontSize: 17,
-                        color: textBlue,
+                        fontSize: 16,
+                        color: textBlack,
                       ),
                     ),
                     const Padding(
@@ -252,8 +248,8 @@ class _HomeScreenState extends State<HomeScreen>
                     Text(
                       location,
                       style: const TextStyle(
-                        fontSize: 14,
-                        color: textBlue,
+                        fontSize: 13,
+                        color: textBlack,
                       ),
                     ),
                   ],
