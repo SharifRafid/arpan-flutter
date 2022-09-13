@@ -9,5 +9,6 @@ const bgWhite = Color(0xFFFFFFFF);
 const bgOffWhite = Color(0xFFF1F1F1);
 const bgBlue = Color(0xFF0071BC);
 const bgBlack = Color(0xFF000000);
+const bgGreyDeep = Color(0xFF333333);
 
 const double appBarHeight = 55;

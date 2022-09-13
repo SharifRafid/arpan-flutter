@@ -21,7 +21,7 @@ class CartItemMainAdapter extends TypeAdapter<CartItemMain> {
       customOrderImage: fields[1] as String?,
       customOrderItem: fields[2] as bool?,
       customOrderText: fields[3] as String?,
-      id: fields[4] as int?,
+      id: fields[4] as String?,
       medicineItem: fields[5] as bool?,
       medicineOrderImage: fields[6] as String?,
       medicineOrderText: fields[7] as String?,

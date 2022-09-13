@@ -12,7 +12,7 @@ class CartItemMain extends HiveObject {
   @HiveField(3)
   String? customOrderText;
   @HiveField(4)
-  int? id;
+  String? id;
   @HiveField(5)
   bool? medicineItem;
   @HiveField(6)

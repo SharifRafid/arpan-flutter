@@ -23,7 +23,7 @@ class _CartCardState extends State<CartCard> {
   Widget build(BuildContext context) {
     return Card(
       color: bgBlue,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
       ),
       child: Center(

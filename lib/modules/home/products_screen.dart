@@ -123,7 +123,8 @@ class _ProductsPageState extends State<ProductsPage>
           product.categories != null ? product.categories![0] : "";
       cartItemMain.productItemKey = product.id;
       cartItemMain.productItemDesc = product.shortDescription;
-      cartItemMain.productItemOfferPrice = product.price;
+      cartItemMain.productItemOfferPrice = product.offerPrice;
+      cartItemMain.productItemPrice = product.price;
       cartItemMain.productItemName = product.name;
       cartItemMain.productItemImage = product.icon;
       cartItemMain.productItemShopKey = product.shop;

@@ -5,9 +5,13 @@ import 'package:ui_test/global/models/shop_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/global/widgets/custom_app_bar.dart';
+import 'package:ui_test/global/widgets/custom_bottom_bar.dart';
+import 'package:ui_test/global/widgets/custom_drawer.dart';
+import 'package:ui_test/global/widgets/custom_fab.dart';
 
 import '../../global/networking/responses/home_response.dart';
 import '../../global/utils/show_toast.dart';
+import '../order/all_orders_screen.dart';
 import 'products_screen.dart';
 import 'services/home_service.dart';
 import '../../global/models/banner_model.dart' as banner_model;
@@ -112,13 +116,12 @@ class _HomeScreenState extends State<HomeScreen>
         context,
         MaterialPageRoute(
           builder: (context) => ProductsPage(
-            shopId: shopId,
-            shopName: name,
-            shopIcon: icon,
-            shopLocation: shopLocation,
-            shopCoverPhoto: coverPhoto,
-            notices: notices
-          ),
+              shopId: shopId,
+              shopName: name,
+              shopIcon: icon,
+              shopLocation: shopLocation,
+              shopCoverPhoto: coverPhoto,
+              notices: notices),
         ));
   }
 
@@ -136,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen>
         title: "Arpan",
       ),
       backgroundColor: bgOffWhite,
+      drawer: customDrawer(context),
       body: loadingMain
           ? const Center(
               child: CircularProgressIndicator(
@@ -163,13 +167,12 @@ class _HomeScreenState extends State<HomeScreen>
             filteredShops[index].name.toString(),
             filteredShops[index].location.toString(), () {
           openShop(
-            filteredShops[index].id.toString(),
-            filteredShops[index].name.toString(),
-            filteredShops[index].icon.toString(),
-            filteredShops[index].location.toString(),
-            filteredShops[index].coverPhoto.toString(),
-            filteredShops[index].notices
-          );
+              filteredShops[index].id.toString(),
+              filteredShops[index].name.toString(),
+              filteredShops[index].icon.toString(),
+              filteredShops[index].location.toString(),
+              filteredShops[index].coverPhoto.toString(),
+              filteredShops[index].notices);
         }),
         childCount: filteredShops.length,
       ),
@@ -219,8 +222,12 @@ class _HomeScreenState extends State<HomeScreen>
                   height: 90,
                   width: 90,
                   imageUrl: image,
-                  placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
-                  errorWidget: (context, url, error) => Image.asset("assets/images/Default_Image_Thumbnail.png", fit: BoxFit.cover,),
+                  placeholder: (context, url) =>
+                      Image.asset("assets/images/transparent.png"),
+                  errorWidget: (context, url, error) => Image.asset(
+                    "assets/images/Default_Image_Thumbnail.png",
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -274,8 +281,12 @@ List<Widget> getImageSliders(
             child: CachedNetworkImage(
               imageUrl: serverFilesBaseURL + item.icon!,
               fit: BoxFit.cover,
-              placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
-              errorWidget: (context, url, error) => Image.asset("assets/images/Default_Image_Thumbnail.png", fit: BoxFit.cover,),
+              placeholder: (context, url) =>
+                  Image.asset("assets/images/transparent.png"),
+              errorWidget: (context, url, error) => Image.asset(
+                "assets/images/Default_Image_Thumbnail.png",
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ),
