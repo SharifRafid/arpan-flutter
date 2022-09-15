@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:ui_test/global/models/category_model.dart';
+import 'package:ui_test/modules/home/widgets/image_slider.dart';
 
 import '../../../global/utils/theme_data.dart';
 
@@ -67,8 +68,8 @@ class HomeStickyTabs extends SliverAppBar {
           collapseMode: CollapseMode.pin,
           background: Column(
             children: [
-              enableCarouselSlider ?
-              CSlider(imageSliders)
+              enableCarouselSlider == true ?
+              ImageSlider(imageSliders)
                   : Container(),
             ],
           ),
@@ -113,67 +114,3 @@ TabBar buildTabBar(TabController tabController, List<Category> categories,
     },
   );
 }
-
-class CSlider extends StatefulWidget {
-  final List<Widget> imageSliders;
-  const CSlider(this.imageSliders, {Key? key}) : super(key: key);
-
-  @override
-  State<CSlider> createState() => _CSliderState();
-}
-
-class _CSliderState extends State<CSlider> {
-  int _current = 0;
-  final CarouselController _controller = CarouselController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        CarouselSlider(
-          items: widget.imageSliders,
-          carouselController: _controller,
-          options: CarouselOptions(
-              autoPlay: true,
-              enlargeCenterPage: true,
-              aspectRatio: 2.0,
-              height: 135,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  _current = index;
-                });
-              }),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: widget.imageSliders
-              .asMap()
-              .entries
-              .map((entry) {
-            return GestureDetector(
-              onTap: () => _controller.animateToPage(entry.key),
-              child: Container(
-                width: 7.0,
-                height: 7.0,
-                margin: const EdgeInsets.symmetric(
-                    vertical: 8.0, horizontal: 4.0),
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: (Theme
-                        .of(context)
-                        .brightness ==
-                        Brightness.dark
-                        ? bgWhite
-                        : bgBlue)
-                        .withOpacity(
-                        _current == entry.key ? 0.9 : 0.4)),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-}
-

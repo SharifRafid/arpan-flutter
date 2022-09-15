@@ -382,16 +382,17 @@ class _OrderScreenState extends State<OrderScreen> {
                     promoCode = id;
                     calculateTotalPrices();
                   }),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Card(
-                          elevation: 1,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: const BorderSide(
-                                  color: Colors.green, width: 2)),
-                          child: Expanded(
+                  SizedBox(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Card(
+                            elevation: 1,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: const BorderSide(
+                                    color: Colors.green, width: 2)),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Center(
@@ -408,23 +409,27 @@ class _OrderScreenState extends State<OrderScreen> {
                             ),
                           ),
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(left: 5, right: 5),
-                        child: MaterialButton(
-                          onPressed: () {
-                            placeOrder();
-                          },
-                          color: Colors.green,
-                          child: const Center(
-                            child: Text(
-                              "Place Order",
-                              style: TextStyle(color: textWhite),
+                        Container(
+                          height: 38,
+                          margin: const EdgeInsets.only(left: 5, right: 5),
+                          child: MaterialButton(
+                            onPressed: () {
+                              placeOrder();
+                            },
+                            color: Colors.green,
+                            child: const Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 15, right: 15),
+                                child: Text(
+                                  "Place Order",
+                                  style: TextStyle(color: textWhite),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                   Container(
                     height: 15,

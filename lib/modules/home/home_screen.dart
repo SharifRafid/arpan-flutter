@@ -28,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late HomeResponse _homeResponse;
-  late List<Widget> imageSliders;
+  List<Widget> imageSliders = [];
   final homeService = HomeService();
   late TabController tabController;
   final double expandedHeight = 200.0;
