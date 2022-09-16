@@ -1,49 +1,49 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:ui_test/global/models/location_model.dart';
-import 'package:ui_test/global/utils/constants.dart';
-import 'package:ui_test/global/utils/show_toast.dart';
-import 'package:ui_test/modules/home/services/home_service.dart';
-import 'package:ui_test/modules/home/widgets/order_app_bar.dart';
-import 'package:ui_test/modules/order/all_orders_screen.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ui_test/modules/order/services/order_service.dart';
-import 'package:ui_test/modules/order/widgets/order_cart_item.dart';
 
-import '../../global/models/cart_item_model.dart';
+import '../../global/models/location_model.dart';
 import '../../global/models/promo_code_model.dart';
+import '../../global/utils/constants.dart';
+import '../../global/utils/show_toast.dart';
 import '../../global/utils/theme_data.dart';
 import '../../global/utils/utils.dart';
-import 'widgets/promo_code_block.dart';
+import '../home/services/home_service.dart';
+import '../home/widgets/order_app_bar.dart';
+import 'all_orders_screen.dart';
+import 'widgets/promo_code_block_custom.dart';
 
-class OrderScreen extends StatefulWidget {
-  const OrderScreen({Key? key}) : super(key: key);
+class CustomOrderScreen extends StatefulWidget {
+  const CustomOrderScreen({Key? key}) : super(key: key);
 
   @override
-  State<OrderScreen> createState() => _OrderScreenState();
+  State<CustomOrderScreen> createState() => _CustomOrderScreenState();
 }
 
-class _OrderScreenState extends State<OrderScreen> {
-  final homeService = HomeService();
+class _CustomOrderScreenState extends State<CustomOrderScreen> {
   final orderService = OrderService();
+  final homeService = HomeService();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController noteController = TextEditingController();
+  TextEditingController orderMainController = TextEditingController();
 
   List<Location> _locationsArray = [];
   Location _selectedLocation = Location();
-  HashMap<String, List<CartItemMain>> cartItems = HashMap();
-  List<CartItemMain> cartItemsList = [];
+
   PaymentMethod? _paymentMethod = PaymentMethod.COD;
   Promo? promoCode;
+  XFile? image;
 
   bool loading = true;
 
-  int totalPrice = 0;
   int deliveryCharge = 0;
 
   late Box box;
@@ -58,6 +58,7 @@ class _OrderScreenState extends State<OrderScreen> {
     var name = nameController.text;
     var phone = phoneController.text;
     var address = addressController.text;
+    var details = orderMainController.text;
     var note = noteController.text;
     if (name.isEmpty || phone.isEmpty || address.isEmpty) {
       if (!mounted) return;
@@ -74,9 +75,9 @@ class _OrderScreenState extends State<OrderScreen> {
       showToast(context, "Phone number must be 11 digits");
       return;
     }
-    if (cartItemsList.isEmpty) {
-      if (!mounted) return;
-      showToast(context, "There must be at least one product in your cart");
+    if (details.isEmpty && image == null) {
+      showToast(context,
+          "Please add at least one image and/or details about your order");
       return;
     }
     setState(() {
@@ -87,18 +88,14 @@ class _OrderScreenState extends State<OrderScreen> {
     hashMap["phone"] = phone.toString();
     hashMap["address"] = address.toString();
     hashMap["note"] = note.toString();
-    hashMap["shopNames"] =
-        cartItemsList.map((e) => e.productItemShopName).toList();
-    hashMap["productsAmount"] =
-        cartItemsList.map((e) => e.productItemAmount).toList();
-    hashMap["products"] = cartItemsList.map((e) => e.productItemKey).toList();
+    hashMap["customOrderDetails"] = details.toString();
     if (promoCode != null) {
       hashMap["promo"] = promoCode!.id;
     }
     hashMap["location"] = _selectedLocation.id;
     hashMap["payment"] =
         _paymentMethod == PaymentMethod.bKash ? "bKash" : "COD";
-    String? orderId = await orderService.placeOrder(hashMap);
+    String? orderId = await orderService.placeCustomOrder(hashMap, image);
     if (orderId == null) {
       if (!mounted) return;
       showToast(context, "Failed to place order");
@@ -108,10 +105,8 @@ class _OrderScreenState extends State<OrderScreen> {
     } else {
       print(orderId);
       box.clear();
-      Hive.box<CartItemMain>("cart").clear();
       if (!mounted) return;
       showToast(context, "Successfully placed order");
-      Navigator.pop(context);
       Navigator.pop(context);
       Navigator.push(
           context,
@@ -120,26 +115,23 @@ class _OrderScreenState extends State<OrderScreen> {
     }
   }
 
-  void openBox() async {
-    box = await Hive.openBox("orderInputs");
+  void pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
+    print(pickedImage);
+    if (pickedImage != null) {
+      setState(() {
+        image = pickedImage;
+      });
+    }
   }
 
   void calculateTotalPrices() {
-    int tp = 0;
     int dc = _selectedLocation.deliveryCharge!;
 
-    for (var item in cartItemsList) {
-      tp = tp + item.productItemOfferPrice!;
-    }
-
     if (promoCode != null) {
-      if (promoCode!.shopDiscount == true) {
-        if (promoCode!.discountPrice! > tp) {
-          tp = 0;
-        } else {
-          tp = tp - promoCode!.discountPrice!;
-        }
-      } else if (promoCode!.deliveryDiscount == true) {
+      if (promoCode!.deliveryDiscount == true) {
         if (promoCode!.discountPrice! > dc) {
           dc = 0;
         } else {
@@ -149,7 +141,6 @@ class _OrderScreenState extends State<OrderScreen> {
     }
 
     setState(() {
-      totalPrice = tp;
       deliveryCharge = dc;
     });
   }
@@ -174,24 +165,13 @@ class _OrderScreenState extends State<OrderScreen> {
         phoneController.text = box.get("phone", defaultValue: "");
         addressController.text = box.get("address", defaultValue: "");
         noteController.text = box.get("note", defaultValue: "");
+        orderMainController.text = box.get("orderDetails", defaultValue: "");
       }
     }
   }
 
-  void loadCartItems() async {
-    var data = Hive.box<CartItemMain>("cart").values;
-    cartItems.clear();
-    cartItemsList.clear();
-    for (var item in data) {
-      cartItemsList.add(item);
-      // Just for the sake of speed, using shop name here but
-      // using key will be more ideal
-      if (cartItems.containsKey(item.productItemShopName)) {
-        cartItems[item.productItemShopName!]?.add(item);
-      } else {
-        cartItems[item.productItemShopName!] = [item];
-      }
-    }
+  void openBox() async {
+    box = await Hive.openBox("orderInputs");
     getLocationsResponse();
   }
 
@@ -199,14 +179,13 @@ class _OrderScreenState extends State<OrderScreen> {
   void initState() {
     super.initState();
     openBox();
-    loadCartItems();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const OrderAppBar(
-        title: "Order",
+        title: "Custom Order",
         height: appBarHeight,
       ),
       backgroundColor: bgOffWhite,
@@ -297,6 +276,57 @@ class _OrderScreenState extends State<OrderScreen> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: SizedBox(
+                      height: 120,
+                      child: Stack(
+                        alignment: AlignmentDirectional.bottomEnd,
+                        children: [
+                          TextFormField(
+                            expands: true,
+                            onChanged: (text) {
+                              box.put("orderDetails", text.toString());
+                            },
+                            style: const TextStyle(fontSize: 14),
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            textAlignVertical: TextAlignVertical.top,
+                            controller: orderMainController,
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.all(8), // A
+                              isDense: true,
+                              border: OutlineInputBorder(),
+                              labelText: 'Details',
+                            ),
+                          ),
+                          SizedBox(
+                            width: 75,
+                            height: 65,
+                            child: Card(
+                              elevation: 0,
+                              margin: const EdgeInsets.all(0),
+                              color: bgBlue,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: InkWell(
+                                onTap: () {
+                                  pickImage();
+                                },
+                                child: image == null
+                                    ? const Icon(
+                                        Icons.camera_alt,
+                                        color: textWhite,
+                                      )
+                                    : Image.file(File(image!.path)),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: SizedBox(
                       height: 42,
                       child: InputDecorator(
                         decoration: const InputDecoration(
@@ -329,12 +359,6 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                       ),
                     ),
-                  ),
-                  Column(
-                    children: [
-                      for (var item in cartItems.keys)
-                        OrderCartCard(item, cartItems[item]!)
-                    ],
                   ),
                   SizedBox(
                     height: 50,
@@ -388,7 +412,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           style: TextStyle(color: Colors.pink),
                         )
                       : Container(),
-                  PromoCodeBlock(cartItemsList, (id) {
+                  PromoCodeBlockCustom(deliveryCharge, (id) {
                     promoCode = id;
                     calculateTotalPrices();
                   }),
@@ -408,12 +432,12 @@ class _OrderScreenState extends State<OrderScreen> {
                               child: Center(
                                 child: _paymentMethod == PaymentMethod.bKash
                                     ? Text(
-                                        "Total : $totalPrice + $deliveryCharge =  ${(totalPrice + deliveryCharge) + ((totalPrice + deliveryCharge) * bkashMultiplier).toInt()} ৳",
+                                        "Delivery charge : ${deliveryCharge + (deliveryCharge * bkashMultiplier).toInt()} ৳",
                                         style:
                                             const TextStyle(color: textBlack),
                                       )
                                     : Text(
-                                        "Total : $totalPrice + $deliveryCharge =  ${totalPrice + deliveryCharge} ৳",
+                                        "Delivery charge : $deliveryCharge ৳",
                                         style:
                                             const TextStyle(color: textBlack),
                                       ),

@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen>
   List<Widget> imageSliders = [];
   final homeService = HomeService();
   late TabController tabController;
-  final double expandedHeight = 200.0;
+  final double expandedHeight = 285.0;
   final double collapsedHeight = 5;
   Map<int, dynamic> itemKeys = {};
 
@@ -56,6 +56,31 @@ class _HomeScreenState extends State<HomeScreen>
         if (kDebugMode) {
           print("Response is null");
         }
+        showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Connection failed!'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: const <Widget>[
+                    Text('Failed to fetch data. Are you sure you\'re connected to internet?'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Yes, Reload'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    getHomeResponse();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       } else {
         _homeResponse = response;
         if (_homeResponse.banners != null ||

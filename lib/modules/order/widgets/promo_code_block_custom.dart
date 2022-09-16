@@ -7,20 +7,20 @@ import 'package:ui_test/modules/order/services/order_service.dart';
 
 import '../../../global/models/cart_item_model.dart';
 
-class PromoCodeBlock extends StatefulWidget {
+class PromoCodeBlockCustom extends StatefulWidget {
   final void Function(Promo? promo) setPromoCode;
-  final List<CartItemMain> cartItemsList;
+  final int dc;
 
-  const PromoCodeBlock(this.cartItemsList, this.setPromoCode, {Key? key})
+  const PromoCodeBlockCustom(this.dc, this.setPromoCode, {Key? key})
       : super(key: key);
 
   @override
-  State<PromoCodeBlock> createState() => _PromoCodeBlockState();
+  State<PromoCodeBlockCustom> createState() => _PromoCodeBlockState();
 }
 
 enum _CurrentState { init, loading, applied, apply }
 
-class _PromoCodeBlockState extends State<PromoCodeBlock> {
+class _PromoCodeBlockState extends State<PromoCodeBlockCustom> {
   _CurrentState currentState = _CurrentState.init;
   TextEditingController textEditingController = TextEditingController();
   final OrderService _orderService = OrderService();
@@ -46,30 +46,17 @@ class _PromoCodeBlockState extends State<PromoCodeBlock> {
     }
     if (response.promo != null) {
       Promo promo = response.promo!;
-      if (promo.shopBased == true) {
-        if (widget.cartItemsList
-            .any((element) => element.productItemShopKey != promo.shopKey)) {
-          if (!mounted) return;
-          widget.setPromoCode(null);
-          showToast(context,
-              "For applying this promo, all products need to be from ${promo.shopName}");
-          setState(() {
-            currentState = _CurrentState.apply;
-          });
-          return;
-        } else {
-          appliedMessage =
-              "You have successfully applied promo code ${promo.promoCodeName}";
-          widget.setPromoCode(promo);
-          setState(() {
-            currentState = _CurrentState.applied;
-          });
-          return;
-        }
+      if (promo.shopDiscount == true) {
+        if (!mounted) return;
+        widget.setPromoCode(null);
+        showToast(context,
+            "You can only apply a delivery charge promo here");
+        setState(() {
+          currentState = _CurrentState.apply;
+        });
+        return;
       } else {
-        var tp = 0;
-        for (var element in widget.cartItemsList) { tp = tp + element.productItemOfferPrice!; }
-        if(tp >= promo.minimumPrice!){
+        if(widget.dc >= promo.minimumPrice!){
           appliedMessage = "You have successfully applied promo code ${promo.promoCodeName}";
           widget.setPromoCode(promo);
           setState(() {
@@ -80,7 +67,7 @@ class _PromoCodeBlockState extends State<PromoCodeBlock> {
           if (!mounted) return;
           widget.setPromoCode(null);
           showToast(context,
-              "For applying this promo, minimum price needs to be ${promo.minimumPrice}");
+              "For applying this promo, minimum delivery charge needs to be ${promo.minimumPrice}");
           setState(() {
             currentState = _CurrentState.apply;
           });

@@ -44,13 +44,25 @@ class OrderAppBar extends StatelessWidget implements PreferredSizeWidget {
             Expanded(
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 5, 25, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 5, 5, 0),
                   child: Text(
                     title,
                     style:
                     const TextStyle(color: textWhite, fontSize: 16),
                   ),
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.info_outline_sharp,
+                  color: textBlue,
+                ),
+                onPressed: () {
+                  // Navigator.pop(context);
+                },
               ),
             ),
           ],

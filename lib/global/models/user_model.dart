@@ -10,7 +10,7 @@ class User {
   String? phone;
   String? name;
   String? address;
-  Image? image;
+  String? image;
   bool? blocked;
   String? email;
   String? password;
@@ -43,7 +43,7 @@ class User {
     phone = json['phone'];
     name = json['name'];
     address = json['address'];
-    image = json['image'] != null ? Image.fromJson(json['image']) : null;
+    image = json['image'];
     blocked = json['blocked'];
     email = json['email'];
     password = json['password'];
@@ -61,9 +61,7 @@ class User {
     data['phone'] = phone;
     data['name'] = name;
     data['address'] = address;
-    if (image != null) {
-      data['image'] = image!.toJson();
-    }
+    data['image'] = image;
     data['blocked'] = blocked;
     data['email'] = email;
     data['password'] = password;

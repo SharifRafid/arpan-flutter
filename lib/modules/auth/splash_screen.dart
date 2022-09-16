@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Column(
                     children: [
                     ButtonMain(
-                    "লগইন করুন",
+                    "Login",
                         () =>
                     {
                       Navigator.pushAndRemoveUntil(
@@ -74,10 +74,10 @@ class _SplashScreenState extends State<SplashScreen> {
                         MaterialPageRoute(
                             builder: (BuildContext context) =>
                             const AuthMain()),
-                        ModalRoute.withName('/'),
+                        ModalRoute.withName('/auth'),
                       ),
                     }),
-                ButtonMain("লগইন ছাড়াই প্রবেশ করুন", () =>
+                ButtonMain("Go to home", () =>
                 {
                   Navigator.pushAndRemoveUntil(
                     context,

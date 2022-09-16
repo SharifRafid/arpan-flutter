@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ui_test/global/networking/responses/promo_response.dart';
 import '../../../global/utils/constants.dart';
 import '../models/order_item_response.dart';
@@ -86,6 +87,34 @@ class OrderService {
       );
       Response response = await _dio.post(
         "${baseUrl}consumers/place-order",
+        options: options,
+        data: hashMap
+      );
+      if (response.statusCode == 200) {
+        return response.data['id'].toString();
+      } else {
+        return null;
+      }
+    } on DioError catch (e) {
+      if (kDebugMode) {
+        print(e.message.toString());
+      }
+      return null;
+    }
+  }
+
+  Future<String?> placeCustomOrder(HashMap<String, dynamic> hashMap, XFile? image) async {
+    var box = Hive.box('authBox');
+    var accessToken = box.get("accessToken") ?? '';
+    try {
+      HashMap<String,String> headers = HashMap();
+      headers["authorization"] = "Bearer $accessToken";
+      headers["Content-Type"] = "application/json";
+      Options options = Options(
+        headers: headers
+      );
+      Response response = await _dio.post(
+        "${baseUrl}consumers/place-custom-order",
         options: options,
         data: hashMap
       );

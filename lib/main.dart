@@ -6,6 +6,8 @@ import 'package:ui_test/modules/auth/services/auth_service.dart';
 import 'package:ui_test/modules/auth/splash_screen.dart';
 import 'package:ui_test/modules/home/home_screen.dart';
 
+import 'modules/auth/login_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
@@ -35,6 +37,9 @@ class MyApp extends StatelessWidget {
         fontFamily: 'HindSiliguri',
         colorScheme: ColorScheme.fromSwatch().copyWith(primary: primaryColor),
       ),
+      routes: {
+        '/auth': (context) => const AuthMain(),
+      },
       home: _getHome(accessToken, refreshToken),
     );
   }
