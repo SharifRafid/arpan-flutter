@@ -1,5 +1,7 @@
 import 'package:ui_test/global/models/cart_item_model.dart';
 
+import '../../../global/models/pick_drop_item_model.dart';
+
 class OrderItemResponse {
   String? userName;
   String? paymentMethod;
@@ -23,6 +25,7 @@ class OrderItemResponse {
   int? totalPrice;
   int? orderId;
   String? id;
+  PickDropOrderItem? pickDropOrderItem;
 
   OrderItemResponse(
       {this.userName,
@@ -46,7 +49,7 @@ class OrderItemResponse {
         this.deliveryCharge,
         this.totalPrice,
         this.orderId,
-        this.id});
+        this.id,this.pickDropOrderItem});
 
   OrderItemResponse.fromJson(Map<String, dynamic> json) {
     userName = json['userName'];
@@ -80,6 +83,9 @@ class OrderItemResponse {
     totalPrice = json['totalPrice'];
     orderId = json['orderId'];
     id = json['id'];
+    pickDropOrderItem = json['pickDropOrderItem'] != null
+        ? PickDropOrderItem.fromJson(json['pickDropOrderItem'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -112,6 +118,9 @@ class OrderItemResponse {
     data['totalPrice'] = this.totalPrice;
     data['orderId'] = this.orderId;
     data['id'] = this.id;
+    if (this.pickDropOrderItem != null) {
+      data['pickDropOrderItem'] = this.pickDropOrderItem!.toJson();
+    }
     return data;
   }
 }

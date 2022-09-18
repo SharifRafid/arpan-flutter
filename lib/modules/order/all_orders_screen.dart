@@ -6,6 +6,8 @@ import 'package:ui_test/modules/order/models/order_item_response.dart';
 import 'package:ui_test/modules/order/order_details_screen.dart';
 import 'package:ui_test/modules/order/services/order_service.dart';
 
+import '../../global/utils/utils.dart';
+
 class AllOrdersScreen extends StatefulWidget {
   const AllOrdersScreen({Key? key}) : super(key: key);
 
@@ -31,11 +33,6 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
         loading = false;
       });
     }
-  }
-
-  String fetchTime(int timeStamp) {
-    DateTime date = DateTime.fromMillisecondsSinceEpoch(timeStamp);
-    return "${date.day}-${date.month}-${date.year}";
   }
 
   @override
@@ -100,7 +97,7 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
             Container(
               height: 45,
               width: 1,
-              color: textBlack,
+              color: const Color(0x2C333333),
             ),
             Expanded(
               child: Container(
@@ -113,11 +110,6 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
                   ),
                 ),
               ),
-            ),
-            Container(
-              height: 45,
-              width: 1,
-              color: textBlack,
             ),
             Expanded(
               child: Container(

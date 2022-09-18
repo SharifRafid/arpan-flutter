@@ -14,7 +14,7 @@ class NoticeSliderText extends StatelessWidget {
         child: Card(
           color: HexColor.fromHex(shopNotice.bgColor!),
           child: Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
                 shopNotice.title.toString(),

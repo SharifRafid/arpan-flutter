@@ -86,6 +86,7 @@ class _MedicineOrderScreenState extends State<MedicineOrderScreen> {
     });
     HashMap<String, dynamic> hashMap = HashMap();
     hashMap["name"] = name.toString();
+    hashMap["medicineOrder"] = true;
     hashMap["phone"] = phone.toString();
     hashMap["address"] = address.toString();
     hashMap["note"] = note.toString();

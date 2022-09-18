@@ -89,6 +89,7 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
     hashMap["phone"] = phone.toString();
     hashMap["address"] = address.toString();
     hashMap["note"] = note.toString();
+    hashMap["parcelOrder"] = true;
     hashMap["parcelDetails"] = details.toString();
     hashMap["parcelTitle"] = title.toString();
     if (promoCode != null) {

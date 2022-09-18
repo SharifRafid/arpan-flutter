@@ -53,6 +53,7 @@ class CartItemMain extends HiveObject {
   String? productItemShopKey;
   @HiveField(25)
   String? productItemShopName;
+  @HiveField(26)
 
   CartItemMain(
       {this.sId,

@@ -85,6 +85,7 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
     });
     HashMap<String, dynamic> hashMap = HashMap();
     hashMap["name"] = name.toString();
+    hashMap["customOrder"] = true;
     hashMap["phone"] = phone.toString();
     hashMap["address"] = address.toString();
     hashMap["note"] = note.toString();
@@ -103,6 +104,9 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
         loading = false;
       });
     } else {
+      setState(() {
+        loading = false;
+      });
       print(orderId);
       box.clear();
       if (!mounted) return;

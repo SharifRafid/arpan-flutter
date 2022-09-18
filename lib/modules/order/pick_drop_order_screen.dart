@@ -105,11 +105,13 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
     HashMap<String, dynamic> hashMap = HashMap();
     hashMap["name"] = name.toString();
     hashMap["phone"] = phone.toString();
+    hashMap["pickDropOrder"] = true;
     hashMap["address"] = address.toString();
     hashMap["nameReceiver"] = nameReceiver.toString();
     hashMap["phoneReceiver"] = phoneReceiver.toString();
     hashMap["addressReceiver"] = addressReceiver.toString();
-    hashMap["parcelDetails"] = details.toString();
+    hashMap["locationReceiver"] = _selectedLocationReceiver.id;
+    hashMap["pickDropParcelDetails"] = details.toString();
     hashMap["location"] = _selectedLocation.id;
     hashMap["payment"] =
         _paymentMethod == PaymentMethod.bKash ? "bKash" : "COD";
