@@ -1,8 +1,8 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:ui_test/global/models/category_model.dart';
 import 'package:ui_test/modules/home/widgets/image_slider.dart';
+import 'package:ui_test/modules/home/widgets/notice_slider.dart';
 import 'package:ui_test/modules/order/parcel_order_screen.dart';
 import 'package:ui_test/modules/order/pick_drop_order_screen.dart';
 
@@ -15,9 +15,11 @@ class HomeStickyTabs extends SliverAppBar {
   final List<Category> categories;
   final int currentSelectedCategory;
   final bool enableCarouselSlider;
+  final bool enableNoticesSlider;
   final bool isCollapsed;
   final Function onSelected;
   final List<Widget> imageSliders;
+  final List<Widget> noticeSliders;
   final void Function(bool isCollapsed) onCollapsed;
   final double expandedHeight;
   final double collapsedHeight;
@@ -28,6 +30,8 @@ class HomeStickyTabs extends SliverAppBar {
     required this.currentSelectedCategory,
     required this.enableCarouselSlider,
     required this.imageSliders,
+    required this.enableNoticesSlider,
+    required this.noticeSliders,
     required this.isCollapsed,
     required this.onCollapsed,
     required this.onSelected,
@@ -72,6 +76,10 @@ class HomeStickyTabs extends SliverAppBar {
               enableCarouselSlider == true
                   ? ImageSlider(imageSliders)
                   : Container(),
+              enableNoticesSlider == true
+                  ? NoticeSlider(noticeSliders)
+                  : Container(),
+              Container(height: 6,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

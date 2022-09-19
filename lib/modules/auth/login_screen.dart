@@ -9,6 +9,7 @@ import 'package:ui_test/modules/home/home_screen.dart';
 import '../../global/networking/responses/default_response.dart';
 import '../../global/networking/responses/login_response.dart';
 import '../../global/utils/show_toast.dart';
+import '../../global/utils/utils.dart';
 import 'services/auth_service.dart';
 import 'widgets/text_field_number.dart';
 import 'widgets/verify_button.dart';
@@ -55,6 +56,9 @@ class _AuthMainState extends State<_AuthMain> {
           "accessToken", loginResponse.tokens!.access!.token!);
       await box.put(
           "refreshToken", loginResponse.tokens!.refresh!.token!);
+      await box.put("name", loginResponse.user!.name!);
+      await box.put("address", loginResponse.user!.address!);
+      await box.put("phone", loginResponse.user!.phone!);
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
         context,
@@ -63,6 +67,10 @@ class _AuthMainState extends State<_AuthMain> {
         ModalRoute.withName('/'),
       );
     } else {
+      setState(() {
+        showLoading = false;
+        showVerifyButton = true;
+      });
       if (!mounted) return;
       showToast(context, "Verification Failed");
     }
@@ -79,8 +87,7 @@ class _AuthMainState extends State<_AuthMain> {
       showTimer = false;
       showResendButton = false;
     });
-    DefaultResponse defaultResponse =
-        await authService.getSendOTPResponse(number, "test_signature");
+    DefaultResponse defaultResponse = await authService.getSendOTPResponse(number, generateSignature());
     if (defaultResponse.error == true) {
       setState(() {
         showPhoneTextField = true;

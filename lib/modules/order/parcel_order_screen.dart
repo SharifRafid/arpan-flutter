@@ -50,6 +50,10 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
   late Box box;
 
   void placeOrder() async {
+    if(!orderingTimeCheck()){
+      showToast(context, "Please order at the correct ordering times");
+      return;
+    }
     var authBox = Hive.box('authBox');
     if(authBox.get("accessToken",defaultValue: "") == "" || authBox.get("refreshToken",defaultValue: "") == "" ){
       showLoginToast(context);
@@ -164,9 +168,9 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
           loading = false;
         });
         calculateTotalPrices();
-        nameController.text = box.get("name", defaultValue: "");
-        phoneController.text = box.get("phone", defaultValue: "");
-        addressController.text = box.get("address", defaultValue: "");
+        nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "");
+        phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ;
+        addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ;
         noteController.text = box.get("note", defaultValue: "");
         parcelDetails.text = box.get("parcelDetails", defaultValue: "");
         parcelTitle.text = box.get("parcelTitle", defaultValue: "");

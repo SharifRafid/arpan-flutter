@@ -43,7 +43,7 @@ class AuthService {
       return LoginResponse.fromJson(response.data);
     } on DioError catch (e) {
       //returns the error object if any
-      return e.response!.data;
+      return LoginResponse(user: null, tokens: null);
     }
   }
 
@@ -58,7 +58,7 @@ class AuthService {
       return DefaultResponse.fromJson(response.data);
     } on DioError catch (e) {
       //returns the error object if any
-      return e.response!.data;
+      return DefaultResponse(error: true, message: e.message.toString());
     }
   }
 }

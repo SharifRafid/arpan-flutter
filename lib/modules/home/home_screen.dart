@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:ui_test/global/models/shop_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
@@ -8,9 +9,14 @@ import 'package:ui_test/global/widgets/custom_app_bar.dart';
 import 'package:ui_test/global/widgets/custom_bottom_bar.dart';
 import 'package:ui_test/global/widgets/custom_drawer.dart';
 import 'package:ui_test/global/widgets/custom_fab.dart';
+import 'package:ui_test/global/widgets/notice_slider_text.dart';
 
+import '../../global/models/notice_model.dart';
+import '../../global/models/settings_model.dart';
 import '../../global/networking/responses/home_response.dart';
+import '../../global/utils/colors_converter.dart';
 import '../../global/utils/show_toast.dart';
+import '../../global/utils/utils.dart';
 import '../order/all_orders_screen.dart';
 import 'products_screen.dart';
 import 'services/home_service.dart';
@@ -29,9 +35,10 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late HomeResponse _homeResponse;
   List<Widget> imageSliders = [];
+  List<Widget> noticeSliders = [];
   final homeService = HomeService();
   late TabController tabController;
-  final double expandedHeight = 285.0;
+  final double expandedHeight = 340.0;
   final double collapsedHeight = 5;
   Map<int, dynamic> itemKeys = {};
 
@@ -42,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen>
   var loadingMain = true;
   var error = "";
   var enableCarouselSlider = false;
+  var enableNoticesSlider = false;
   var showShopCategories = false;
 
   var currentSelectedCategory = 0;
@@ -65,7 +73,8 @@ class _HomeScreenState extends State<HomeScreen>
               content: SingleChildScrollView(
                 child: ListBody(
                   children: const <Widget>[
-                    Text('Failed to fetch data. Are you sure you\'re connected to internet?'),
+                    Text(
+                        'Failed to fetch data. Are you sure you\'re connected to internet?'),
                   ],
                 ),
               ),
@@ -88,6 +97,11 @@ class _HomeScreenState extends State<HomeScreen>
             _homeResponse.shopCategories != null ||
             _homeResponse.notices != null ||
             _homeResponse.settings != null) {
+          Hive.box<Settings>("settingsBox")
+              .put("current", _homeResponse.settings!);
+          if (mounted) {
+            checkSettings(context, _homeResponse.settings!);
+          }
           setState(() {
             loadingMain = false;
             error = "";
@@ -95,6 +109,12 @@ class _HomeScreenState extends State<HomeScreen>
               if (_homeResponse.banners!.isNotEmpty) {
                 imageSliders = getImageSliders(_homeResponse.banners!, context);
                 enableCarouselSlider = true;
+              }
+            }
+            if (_homeResponse.notices != null) {
+              if (_homeResponse.notices!.isNotEmpty) {
+                noticeSliders = getNoticeSliders(_homeResponse.notices!, context);
+                enableNoticesSlider = true;
               }
             }
             if (_homeResponse.shopCategories != null) {
@@ -216,6 +236,8 @@ class _HomeScreenState extends State<HomeScreen>
       currentSelectedCategory: currentSelectedCategory,
       enableCarouselSlider: enableCarouselSlider,
       imageSliders: imageSliders,
+      enableNoticesSlider: enableNoticesSlider,
+      noticeSliders: noticeSliders,
       isCollapsed: isCollapsed,
       onCollapsed: onCollapsed,
       expandedHeight: expandedHeight,
@@ -311,6 +333,30 @@ List<Widget> getImageSliders(
               errorWidget: (context, url, error) => Image.asset(
                 "assets/images/Default_Image_Thumbnail.png",
                 fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+      )
+      .toList();
+}
+List<Widget> getNoticeSliders(
+    List<Notice> carouselResponse, BuildContext context) {
+  return carouselResponse
+      .map(
+        (item) => SizedBox(
+          height: 50,
+          child: Expanded(
+            child: Card(
+              color: HexColor.fromHex(item.backgroundColorHex!),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    item.textTitle.toString(),
+                    style: TextStyle(color: HexColor.fromHex(item.textColorHex!)),
+                  ),
+                ),
               ),
             ),
           ),

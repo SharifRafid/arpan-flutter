@@ -49,6 +49,10 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
   late Box box;
 
   void placeOrder() async {
+    if(!orderingTimeCheck()){
+      showToast(context, "Please order at the correct ordering times");
+      return;
+    }
     var authBox = Hive.box('authBox');
     if (authBox.get("accessToken", defaultValue: "") == "" ||
         authBox.get("refreshToken", defaultValue: "") == "") {
@@ -165,9 +169,9 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
           loading = false;
         });
         calculateTotalPrices();
-        nameController.text = box.get("name", defaultValue: "");
-        phoneController.text = box.get("phone", defaultValue: "");
-        addressController.text = box.get("address", defaultValue: "");
+        nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "");
+        phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ;
+        addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ;
         noteController.text = box.get("note", defaultValue: "");
         orderMainController.text = box.get("orderDetails", defaultValue: "");
       }
@@ -322,7 +326,7 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
                                     : Image.file(File(image!.path)),
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),

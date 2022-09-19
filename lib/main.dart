@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:ui_test/global/models/cart_item_model.dart';
+import 'package:ui_test/global/models/settings_model.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/modules/auth/services/auth_service.dart';
 import 'package:ui_test/modules/auth/splash_screen.dart';
@@ -12,7 +13,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(CartItemMainAdapter());
+  Hive.registerAdapter((SettingsAdapter()));
   var box = await Hive.openBox('authBox');
+  await Hive.openBox<Settings>('settingsBox');
   await Hive.openBox<CartItemMain>('cart');
   var accessToken = box.get("accessToken") ?? '';
   var refreshToken = box.get("refreshToken") ?? '';

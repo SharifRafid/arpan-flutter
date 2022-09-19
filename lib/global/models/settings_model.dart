@@ -1,18 +1,37 @@
+import 'package:hive/hive.dart';
+part 'settings_model.g.dart';
+
+@HiveType(typeId: 1)
 class Settings {
+  @HiveField(0)
   String? orderStartTime;
+  @HiveField(1)
   String? orderEndTime;
+  @HiveField(2)
   bool? orderOverTimeAllowed;
+  @HiveField(3)
   int? parcelMaxOrders;
+  @HiveField(4)
   int? customMaxOrders;
+  @HiveField(5)
   int? medicineMaxOrders;
+  @HiveField(6)
   int? totalCustomMaxOrders;
+  @HiveField(7)
   int? maxShopPerOrder;
+  @HiveField(8)
   int? maxChargeAfterPershopMaxOrder;
+  @HiveField(9)
   int? maxDaChargeAfterPershopMaxOrder;
+  @HiveField(10)
   bool? allowOrderingMoreThanMaxShops;
+  @HiveField(12)
   String? alertDialogEmergencyTitleText;
+  @HiveField(13)
   String? alertDialogEmergencyMessageText;
+  @HiveField(14)
   String? alertDialogeEmergencyStatus;
+  @HiveField(15)
   String? id;
 
   Settings(

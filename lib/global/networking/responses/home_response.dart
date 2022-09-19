@@ -8,7 +8,7 @@ class HomeResponse {
   List<Shop>? shops;
   List<Category>? shopCategories;
   List<Banner>? banners;
-  List<Notices>? notices;
+  List<Notice>? notices;
   Settings? settings;
 
   HomeResponse(
@@ -38,9 +38,9 @@ class HomeResponse {
       });
     }
     if (json['notices'] != null) {
-      notices = <Notices>[];
+      notices = <Notice>[];
       json['notices'].forEach((v) {
-        notices!.add(Notices.fromJson(v));
+        notices!.add(Notice.fromJson(v));
       });
     }
     settings = json['settings'] != null
