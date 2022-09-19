@@ -8,6 +8,8 @@ import 'package:ui_test/modules/auth/splash_screen.dart';
 import 'package:ui_test/modules/home/home_screen.dart';
 
 import 'modules/auth/login_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +21,9 @@ void main() async {
   await Hive.openBox<CartItemMain>('cart');
   var accessToken = box.get("accessToken") ?? '';
   var refreshToken = box.get("refreshToken") ?? '';
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp(accessToken, refreshToken));
   if(refreshToken != ""){
     await AuthService().refreshTokens(refreshToken);

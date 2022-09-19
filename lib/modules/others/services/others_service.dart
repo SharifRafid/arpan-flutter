@@ -105,4 +105,52 @@ class OthersService {
       return null;
     }
   }
+
+  Future<String?> addRegistrationToken(HashMap<String, dynamic> hashMap) async {
+    var box = Hive.box('authBox');
+    var accessToken = box.get("accessToken") ?? '';
+    try {
+      HashMap<String, String> headers = HashMap();
+      headers["authorization"] = "Bearer $accessToken";
+      headers["Content-Type"] = "application/json";
+      Options options = Options(headers: headers);
+      Response response = await _dio.post("${baseUrl}users/registration-tokens",
+          options: options, data: hashMap);
+      if (response.statusCode == 200) {
+        return "SUCCESS";
+      } else {
+        return null;
+      }
+    } on DioError catch (e) {
+      if (kDebugMode) {
+        print(e.message.toString());
+      }
+      return null;
+    }
+  }
+  Future<String?> logout(HashMap<String, dynamic> hashMap, String accessToken) async {
+    try {
+      HashMap<String, String> headers = HashMap();
+      headers["authorization"] = "Bearer $accessToken";
+      headers["Content-Type"] = "application/json";
+      Options options = Options(headers: headers);
+      Response response = await _dio.post("${baseUrl}auth/logout",
+          options: options, data: hashMap);
+      if (response.statusCode == 200) {
+        debugPrint("LOGGED OUT");
+        return "SUCCESS";
+      } else {
+        debugPrint("LOG OUT FAILED");
+        return null;
+      }
+    } on DioError catch (e) {
+      debugPrint("LOG OUT FAILED");
+      if (kDebugMode) {
+        print(e.message.toString());
+      }
+      return null;
+    }
+  }
+
+
 }

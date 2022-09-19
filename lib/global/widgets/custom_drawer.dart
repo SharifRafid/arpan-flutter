@@ -1,14 +1,19 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:ui_test/global/utils/show_toast.dart';
 import 'package:ui_test/modules/order/custom_order_screen.dart';
 import 'package:ui_test/modules/order/medicine_order_screen.dart';
 import 'package:ui_test/modules/order/parcel_order_screen.dart';
 import 'package:ui_test/modules/order/pick_drop_order_screen.dart';
+import 'package:ui_test/modules/order/services/order_service.dart';
 import 'package:ui_test/modules/others/about_screen.dart';
 import 'package:ui_test/modules/others/be_client_screen.dart';
 import 'package:ui_test/modules/others/feedback_screen.dart';
 import 'package:ui_test/modules/others/profile_screen.dart';
+import 'package:ui_test/modules/others/services/others_service.dart';
 import '../../modules/order/all_orders_screen.dart';
 import '../utils/theme_data.dart';
 import 'package:share_plus/share_plus.dart';
@@ -364,8 +369,44 @@ Widget customDrawer(BuildContext context) {
                       ),
                       leading: const Icon(Icons.logout, color: textWhite),
                       onTap: () {
-                        Hive.box("authBox").clear();
-                        Navigator.popAndPushNamed(context, "/");
+                        Navigator.pop(context);
+                        showDialog<void>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Logout !?"),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: const <Widget>[
+                                    Text("Are you sure you want to logout?"),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('Yes'),
+                                  onPressed: () async {
+                                    Navigator.pop(context);
+                                    String accessToken = box.get("accessToken", defaultValue: "");
+                                    HashMap<String, dynamic> hashMap = HashMap();
+                                    hashMap["refreshToken"] = box.get("refreshToken", defaultValue: "");
+                                    hashMap["registrationToken"] = box.get("FCMTOKEN", defaultValue: "");
+                                    box.clear();
+                                    showToast(context, "Logged out successfully");
+                                    await OthersService().logout(hashMap, accessToken);
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text('No'),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                     )
                   : ListTile(

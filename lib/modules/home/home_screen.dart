@@ -1,4 +1,7 @@
+import 'dart:collection';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -6,10 +9,8 @@ import 'package:ui_test/global/models/shop_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/global/widgets/custom_app_bar.dart';
-import 'package:ui_test/global/widgets/custom_bottom_bar.dart';
 import 'package:ui_test/global/widgets/custom_drawer.dart';
-import 'package:ui_test/global/widgets/custom_fab.dart';
-import 'package:ui_test/global/widgets/notice_slider_text.dart';
+import 'package:ui_test/modules/others/services/others_service.dart';
 
 import '../../global/models/notice_model.dart';
 import '../../global/models/settings_model.dart';
@@ -17,12 +18,12 @@ import '../../global/networking/responses/home_response.dart';
 import '../../global/utils/colors_converter.dart';
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/utils.dart';
-import '../order/all_orders_screen.dart';
 import 'products_screen.dart';
 import 'services/home_service.dart';
 import '../../global/models/banner_model.dart' as banner_model;
 import '../../global/models/category_model.dart' as category_model;
 import 'widgets/home_sticky_tabs.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -170,10 +171,52 @@ class _HomeScreenState extends State<HomeScreen>
         ));
   }
 
+  void initFirebaseMessaging() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    var authBox = Hive.box('authBox');
+    if (authBox.get("accessToken", defaultValue: "") == "" ||
+        authBox.get("refreshToken", defaultValue: "") == "") {
+      return;
+    }
+
+    String? token;
+    if(kIsWeb){
+      token = await messaging.getToken(
+        vapidKey: "BIgHP7EqgpZXidJsM7wBfTzSgprBDxTK_3FZYju4oP5ggJLUWo2gna-KGDTWgIicbpuoA9VxvLtXZN0sDhrf2XA",
+      );
+    }else{
+      token = await messaging.getToken();
+    }
+
+    if(token != null){
+      if(authBox.get("FCMTOKEN",defaultValue: "") == "" || authBox.get("FCMTOKEN",defaultValue: "") != token){
+        HashMap<String,dynamic> hashMap = HashMap();
+        hashMap["fcmToken"] = token;
+        String? response = await OthersService()
+            .addRegistrationToken(hashMap);
+        if(response != null){
+          authBox.put("FCMTOKEN", token);
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     getHomeResponse();
+    initFirebaseMessaging();
   }
 
   @override
