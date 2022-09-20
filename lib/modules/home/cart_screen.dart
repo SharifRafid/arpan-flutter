@@ -7,7 +7,9 @@ import 'package:ui_test/modules/order/order_screen.dart';
 import 'package:ui_test/modules/home/widgets/cart_app_bar.dart';
 import 'package:ui_test/modules/home/widgets/editable_cart_item.dart';
 
+import '../../global/utils/show_toast.dart';
 import '../../global/utils/theme_data.dart';
+import '../../global/utils/utils.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -71,6 +73,16 @@ class _CartScreenState extends State<CartScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30)),
                 onPressed: () {
+                  if(!orderingTimeCheck()){
+                    showToast(context, "Please order at the correct ordering times");
+                    return;
+                  }
+                  var authBox = Hive.box('authBox');
+                  if (authBox.get("accessToken", defaultValue: "") == "" ||
+                      authBox.get("refreshToken", defaultValue: "") == "") {
+                    showLoginToast(context);
+                    return;
+                  }
                   Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -78,19 +78,19 @@ class _ProductsPageState extends State<ProductsPage>
         for (var catP in pR.shopCategories!) {
           if (catP.id != null) {
             if (catP.id == category) {
-              catTemp =
-                  Category(name: catP.name, id: catP.id, order: catP.order);
+              catTemp = Category(name: catP.name, id: catP.id, order: catP.order);
             }
           }
         }
-        _categorizedProducts.add(ProductCategorized(
-            id: category,
-            name: catTemp.name.toString(),
-            order: catTemp.order!,
-            products: tempL));
+        if(tempL.isNotEmpty){
+          _categorizedProducts.add(ProductCategorized(
+              id: category,
+              name: catTemp.name.toString(),
+              order: catTemp.order!,
+              products: tempL));
+        }
       }
-      tabController =
-          TabController(length: _categorizedProducts.length, vsync: this);
+      tabController = TabController(length: _categorizedProducts.length, vsync: this);
       setState(() {
         productsLoaded = true;
       });

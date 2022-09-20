@@ -9,7 +9,10 @@ import 'package:ui_test/global/models/shop_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/global/widgets/custom_app_bar.dart';
+import 'package:ui_test/global/widgets/custom_bottom_bar.dart';
 import 'package:ui_test/global/widgets/custom_drawer.dart';
+import 'package:ui_test/modules/order/models/order_item_response.dart';
+import 'package:ui_test/modules/order/services/order_service.dart';
 import 'package:ui_test/modules/others/services/others_service.dart';
 
 import '../../global/models/notice_model.dart';
@@ -57,6 +60,23 @@ class _HomeScreenState extends State<HomeScreen>
   var filteredShops = <Shop>[];
 
   bool isCollapsed = false;
+
+  OrderItemResponse? lastOrderData;
+
+  void getLastOrderData() async {
+    var data = await OrderService().getLastOrder();
+    if(data != null){
+      if(data.orderId != null){
+        setState((){
+          lastOrderData = data;
+        });
+      }
+    }else{
+      setState((){
+        lastOrderData = null;
+      });
+    }
+  }
 
   void getHomeResponse() async {
     if (mounted) {
@@ -217,6 +237,15 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     getHomeResponse();
     initFirebaseMessaging();
+    getLastOrderData();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      debugPrint('Got a message whilst in the foreground!');
+      debugPrint('Message data: ${message.data}');
+      if (message.notification != null) {
+        debugPrint('Message also contained a notification: ${message.notification}');
+      }
+      getLastOrderData();
+    });
   }
 
   @override
@@ -227,6 +256,7 @@ class _HomeScreenState extends State<HomeScreen>
         title: "Arpan",
       ),
       backgroundColor: bgOffWhite,
+      bottomNavigationBar: lastOrderData != null ? customBottomBar(context, lastOrderData!) : null,
       drawer: customDrawer(context),
       body: loadingMain
           ? const Center(
@@ -391,7 +421,7 @@ List<Widget> getNoticeSliders(
           height: 50,
           child: Expanded(
             child: Card(
-              color: HexColor.fromHex(item.backgroundColorHex!),
+              color: HexColor.fromHex("FF${item.backgroundColorHex!}"),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(

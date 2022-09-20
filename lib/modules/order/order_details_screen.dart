@@ -51,7 +51,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     return Scaffold(
       appBar: OrderAppBar(
         height: appBarHeight,
-        title: "Order #${widget.order.orderId}",
+        title: "Order #${orderNumberToString(widget.order.orderId.toString())}",
       ),
       backgroundColor: bgWhite,
       body: SingleChildScrollView(
@@ -73,7 +73,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     padding: const EdgeInsets.fromLTRB(16.0, 6.0, 6.0, 6.0),
                     child: Center(
                       child: Text(
-                        "Order# ${widget.order.orderId}",
+                        "Order# ${orderNumberToString(widget.order.orderId.toString())}",
                         style: const TextStyle(
                             color: textBlack, fontWeight: FontWeight.bold),
                       ),
@@ -89,6 +89,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           ? const Color(0xFFFA831B)
                           : widget.order.orderStatus == "PICKED UP"
                           ? const Color(0xFFED9D34)
+                          : widget.order.orderStatus == "COMPLETED"
+                          ? const Color(0xFF43A047)
+                          : widget.order.orderStatus == "CANCELLED"
+                          ? const Color(0xFFEA594D)
                           : widget.order.orderStatus == "PROCESSING"
                           ? const Color(0xFFED9D34)
                           : const Color(0xFF43A047),

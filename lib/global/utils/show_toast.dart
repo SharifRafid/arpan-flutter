@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_test/modules/auth/login_screen.dart';
 
 void showToast(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
@@ -17,7 +18,9 @@ void showLoginToast(BuildContext context) {
       action: SnackBarAction(
         label: 'Login',
         onPressed: () {
-          Navigator.pushNamed(context, "/auth");
+          Navigator.push(context,
+            MaterialPageRoute<void>(
+                builder: (BuildContext context) => const AuthMain()),);
         },
       ),
     ),

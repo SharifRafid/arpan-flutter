@@ -45,9 +45,6 @@ class MyApp extends StatelessWidget {
         fontFamily: 'HindSiliguri',
         colorScheme: ColorScheme.fromSwatch().copyWith(primary: primaryColor),
       ),
-      routes: {
-        '/auth': (context) => const AuthMain(),
-      },
       home: _getHome(accessToken, refreshToken),
     );
   }

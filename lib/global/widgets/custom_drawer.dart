@@ -14,6 +14,7 @@ import 'package:ui_test/modules/others/be_client_screen.dart';
 import 'package:ui_test/modules/others/feedback_screen.dart';
 import 'package:ui_test/modules/others/profile_screen.dart';
 import 'package:ui_test/modules/others/services/others_service.dart';
+import '../../modules/auth/login_screen.dart';
 import '../../modules/order/all_orders_screen.dart';
 import '../utils/theme_data.dart';
 import 'package:share_plus/share_plus.dart';
@@ -388,13 +389,25 @@ Widget customDrawer(BuildContext context) {
                                   child: const Text('Yes'),
                                   onPressed: () async {
                                     Navigator.pop(context);
-                                    String accessToken = box.get("accessToken", defaultValue: "");
-                                    HashMap<String, dynamic> hashMap = HashMap();
-                                    hashMap["refreshToken"] = box.get("refreshToken", defaultValue: "");
-                                    hashMap["registrationToken"] = box.get("FCMTOKEN", defaultValue: "");
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute<void>(
+                                            builder: (BuildContext context) =>
+                                                const AuthMain()),
+                                        ModalRoute.withName('/'));
+                                    String accessToken = box.get("accessToken",
+                                        defaultValue: "");
+                                    HashMap<String, dynamic> hashMap =
+                                        HashMap();
+                                    hashMap["refreshToken"] = box
+                                        .get("refreshToken", defaultValue: "");
+                                    hashMap["registrationToken"] =
+                                        box.get("FCMTOKEN", defaultValue: "");
                                     box.clear();
-                                    showToast(context, "Logged out successfully");
-                                    await OthersService().logout(hashMap, accessToken);
+                                    showToast(
+                                        context, "Logged out successfully");
+                                    await OthersService()
+                                        .logout(hashMap, accessToken);
                                   },
                                 ),
                                 TextButton(
@@ -424,7 +437,13 @@ Widget customDrawer(BuildContext context) {
                       ),
                       leading: const Icon(Icons.login, color: textWhite),
                       onTap: () {
-                        Navigator.popAndPushNamed(context, "/auth");
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                              builder: (BuildContext context) =>
+                                  const AuthMain()),
+                        );
                       },
                     ),
             ],

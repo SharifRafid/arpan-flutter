@@ -455,6 +455,7 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
                         ),
                         Container(
                           height: 38,
+                          width: 120,
                           margin: const EdgeInsets.only(left: 5, right: 5),
                           child: MaterialButton(
                             onPressed: () {

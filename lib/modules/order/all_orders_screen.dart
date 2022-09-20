@@ -65,7 +65,7 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: InkWell(
-        onTap: (){
+        onTap: () {
           if (!mounted) return;
           Navigator.pushAndRemoveUntil(
             context,
@@ -88,7 +88,7 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
                   height: 45,
                   child: Center(
                     child: Text(
-                      order.orderId.toString(),
+                      orderNumberToString(order.orderId.toString()),
                       style: const TextStyle(
                           color: textBlack, fontWeight: FontWeight.bold),
                     ),
@@ -123,9 +123,13 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
                           ? const Color(0xFFFA831B)
                           : order.orderStatus == "PICKED UP"
                               ? const Color(0xFFED9D34)
-                              : order.orderStatus == "PROCESSING"
-                                  ? const Color(0xFFED9D34)
-                                  : const Color(0xFF43A047),
+                              : order.orderStatus == "COMPLETED"
+                                  ? const Color(0xFF43A047)
+                                  : order.orderStatus == "CANCELLED"
+                                      ? const Color(0xFFEA594D)
+                                      : order.orderStatus == "PROCESSING"
+                                          ? const Color(0xFFED9D34)
+                                          : const Color(0xFF43A047),
                 ),
                 height: 45,
                 child: Center(

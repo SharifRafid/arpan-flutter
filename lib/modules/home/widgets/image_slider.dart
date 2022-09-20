@@ -28,6 +28,7 @@ class _CSliderState extends State<ImageSlider> {
               enlargeCenterPage: true,
               viewportFraction: 1,
               aspectRatio: 20/7,
+              height: 150,
               onPageChanged: (index, reason) {
                 setState(() {
                   _current = index;

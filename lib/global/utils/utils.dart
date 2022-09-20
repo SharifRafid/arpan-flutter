@@ -7,6 +7,8 @@ import '../models/settings_model.dart';
 import 'dart:math';
 import 'dart:convert';
 
+import 'constants.dart';
+
 bool isNumeric(String s) {
   return double.tryParse(s) != null;
 }
@@ -72,7 +74,8 @@ String generateSignature(){
   String part2 = getRandString(10);
   String part3 = getRandString(10);
   String part4 = getRandString(10);
-  String key = AsymmetricCrypt(publicKey).encrypt("${part1}___${part2}___${part3}___$part4");
+  DateTime date = DateTime.now();
+  String key = AsymmetricCrypt(publicKey).encrypt("${part1}___${part2}___${part3}___${part4}___${date.day}___${date.hour}");
   return key;
 }
 
@@ -80,4 +83,18 @@ String getRandString(int len) {
   var random = Random.secure();
   var values = List<int>.generate(len, (i) =>  random.nextInt(255));
   return base64UrlEncode(values);
+}
+
+String orderNumberToString(String num) {
+  var newString = "";
+  List<String> alphaArray = [];
+  for(int i=0; i  < numStrConvConst.length; i++) {
+    var char = numStrConvConst[i];
+    alphaArray.add(char);
+  }
+  for(int i=0; i  < num.length; i++) {
+    var char = num[i];
+    newString = newString + alphaArray[int.parse(char)];
+  }
+  return newString;
 }

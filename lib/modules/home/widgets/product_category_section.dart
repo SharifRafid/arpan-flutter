@@ -159,7 +159,9 @@ class CategorySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(food.name!, style: _textTheme(context).subtitle1),
+        SizedBox(
+          width: 200,
+            child: Text(food.name!, style: _textTheme(context).subtitle1)),
         SizedBox(
           width: 200,
           child: Text(food.shortDescription!,

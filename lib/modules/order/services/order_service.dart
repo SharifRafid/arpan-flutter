@@ -69,6 +69,33 @@ class OrderService {
     }
   }
 
+  Future<OrderItemResponse?> getLastOrder() async {
+    var box = Hive.box('authBox');
+    var accessToken = box.get("accessToken") ?? '';
+    try {
+      HashMap<String, String> headers = HashMap();
+      headers["authorization"] = "Bearer $accessToken";
+      headers["Content-Type"] = "application/json";
+      Options options = Options(headers: headers);
+      Response response = await _dio.get("${baseUrl}consumers/get-last-order", options: options);
+      if (response.statusCode == 200) {
+        if (response.data != null) {
+          OrderItemResponse orders = OrderItemResponse.fromJson(response.data);
+          return orders;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } on DioError catch (e) {
+      if (kDebugMode) {
+        print(e.message.toString());
+      }
+      return null;
+    }
+  }
+
   Future<String?> placeOrder(HashMap<String, dynamic> hashMap) async {
     var box = Hive.box('authBox');
     var accessToken = box.get("accessToken") ?? '';
