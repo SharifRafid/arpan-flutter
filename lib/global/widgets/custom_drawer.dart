@@ -83,7 +83,7 @@ Widget customDrawer(BuildContext context) {
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 0.0, horizontal: 16.0),
                       title: const Text(
-                        'Previous orders',
+                        'My orders',
                         style: TextStyle(
                             color: textWhite,
                             fontSize: 15,
@@ -239,26 +239,26 @@ Widget customDrawer(BuildContext context) {
                   !await launchUrl(_url);
                 },
               ),
-              ListTile(
-                visualDensity: const VisualDensity(vertical: -3),
-                // to compact
-                dense: true,
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
-                title: const Text(
-                  'Message us',
-                  style: TextStyle(
-                      color: textWhite,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold),
-                ),
-                leading: const Icon(Icons.messenger, color: textWhite),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final Uri _url = Uri.parse('https://m.me/101457328287762');
-                  !await launchUrl(_url);
-                },
-              ),
+              // ListTile(
+              //   visualDensity: const VisualDensity(vertical: -3),
+              //   // to compact
+              //   dense: true,
+              //   contentPadding:
+              //       const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
+              //   title: const Text(
+              //     'Message us',
+              //     style: TextStyle(
+              //         color: textWhite,
+              //         fontSize: 15,
+              //         fontWeight: FontWeight.bold),
+              //   ),
+              //   leading: const Icon(Icons.messenger, color: textWhite),
+              //   onTap: () async {
+              //     Navigator.pop(context);
+              //     final Uri _url = Uri.parse('https://m.me/101457328287762');
+              //     !await launchUrl(_url);
+              //   },
+              // ),
               kIsWeb
                   ? Container()
                   : ListTile(
@@ -288,7 +288,7 @@ Widget customDrawer(BuildContext context) {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
                 title: const Text(
-                  'Provide feedback',
+                  'Message us',
                   style: TextStyle(
                       color: textWhite,
                       fontSize: 15,
@@ -304,54 +304,54 @@ Widget customDrawer(BuildContext context) {
                               const FeedbackScreen()));
                 },
               ),
-              const Divider(),
-              ListTile(
-                visualDensity: const VisualDensity(vertical: -3),
-                // to compact
-                dense: true,
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
-                title: const Text(
-                  'About Arpan',
-                  style: TextStyle(
-                      color: textWhite,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold),
-                ),
-                leading: const Icon(Icons.info, color: textWhite),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const AboutScreen()));
-                },
-              ),
-              ListTile(
-                visualDensity: const VisualDensity(vertical: -3),
-                // to compact
-                dense: true,
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
-                title: const Text(
-                  'Become a client',
-                  style: TextStyle(
-                      color: textWhite,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold),
-                ),
-                leading: const Icon(Icons.person_add_alt_1_rounded,
-                    color: textWhite),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const BeClientScreen()));
-                },
-              ),
+              // const Divider(),
+              // ListTile(
+              //   visualDensity: const VisualDensity(vertical: -3),
+              //   // to compact
+              //   dense: true,
+              //   contentPadding:
+              //       const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
+              //   title: const Text(
+              //     'About Arpan',
+              //     style: TextStyle(
+              //         color: textWhite,
+              //         fontSize: 15,
+              //         fontWeight: FontWeight.bold),
+              //   ),
+              //   leading: const Icon(Icons.info, color: textWhite),
+              //   onTap: () {
+              //     Navigator.pop(context);
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute<void>(
+              //             builder: (BuildContext context) =>
+              //                 const AboutScreen()));
+              //   },
+              // ),
+              // ListTile(
+              //   visualDensity: const VisualDensity(vertical: -3),
+              //   // to compact
+              //   dense: true,
+              //   contentPadding:
+              //       const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
+              //   title: const Text(
+              //     'Become a client',
+              //     style: TextStyle(
+              //         color: textWhite,
+              //         fontSize: 15,
+              //         fontWeight: FontWeight.bold),
+              //   ),
+              //   leading: const Icon(Icons.person_add_alt_1_rounded,
+              //       color: textWhite),
+              //   onTap: () {
+              //     Navigator.pop(context);
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute<void>(
+              //             builder: (BuildContext context) =>
+              //                 const BeClientScreen()));
+              //   },
+              // ),
               const Divider(),
               box.get("accessToken", defaultValue: "") != "" &&
                       box.get("refreshToken", defaultValue: "") != ""
@@ -388,13 +388,12 @@ Widget customDrawer(BuildContext context) {
                                 TextButton(
                                   child: const Text('Yes'),
                                   onPressed: () async {
-                                    Navigator.pop(context);
                                     Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute<void>(
                                             builder: (BuildContext context) =>
                                                 const AuthMain()),
-                                        ModalRoute.withName('/'));
+                                        (route)=>false);
                                     String accessToken = box.get("accessToken",
                                         defaultValue: "");
                                     HashMap<String, dynamic> hashMap =

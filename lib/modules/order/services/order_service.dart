@@ -169,4 +169,27 @@ class OrderService {
       return null;
     }
   }
+
+  Future<String?> cancelOrder(String id) async {
+    var box = Hive.box('authBox');
+    var accessToken = box.get("accessToken") ?? '';
+    try {
+      HashMap<String, String> headers = HashMap();
+      headers["authorization"] = "Bearer $accessToken";
+      headers["Content-Type"] = "application/json";
+      Options options = Options(headers: headers);
+      Response response = await _dio.post("${baseUrl}consumers/cancel-order/$id",
+          options: options);
+      if (response.statusCode == 200) {
+        return response.data.toString();
+      } else {
+        return null;
+      }
+    } on DioError catch (e) {
+      if (kDebugMode) {
+        print(e.message.toString());
+      }
+      return null;
+    }
+  }
 }

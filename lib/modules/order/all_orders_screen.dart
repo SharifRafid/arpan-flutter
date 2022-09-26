@@ -65,14 +65,14 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           if (!mounted) return;
-          Navigator.pushAndRemoveUntil(
+          final value = await Navigator.push(
             context,
             MaterialPageRoute<void>(
                 builder: (BuildContext context) => OrderDetailsScreen(order)),
-            ModalRoute.withName('/'),
           );
+          loadOrdersData();
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -439,7 +439,7 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
             ),
             _paymentMethod == PaymentMethod.bKash
                 ? const Text(
-              "Extra charges maybe added for bKash payments",
+              "Extra charge added for bkash",
               style: TextStyle(color: Colors.pink),
             )
                 : Container(),
@@ -455,7 +455,7 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
                     child: Card(
                       elevation: 1,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(5),
                           side: const BorderSide(
                               color: Colors.green, width: 2)),
                       child: Padding(
@@ -478,7 +478,7 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
                   ),
                   Container(
                     height: 38,
-                    width: 120,
+                    width: 140,
                     margin: const EdgeInsets.only(left: 5, right: 5),
                     child: MaterialButton(
                       onPressed: () {

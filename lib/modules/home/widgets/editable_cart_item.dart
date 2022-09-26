@@ -5,19 +5,10 @@ import 'package:ui_test/global/utils/constants.dart';
 
 import '../../../global/utils/theme_data.dart';
 
-class CartCard extends StatefulWidget {
+class CartCard extends StatelessWidget {
   final String item;
   final List<CartItemMain> list;
-  final void Function(String item) onRemoveShop;
-  const CartCard(this.item, this.list, this.onRemoveShop, {Key? key}) : super(key: key);
-
-  @override
-  State<CartCard> createState() => _CartCardState();
-}
-
-class _CartCardState extends State<CartCard> {
-
-  late var productItems = widget.list;
+  const CartCard(this.item, this.list, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +23,7 @@ class _CartCardState extends State<CartCard> {
             Padding(
               padding: const EdgeInsets.all(2.0),
               child: Text(
-                widget.item,
+                item,
                 style: TextStyle(color: textWhite),
               ),
             ),
@@ -40,21 +31,13 @@ class _CartCardState extends State<CartCard> {
               padding: const EdgeInsets.all(1.0),
               child: Card(
                 color: bgOffWhite,
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 ),
                 child: Column(
                   children: [
-                    for (var product in productItems)
-                      _ProductItemCart(product, (product) {
-                        if(productItems.length == 1){
-                          widget.onRemoveShop(widget.item);
-                        }else{
-                          setState((){
-                            productItems.remove(product);
-                          });
-                        }
-                      })
+                    for (var product in list)
+                      _ProductItemCart(product)
                   ],
                 ),
               ),
@@ -66,20 +49,10 @@ class _CartCardState extends State<CartCard> {
   }
 }
 
-class _ProductItemCart extends StatefulWidget {
+class _ProductItemCart extends StatelessWidget {
   final CartItemMain product;
-  final void Function(CartItemMain product) onDelete;
-
-  const _ProductItemCart(this.product, this.onDelete, {Key? key})
+  const _ProductItemCart(this.product, {Key? key})
       : super(key: key);
-
-  @override
-  State<_ProductItemCart> createState() => _ProductItemCartState();
-}
-
-class _ProductItemCartState extends State<_ProductItemCart> {
-  late var cartCount = widget.product.productItemAmount;
-  late var productPrice = widget.product.productItemOfferPrice;
 
   @override
   Widget build(BuildContext context) {
@@ -100,10 +73,10 @@ class _ProductItemCartState extends State<_ProductItemCart> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.product.productItemName.toString()),
+                      Text(product.productItemName.toString()),
                       SizedBox(
                         width: 200,
-                        child: Text(widget.product.productItemDesc.toString()),
+                        child: Text(product.productItemDesc.toString()),
                       ),
                     ],
                   ),
@@ -117,7 +90,7 @@ class _ProductItemCartState extends State<_ProductItemCart> {
                       child: CachedNetworkImage(
                         height: 60,
                         width: 60,
-                        imageUrl: serverFilesBaseURL + widget.product.productItemImage.toString(),
+                        imageUrl: serverFilesBaseURL + product.productItemImage.toString(),
                         placeholder: (context, url) =>
                             Image.asset("assets/images/transparent.png"),
                         errorWidget: (context, url, error) => Image.asset(
@@ -137,34 +110,28 @@ class _ProductItemCartState extends State<_ProductItemCart> {
                 Padding(
                   padding: const EdgeInsets.only(left: 5.0),
                   child: Text(
-                      "$productPrice x $cartCount = ${productPrice! * cartCount!}"),
+                      "${product.productItemOfferPrice} x ${product.productItemAmount} = ${product.productItemOfferPrice! * product.productItemAmount!}"),
                 ),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        onPressed: () {
-                          if (cartCount! > 1) {
-                            setState(() {
-                              cartCount = cartCount! - 1;
-                            });
-                            widget.product.productItemAmount = cartCount!;
-                            widget.product.save();
+                        onPressed: () async {
+                          if (product.productItemAmount! > 1) {
+                            product.productItemAmount = product.productItemAmount!-1;
+                            await product.save();
                           }
                         },
                         icon: const Icon(Icons.remove),
                         color: Colors.red,
                       ),
-                      Text("$cartCount"),
+                      Text("${product.productItemAmount}"),
                       IconButton(
-                        onPressed: () {
-                          if (cartCount! < 1000) {
-                            setState(() {
-                              cartCount = cartCount! + 1;
-                            });
-                            widget.product.productItemAmount = cartCount!;
-                            widget.product.save();
+                        onPressed: () async {
+                          if (product.productItemAmount! < 1000) {
+                            product.productItemAmount = product.productItemAmount!+1;
+                            await product.save();
                           }
                         },
                         icon: const Icon(Icons.add),
@@ -174,9 +141,8 @@ class _ProductItemCartState extends State<_ProductItemCart> {
                   ),
                 ),
                 MaterialButton(
-                  onPressed: () {
-                    widget.product.delete();
-                    widget.onDelete(widget.product);
+                  onPressed: () async {
+                    await product.delete();
                   },
                   color: Colors.redAccent,
                   textColor: textWhite,

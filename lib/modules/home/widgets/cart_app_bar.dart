@@ -100,7 +100,9 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
                         color: textWhite,
                       ),
                       onPressed: () {
-                        _showDeleteDialog(context, box as Box<CartItemMain>);
+                        if(box.isNotEmpty){
+                          _showDeleteDialog(context, box as Box<CartItemMain>);
+                        }
                       },
                     ),
                   ),

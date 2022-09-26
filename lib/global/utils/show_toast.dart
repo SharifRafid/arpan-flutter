@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:ui_test/modules/auth/login_screen.dart';
 
 void showToast(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).hideCurrentSnackBar();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1500),
     ),
   );
 }
 
 void showLoginToast(BuildContext context) {
+  ScaffoldMessenger.of(context).hideCurrentSnackBar();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: const Text("Please login to continue"),

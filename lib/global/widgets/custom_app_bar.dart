@@ -59,10 +59,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   iconButton(
                     onClickAction: () {
+                      ScaffoldMessenger.of(context).clearSnackBars();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CartScreen()));
+                              builder: (context) => CartScreen()));
                     },
                     iconData: Icons.shopping_cart,
                     cartCount: box.length,

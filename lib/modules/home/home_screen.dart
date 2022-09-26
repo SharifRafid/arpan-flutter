@@ -419,16 +419,14 @@ List<Widget> getNoticeSliders(
       .map(
         (item) => SizedBox(
           height: 50,
-          child: Expanded(
-            child: Card(
-              color: HexColor.fromHex("FF${item.backgroundColorHex!}"),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    item.textTitle.toString(),
-                    style: TextStyle(color: HexColor.fromHex(item.textColorHex!)),
-                  ),
+          child: Card(
+            color: HexColor.fromHex(item.backgroundColorHex!),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  item.textTitle.toString(),
+                  style: TextStyle(color: HexColor.fromHex(item.textColorHex!)),
                 ),
               ),
             ),

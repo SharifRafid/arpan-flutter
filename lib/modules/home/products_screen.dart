@@ -109,6 +109,8 @@ class _ProductsPageState extends State<ProductsPage>
   // prevent animate when press on tab bar
   bool pauseRectGetterIndex = false;
 
+  bool _isSnackbarActive = false ;
+
   void addItemToCart(Product product) async {
     Box box = Hive.box<CartItemMain>("cart");
     var result = box.values.where((element) => element.sId == product.id);
@@ -140,7 +142,7 @@ class _ProductsPageState extends State<ProductsPage>
             label: 'Open cart',
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const CartScreen()));
+                  MaterialPageRoute(builder: (context) => CartScreen()));
             },
           ),
         ),
@@ -150,19 +152,28 @@ class _ProductsPageState extends State<ProductsPage>
       cartItemMain.productItemAmount = cartItemMain.productItemAmount! + 1;
       await cartItemMain.save();
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Cart updated"),
-          duration: const Duration(milliseconds: 1000),
-          action: SnackBarAction(
-            label: 'Open cart',
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const CartScreen()));
-            },
+      if(!_isSnackbarActive){
+        _isSnackbarActive = true ;
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text("Cart updated"),
+            duration: const Duration(milliseconds: 2000),
+            action: SnackBarAction(
+              label: 'Open cart',
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen()));
+              },
+            ),
           ),
-        ),
-      );
+        ).closed
+            .then((SnackBarClosedReason reason) {
+          // snackbar is now closed.
+          _isSnackbarActive = false ;
+
+        });
+      }
     }
   }
 

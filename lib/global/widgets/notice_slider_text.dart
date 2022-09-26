@@ -10,16 +10,14 @@ class NoticeSliderText extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 50,
-      child: Expanded(
-        child: Card(
-          color: HexColor.fromHex(shopNotice.bgColor!),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                shopNotice.title.toString(),
-                style: TextStyle(color: HexColor.fromHex(shopNotice.color!)),
-              ),
+      child: Card(
+        color: HexColor.fromHex(shopNotice.bgColor!),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: Text(
+              shopNotice.title.toString(),
+              style: TextStyle(color: HexColor.fromHex(shopNotice.color!)),
             ),
           ),
         ),

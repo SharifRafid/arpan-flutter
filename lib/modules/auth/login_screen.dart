@@ -64,7 +64,7 @@ class _AuthMainState extends State<_AuthMain> {
         context,
         MaterialPageRoute<void>(
             builder: (BuildContext context) => const HomeScreen()),
-        ModalRoute.withName('/'),
+            (route)=>false,
       );
     } else {
       setState(() {
@@ -72,7 +72,7 @@ class _AuthMainState extends State<_AuthMain> {
         showVerifyButton = true;
       });
       if (!mounted) return;
-      showToast(context, "Verification Failed");
+      showToast(context, "Incorrect OTP, try again.");
     }
   }
 

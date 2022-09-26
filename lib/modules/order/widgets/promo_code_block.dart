@@ -167,48 +167,52 @@ class _PromoCodeBlockState extends State<PromoCodeBlock> {
           ),
         );
       case _CurrentState.apply:
-        return Container(
-          height: 55,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    style: const TextStyle(fontSize: 14),
-                    controller: textEditingController,
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.all(8), // Added this
-                      isDense: true,
-                      border: OutlineInputBorder(),
-                      labelText: 'Promo',
-                    ),
+        return SizedBox(
+          height: 38,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(width: 5,),
+              Expanded(
+                child: TextFormField(
+                  style: const TextStyle(fontSize: 14),
+                  controller: textEditingController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(12), // Added this
+                    isDense: true,
+                    border: OutlineInputBorder(),
+                    labelText: 'Promo',
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 10),
-                  child: MaterialButton(
-                    onPressed: () {
-                      var authBox = Hive.box('authBox');
-                      if (authBox.get("accessToken", defaultValue: "") == "" ||
-                          authBox.get("refreshToken", defaultValue: "") == "") {
-                        showLoginToast(context);
-                        return;
-                      }
-                      checkPromoValidity();
-                    },
-                    color: Colors.green,
-                    child: const Center(
+              ),
+              Container(width: 4,),
+              Container(
+                height: 38,
+                width: 140,
+                margin: const EdgeInsets.only(left: 5, right: 5),
+                child: MaterialButton(
+                  onPressed: () {
+                    var authBox = Hive.box('authBox');
+                    if (authBox.get("accessToken", defaultValue: "") == "" ||
+                        authBox.get("refreshToken", defaultValue: "") == "") {
+                      showLoginToast(context);
+                      return;
+                    }
+                    checkPromoValidity();
+                  },
+                  color: Colors.green,
+                  child: const Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 15, right: 15),
                       child: Text(
                         "Apply",
                         style: TextStyle(color: textWhite),
                       ),
                     ),
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
         );
     }

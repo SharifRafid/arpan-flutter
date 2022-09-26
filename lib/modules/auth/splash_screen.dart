@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ui_test/modules/auth/login_screen.dart';
-import 'package:ui_test/modules/home/home_screen.dart';
 
 import '../../global/utils/theme_data.dart';
 import 'widgets/button_main.dart';
@@ -69,24 +68,23 @@ class _SplashScreenState extends State<SplashScreen> {
                     "Login",
                         () =>
                     {
-                      Navigator.pushAndRemoveUntil(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) =>
                             const AuthMain()),
-                        ModalRoute.withName('/auth'),
                       ),
                     }),
-                ButtonMain("Go to home", () =>
-                {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                        const HomeScreen()),
-                    ModalRoute.withName('/'),
-                  ),
-                }),
+                // ButtonMain("Go to home", () =>
+                // {
+                //   Navigator.pushAndRemoveUntil(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (BuildContext context) =>
+                //         const HomeScreen()),
+                //     ModalRoute.withName('/'),
+                //   ),
+                // }),
             ],
           ),
         )

@@ -6,6 +6,7 @@ import 'package:ui_test/modules/home/widgets/notice_slider.dart';
 import 'package:ui_test/modules/order/parcel_order_screen.dart';
 import 'package:ui_test/modules/order/pick_drop_order_screen.dart';
 
+import '../../../global/utils/colors_converter.dart';
 import '../../../global/utils/theme_data.dart';
 import '../../order/custom_order_screen.dart';
 import '../../order/medicine_order_screen.dart';

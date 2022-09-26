@@ -20,20 +20,24 @@ class _CSliderState extends State<ImageSlider> {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        CarouselSlider(
-          items: widget.imageSliders,
-          carouselController: _controller,
-          options: CarouselOptions(
-              autoPlay: true,
-              enlargeCenterPage: true,
-              viewportFraction: 1,
-              aspectRatio: 20/7,
-              height: 150,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  _current = index;
-                });
-              }),
+        SizedBox(
+          height: 150,
+          child: CarouselSlider(
+            items: widget.imageSliders,
+            carouselController: _controller,
+            options: CarouselOptions(
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 5),
+                enlargeCenterPage: true,
+                viewportFraction: 1,
+                aspectRatio: 20/7,
+                height: 150,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _current = index;
+                  });
+                }),
+          ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

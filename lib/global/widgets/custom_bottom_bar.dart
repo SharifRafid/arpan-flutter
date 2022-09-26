@@ -24,11 +24,10 @@ Widget customBottomBar(BuildContext context, OrderItemResponse order) {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
     child: InkWell(
       onTap: () {
-        Navigator.pushAndRemoveUntil(
+        Navigator.push(
           context,
           MaterialPageRoute<void>(
-              builder: (BuildContext context) => const AllOrdersScreen()),
-          ModalRoute.withName('/'),
+              builder: (BuildContext context) => OrderDetailsScreen(order))
         );
       },
       child: Padding(

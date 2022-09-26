@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:ui_test/global/utils/show_toast.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/modules/home/widgets/order_app_bar.dart';
 import 'package:ui_test/modules/order/models/order_item_response.dart';
@@ -9,6 +10,7 @@ import 'package:ui_test/modules/order/models/order_item_response.dart';
 import '../../global/models/cart_item_model.dart';
 import '../../global/utils/constants.dart';
 import '../../global/utils/utils.dart';
+import 'services/order_service.dart';
 import 'widgets/order_cart_item.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
@@ -23,11 +25,12 @@ class OrderDetailsScreen extends StatefulWidget {
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   HashMap<String, List<CartItemMain>> cartItems = HashMap();
   List<CartItemMain> cartItemsAll = [];
-
+  late OrderItemResponse orderItemResponse;
+  
   void loadCartItems() async {
     cartItems.clear();
     cartItemsAll.clear();
-    for (var item in widget.order.products!) {
+    for (var item in orderItemResponse.products!) {
       cartItemsAll.add(item);
       // Just for the sake of speed, using shop name here but
       // using key will be more ideal
@@ -39,19 +42,36 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     }
   }
 
+  void cancelOrder() async {
+    var response = await OrderService().cancelOrder(orderItemResponse.id!);
+    if(response == null){
+      if(!mounted) return;
+      showToast(context, "Failed to cancel the order, please refresh the page.");
+    }else{
+      OrderItemResponse oldOIR = orderItemResponse;
+      oldOIR.orderStatus = "CANCELLED";
+      setState((){
+        orderItemResponse = oldOIR;
+      });
+      if(!mounted) return;
+      showToast(context, "Cancelled order successfully");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    orderItemResponse = widget.order;
     loadCartItems();
   }
 
   @override
   Widget build(BuildContext context) {
-    var time = fetchTime(widget.order.orderPlacingTimeStamp!);
+    var time = fetchTime(orderItemResponse.orderPlacingTimeStamp!);
     return Scaffold(
       appBar: OrderAppBar(
         height: appBarHeight,
-        title: "Order #${orderNumberToString(widget.order.orderId.toString())}",
+        title: "Order #${orderNumberToString(orderItemResponse.orderId.toString())}",
       ),
       backgroundColor: bgWhite,
       body: SingleChildScrollView(
@@ -73,7 +93,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     padding: const EdgeInsets.fromLTRB(16.0, 6.0, 6.0, 6.0),
                     child: Center(
                       child: Text(
-                        "Order# ${orderNumberToString(widget.order.orderId.toString())}",
+                        "Order# ${orderNumberToString(orderItemResponse.orderId.toString())}",
                         style: const TextStyle(
                             color: textBlack, fontWeight: FontWeight.bold),
                       ),
@@ -83,23 +103,23 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     padding: const EdgeInsets.fromLTRB(25.0, 6.0, 25.0, 6.0),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      color: widget.order.orderStatus == "PENDING"
+                      color: orderItemResponse.orderStatus == "PENDING"
                           ? const Color(0xFF262626)
-                          : widget.order.orderStatus == "VERIFIED"
+                          : orderItemResponse.orderStatus == "VERIFIED"
                           ? const Color(0xFFFA831B)
-                          : widget.order.orderStatus == "PICKED UP"
+                          : orderItemResponse.orderStatus == "PICKED UP"
                           ? const Color(0xFFED9D34)
-                          : widget.order.orderStatus == "COMPLETED"
+                          : orderItemResponse.orderStatus == "COMPLETED"
                           ? const Color(0xFF43A047)
-                          : widget.order.orderStatus == "CANCELLED"
+                          : orderItemResponse.orderStatus == "CANCELLED"
                           ? const Color(0xFFEA594D)
-                          : widget.order.orderStatus == "PROCESSING"
+                          : orderItemResponse.orderStatus == "PROCESSING"
                           ? const Color(0xFFED9D34)
                           : const Color(0xFF43A047),
                     ),
                     height: 35,
                     child: Center(
-                      child: Text(widget.order.orderStatus.toString(),
+                      child: Text(orderItemResponse.orderStatus.toString(),
                           style: const TextStyle(
                             color: textWhite,
                             fontWeight: FontWeight.bold,
@@ -157,7 +177,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       isDense: false,
                       labelText: 'Name',
                       contentPadding: EdgeInsets.only(left: 10, right: 10)),
-                  child: Text(widget.order.userName.toString()),
+                  child: Text(orderItemResponse.userName.toString()),
                 ),
               ),
             ),
@@ -171,7 +191,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       isDense: false,
                       labelText: 'Address',
                       contentPadding: EdgeInsets.only(left: 10, right: 10)),
-                  child: Text(widget.order.userAddress.toString()),
+                  child: Text(orderItemResponse.userAddress.toString()),
                 ),
               ),
             ),
@@ -185,11 +205,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       isDense: false,
                       labelText: 'Phone',
                       contentPadding: EdgeInsets.only(left: 10, right: 10)),
-                  child: Text(widget.order.userNumber.toString()),
+                  child: Text(orderItemResponse.userNumber.toString()),
                 ),
               ),
             ),
-            widget.order.userNote
+            orderItemResponse.userNote
                 .toString()
                 .isEmpty
                 ? Container()
@@ -205,7 +225,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       labelText: 'Note',
                       contentPadding:
                       EdgeInsets.only(left: 10, right: 10)),
-                  child: Text(widget.order.userNote.toString()),
+                  child: Text(orderItemResponse.userNote.toString()),
                 ),
               ),
             ),
@@ -220,7 +240,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       labelText: 'Location',
                       contentPadding: EdgeInsets.only(left: 10, right: 10)),
                   child:
-                  Text(widget.order.locationItem!.locationName.toString()),
+                  Text(orderItemResponse.locationItem!.locationName.toString()),
                 ),
               ),
             ),
@@ -278,11 +298,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 : Column(
               children: [
                 const Text('Pick & Drop Order'),
-                widget.order.pickDropOrderItem?.parcelImage != null
+                orderItemResponse.pickDropOrderItem?.parcelImage != null
                     ? CachedNetworkImage(
                   height: 150,
                   imageUrl: serverFilesBaseURL +
-                      widget.order.pickDropOrderItem!.parcelImage.toString(),
+                      orderItemResponse.pickDropOrderItem!.parcelImage.toString(),
                   fit: BoxFit.cover,
                   placeholder: (context, url) =>
                       Image.asset(
@@ -304,7 +324,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           isDense: false,
                           labelText: 'Receiver Name',
                           contentPadding: EdgeInsets.only(left: 10, right: 10)),
-                      child: Text(widget.order.pickDropOrderItem!.recieverName.toString()),
+                      child: Text(orderItemResponse.pickDropOrderItem!.recieverName.toString()),
                     ),
                   ),
                 ),
@@ -318,7 +338,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           isDense: false,
                           labelText: 'Receiver Address',
                           contentPadding: EdgeInsets.only(left: 10, right: 10)),
-                      child: Text(widget.order.pickDropOrderItem!.recieverAddress.toString()),
+                      child: Text(orderItemResponse.pickDropOrderItem!.recieverAddress.toString()),
                     ),
                   ),
                 ),
@@ -332,11 +352,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           isDense: false,
                           labelText: 'Receiver Phone',
                           contentPadding: EdgeInsets.only(left: 10, right: 10)),
-                      child: Text(widget.order.pickDropOrderItem!.recieverPhone.toString()),
+                      child: Text(orderItemResponse.pickDropOrderItem!.recieverPhone.toString()),
                     ),
                   ),
                 ),
-                widget.order.userNote
+                orderItemResponse.userNote
                     .toString()
                     .isEmpty
                     ? Container()
@@ -352,13 +372,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           labelText: 'Location',
                           contentPadding:
                           EdgeInsets.only(left: 10, right: 10)),
-                      child: Text(widget.order.pickDropOrderItem!.recieverLocation.toString()),
+                      child: Text(orderItemResponse.pickDropOrderItem!.recieverLocation.toString()),
                     ),
                   ),
                 ),
               ],
             ),
-            widget.order.paymentMethod != "COD"
+            orderItemResponse.paymentMethod != "COD"
                 ? const Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
@@ -373,7 +393,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 style: TextStyle(color: Colors.green),
               ),
             ),
-            widget.order.promoCode != null
+            orderItemResponse.promoCode != null
                 ? Row(
               children: [
                 Expanded(
@@ -388,7 +408,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         padding: const EdgeInsets.all(10.0),
                         child: Center(
                           child: Text(
-                            "You have applied promo code ${widget.order
+                            "You have applied promo code ${orderItemResponse
                                 .promoCode!.promoCodeName}",
                             style: const TextStyle(color: textBlack),
                           ),
@@ -400,34 +420,86 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               ],
             )
                 : Container(),
-            Row(
-              children: [
-                Expanded(
-                  child: Card(
-                    elevation: 1,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: const BorderSide(color: Colors.green, width: 2)),
-                    child: Expanded(
+            SizedBox(
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      elevation: 1,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(color: Colors.green, width: 2)),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Center(
                           child: Text(
-                            "Total : ${widget.order.totalPrice} + ${widget.order
-                                .deliveryCharge} =  ${widget.order.totalPrice! +
-                                widget.order.deliveryCharge!} ৳",
+                            "Total : ${orderItemResponse.totalPrice} + ${orderItemResponse
+                                .deliveryCharge} =  ${orderItemResponse.totalPrice! +
+                                orderItemResponse.deliveryCharge!} ৳",
                             style: const TextStyle(color: textBlack),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  orderItemResponse.orderStatus == "PENDING" ?
+                  Container(
+                    height: 38,
+                    width: 140,
+                    margin: const EdgeInsets.only(left: 5, right: 5),
+                    child: MaterialButton(
+                      onPressed: () {
+                        showDialog<void>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Cancel order?'),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: const <Widget>[
+                                    Text('Are you sure you want to cancel this order?'),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('Yes'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    cancelOrder();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text('No'),
+                                  onPressed: () {
+                                    Navigator.pop(context, 'Cancel');
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      color: Colors.red,
+                      child: const Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 15, right: 15),
+                          child: Text(
+                            "Cancel Order",
+                            style: TextStyle(color: textWhite),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ):Container()
+                ],
+              ),
             ),
             Container(
               height: 15,
-            )
+            ),
           ],
         ),
       ),

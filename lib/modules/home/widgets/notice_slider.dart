@@ -23,6 +23,7 @@ class _CSliderState extends State<NoticeSlider> {
           items: widget.imageSliders,
           carouselController: _controller,
           options: CarouselOptions(
+              autoPlayInterval: const Duration(seconds: 5),
               autoPlay: true,
               enlargeCenterPage: true,
               viewportFraction: 1,

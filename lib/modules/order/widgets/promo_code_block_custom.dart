@@ -38,7 +38,7 @@ class _PromoCodeBlockState extends State<PromoCodeBlockCustom> {
         .validatePromoCode(textEditingController.text.toString());
     if (response.error == true) {
       if (!mounted) return;
-      showToast(context, response.message.toString());
+      showToast(context, "Promo code not found or expired.");
       setState(() {
         currentState = _CurrentState.apply;
       });
@@ -155,7 +155,7 @@ class _PromoCodeBlockState extends State<PromoCodeBlockCustom> {
         );
       case _CurrentState.apply:
         return SizedBox(
-          height: 50,
+          height: 38,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -172,10 +172,10 @@ class _PromoCodeBlockState extends State<PromoCodeBlockCustom> {
                   ),
                 ),
               ),
-              Container(width: 2,),
+              Container(width: 4,),
               Container(
                 height: 38,
-                width: 120,
+                width: 140,
                 margin: const EdgeInsets.only(left: 5, right: 5),
                 child: MaterialButton(
                   onPressed: () {

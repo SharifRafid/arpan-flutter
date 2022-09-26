@@ -62,7 +62,7 @@ class ProductsAppBar extends StatelessWidget implements PreferredSizeWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const CartScreen()));
+                              builder: (context) => CartScreen()));
                     },
                     iconData: Icons.shopping_cart,
                     cartCount: box.length,
