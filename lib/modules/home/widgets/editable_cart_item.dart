@@ -24,7 +24,7 @@ class CartCard extends StatelessWidget {
               padding: const EdgeInsets.all(2.0),
               child: Text(
                 item,
-                style: TextStyle(color: textWhite),
+                style: const TextStyle(color: textWhite),
               ),
             ),
             Padding(

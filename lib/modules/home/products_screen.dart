@@ -134,19 +134,27 @@ class _ProductsPageState extends State<ProductsPage>
       await box.add(cartItemMain);
       await cartItemMain.save();
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Item added to cart"),
-          duration: const Duration(milliseconds: 500),
-          action: SnackBarAction(
-            label: 'Open cart',
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CartScreen()));
-            },
+      if(!_isSnackbarActive) {
+        _isSnackbarActive = true ;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text("Item added to cart"),
+            duration: const Duration(milliseconds: 5000),
+            action: SnackBarAction(
+              label: 'Open cart',
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CartScreen()));
+              },
+            ),
           ),
-        ),
-      );
+        ).closed
+            .then((SnackBarClosedReason reason) {
+          // snackbar is now closed.
+          _isSnackbarActive = false ;
+        });
+      }
     } else {
       cartItemMain = result.elementAt(0);
       cartItemMain.productItemAmount = cartItemMain.productItemAmount! + 1;
@@ -158,7 +166,7 @@ class _ProductsPageState extends State<ProductsPage>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text("Cart updated"),
-            duration: const Duration(milliseconds: 2000),
+            duration: const Duration(milliseconds: 5000),
             action: SnackBarAction(
               label: 'Open cart',
               onPressed: () {

@@ -65,99 +65,99 @@ class _HomeScreenState extends State<HomeScreen>
 
   void getLastOrderData() async {
     var data = await OrderService().getLastOrder();
-    if(data != null){
-      if(data.orderId != null){
-        setState((){
+    if (data != null) {
+      if (data.orderId != null) {
+        setState(() {
           lastOrderData = data;
         });
       }
-    }else{
-      setState((){
+    } else {
+      setState(() {
         lastOrderData = null;
       });
     }
   }
 
   void getHomeResponse() async {
-    if (mounted) {
-      var response = await homeService.getHomeDataMain();
-      if (response == null) {
-        if (kDebugMode) {
-          print("Response is null");
-        }
-        showDialog<void>(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Connection failed!'),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: const <Widget>[
-                    Text(
-                        'Failed to fetch data. Are you sure you\'re connected to internet?'),
-                  ],
-                ),
+    if (!mounted) return;
+    var response = await homeService.getHomeDataMain();
+    if (response == null) {
+      if (kDebugMode) {
+        print("Response is null");
+      }
+      showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Connection failed!'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: const <Widget>[
+                  Text(
+                      'Failed to fetch data. Are you sure you\'re connected to internet?'),
+                ],
               ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Yes, Reload'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    getHomeResponse();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        _homeResponse = response;
-        if (_homeResponse.banners != null ||
-            _homeResponse.shops != null ||
-            _homeResponse.shopCategories != null ||
-            _homeResponse.notices != null ||
-            _homeResponse.settings != null) {
-          Hive.box<Settings>("settingsBox")
-              .put("current", _homeResponse.settings!);
-          if (mounted) {
-            checkSettings(context, _homeResponse.settings!);
-          }
-          setState(() {
-            loadingMain = false;
-            error = "";
-            if (_homeResponse.banners != null) {
-              if (_homeResponse.banners!.isNotEmpty) {
-                imageSliders = getImageSliders(_homeResponse.banners!, context);
-                enableCarouselSlider = true;
-              }
-            }
-            if (_homeResponse.notices != null) {
-              if (_homeResponse.notices!.isNotEmpty) {
-                noticeSliders = getNoticeSliders(_homeResponse.notices!, context);
-                enableNoticesSlider = true;
-              }
-            }
-            if (_homeResponse.shopCategories != null) {
-              _homeResponse.shopCategories!
-                  .insert(0, category_model.Category(name: "All", id: "ALL"));
-              tabController = TabController(
-                  length: _homeResponse.shopCategories!.length, vsync: this);
-              showShopCategories = true;
-            }
-          });
-          if (_homeResponse.shops != null) {
-            filterShops(0);
-          }
-        } else {
-          if (kDebugMode) {
-            print("Response get error");
-          }
-          if (!mounted) return;
-          showToast(context, "No data found");
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Yes, Reload'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  getHomeResponse();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      _homeResponse = response;
+      if (_homeResponse.banners != null ||
+          _homeResponse.shops != null ||
+          _homeResponse.shopCategories != null ||
+          _homeResponse.notices != null ||
+          _homeResponse.settings != null) {
+        Hive.box<Settings>("settingsBox")
+            .put("current", _homeResponse.settings!);
+        if (mounted) {
+          checkSettings(context, _homeResponse.settings!);
         }
+        setState(() {
+          loadingMain = false;
+          error = "";
+          if (_homeResponse.banners != null) {
+            if (_homeResponse.banners!.isNotEmpty) {
+              imageSliders = getImageSliders(_homeResponse.banners!, context);
+              enableCarouselSlider = true;
+            }
+          }
+          if (_homeResponse.notices != null) {
+            if (_homeResponse.notices!.isNotEmpty) {
+              noticeSliders = getNoticeSliders(_homeResponse.notices!, context);
+              enableNoticesSlider = true;
+            }
+          }
+          if (_homeResponse.shopCategories != null) {
+            _homeResponse.shopCategories!
+                .insert(0, category_model.Category(name: "All", id: "ALL"));
+            tabController = TabController(
+                length: _homeResponse.shopCategories!.length, vsync: this);
+            showShopCategories = true;
+          }
+        });
+        if (_homeResponse.shops != null) {
+          filterShops(0);
+        }
+      } else {
+        if (kDebugMode) {
+          print("Response get error");
+        }
+        if (!mounted) return;
+        showToast(context, "No data found");
       }
     }
+    getLastOrderData();
   }
 
   void filterShops(int index) {
@@ -211,21 +211,22 @@ class _HomeScreenState extends State<HomeScreen>
     }
 
     String? token;
-    if(kIsWeb){
+    if (kIsWeb) {
       token = await messaging.getToken(
-        vapidKey: "BIgHP7EqgpZXidJsM7wBfTzSgprBDxTK_3FZYju4oP5ggJLUWo2gna-KGDTWgIicbpuoA9VxvLtXZN0sDhrf2XA",
+        vapidKey:
+            "BIgHP7EqgpZXidJsM7wBfTzSgprBDxTK_3FZYju4oP5ggJLUWo2gna-KGDTWgIicbpuoA9VxvLtXZN0sDhrf2XA",
       );
-    }else{
+    } else {
       token = await messaging.getToken();
     }
 
-    if(token != null){
-      if(authBox.get("FCMTOKEN",defaultValue: "") == "" || authBox.get("FCMTOKEN",defaultValue: "") != token){
-        HashMap<String,dynamic> hashMap = HashMap();
+    if (token != null) {
+      if (authBox.get("FCMTOKEN", defaultValue: "") == "" ||
+          authBox.get("FCMTOKEN", defaultValue: "") != token) {
+        HashMap<String, dynamic> hashMap = HashMap();
         hashMap["fcmToken"] = token;
-        String? response = await OthersService()
-            .addRegistrationToken(hashMap);
-        if(response != null){
+        String? response = await OthersService().addRegistrationToken(hashMap);
+        if (response != null) {
           authBox.put("FCMTOKEN", token);
         }
       }
@@ -237,12 +238,12 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     getHomeResponse();
     initFirebaseMessaging();
-    getLastOrderData();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       debugPrint('Got a message whilst in the foreground!');
       debugPrint('Message data: ${message.data}');
       if (message.notification != null) {
-        debugPrint('Message also contained a notification: ${message.notification}');
+        debugPrint(
+            'Message also contained a notification: ${message.notification}');
       }
       getLastOrderData();
     });
@@ -256,7 +257,9 @@ class _HomeScreenState extends State<HomeScreen>
         title: "Arpan",
       ),
       backgroundColor: bgOffWhite,
-      bottomNavigationBar: lastOrderData != null ? customBottomBar(context, lastOrderData!) : null,
+      bottomNavigationBar: lastOrderData != null
+          ? CustomBottomBar(context, lastOrderData!)
+          : null,
       drawer: customDrawer(context),
       body: loadingMain
           ? const Center(
@@ -413,6 +416,7 @@ List<Widget> getImageSliders(
       )
       .toList();
 }
+
 List<Widget> getNoticeSliders(
     List<Notice> carouselResponse, BuildContext context) {
   return carouselResponse

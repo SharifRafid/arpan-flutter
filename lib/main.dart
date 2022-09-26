@@ -19,6 +19,7 @@ void main() async {
   var box = await Hive.openBox('authBox');
   await Hive.openBox<Settings>('settingsBox');
   await Hive.openBox<CartItemMain>('cart');
+  await Hive.openBox("bottomBarM");
   var accessToken = box.get("accessToken") ?? '';
   var refreshToken = box.get("refreshToken") ?? '';
   await Firebase.initializeApp(

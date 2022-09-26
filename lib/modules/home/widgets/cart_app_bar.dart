@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ui_test/global/models/cart_item_model.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
-import 'package:ui_test/global/widgets/icon_button.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class CartAppBar extends StatelessWidget implements PreferredSizeWidget {

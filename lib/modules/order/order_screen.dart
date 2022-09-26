@@ -45,6 +45,7 @@ class _OrderScreenState extends State<OrderScreen> {
   bool loading = true;
 
   int totalPrice = 0;
+  int totalPriceBkash = 0;
   int deliveryCharge = 0;
 
   late Box box;
@@ -134,7 +135,7 @@ class _OrderScreenState extends State<OrderScreen> {
     int dc = _selectedLocation.deliveryCharge!;
 
     for (var item in cartItemsList) {
-      tp = tp + item.productItemOfferPrice!;
+      tp = tp + (item.productItemOfferPrice! * item.productItemAmount!);
     }
 
     if (promoCode != null) {
@@ -156,6 +157,7 @@ class _OrderScreenState extends State<OrderScreen> {
     setState(() {
       totalPrice = tp;
       deliveryCharge = dc;
+      totalPriceBkash = (tp + ((tp + dc) * bkashMultiplier).toInt());
     });
   }
 
@@ -388,10 +390,13 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                   ),
                   _paymentMethod == PaymentMethod.bKash
-                      ? const Text(
-                          "Extra charge added for bKash",
-                          style: TextStyle(color: Colors.pink),
-                        )
+                      ? const Padding(
+                        padding: EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                            "Extra charge added for bKash",
+                            style: TextStyle(color: Colors.pink),
+                          ),
+                      )
                       : Container(),
                   PromoCodeBlock(cartItemsList, (id) {
                     promoCode = id;
@@ -413,7 +418,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               child: Center(
                                 child: _paymentMethod == PaymentMethod.bKash
                                     ? Text(
-                                        "Total : $totalPrice + $deliveryCharge =  ${(totalPrice + deliveryCharge) + ((totalPrice + deliveryCharge) * bkashMultiplier).toInt()} ৳",
+                                        "Total : $totalPriceBkash + $deliveryCharge =  ${totalPriceBkash + deliveryCharge} ৳",
                                         style:
                                             const TextStyle(color: textBlack),
                                       )

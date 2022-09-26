@@ -38,7 +38,7 @@ class _PromoCodeBlockState extends State<PromoCodeBlock> {
         .validatePromoCode(textEditingController.text.toString());
     if (response.error == true) {
       if (!mounted) return;
-      showToast(context, response.message.toString());
+      showToast(context, "Promo code not found or expired.");
       setState(() {
         currentState = _CurrentState.apply;
       });
