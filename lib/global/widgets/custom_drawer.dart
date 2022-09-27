@@ -8,9 +8,6 @@ import 'package:ui_test/modules/order/custom_order_screen.dart';
 import 'package:ui_test/modules/order/medicine_order_screen.dart';
 import 'package:ui_test/modules/order/parcel_order_screen.dart';
 import 'package:ui_test/modules/order/pick_drop_order_screen.dart';
-import 'package:ui_test/modules/order/services/order_service.dart';
-import 'package:ui_test/modules/others/about_screen.dart';
-import 'package:ui_test/modules/others/be_client_screen.dart';
 import 'package:ui_test/modules/others/feedback_screen.dart';
 import 'package:ui_test/modules/others/profile_screen.dart';
 import 'package:ui_test/modules/others/services/others_service.dart';
@@ -42,12 +39,13 @@ Widget customDrawer(BuildContext context) {
                 ),
                 child: Center(
                   child: Image.asset(
-                    "assets/images/cover_icon.png",
+                    "assets/images/arpan_logo.png",
                     fit: BoxFit.cover,
-                    height: 150,
+                    height: 90,
                   ),
                 ),
               ),
+              const Divider(),
               box.get("accessToken", defaultValue: "") != "" &&
                       box.get("refreshToken", defaultValue: "") != ""
                   ? ListTile(
@@ -83,7 +81,7 @@ Widget customDrawer(BuildContext context) {
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 0.0, horizontal: 16.0),
                       title: const Text(
-                        'My orders',
+                        'My Orders',
                         style: TextStyle(
                             color: textWhite,
                             fontSize: 15,
@@ -288,7 +286,7 @@ Widget customDrawer(BuildContext context) {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
                 title: const Text(
-                  'Message us',
+                  'Message Us',
                   style: TextStyle(
                       color: textWhite,
                       fontSize: 15,

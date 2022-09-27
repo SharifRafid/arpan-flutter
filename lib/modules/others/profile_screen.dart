@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
@@ -64,6 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         oldName = name;
         oldAddress = address;
         image = null;
+        imageUrl = status;
       });
       if (!mounted) return;
       showToast(context, "Successfully updated profile");
@@ -156,9 +159,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     color: textWhite,
                                   )
                                 : CircleAvatar(backgroundImage: NetworkImage(serverFilesBaseURL + imageUrl))
-                            : CircleAvatar(
-                            backgroundImage: FileImage(File(image!.path))
-                        ),
+                            : !kIsWeb ? CircleAvatar(backgroundImage: FileImage(File(image!.path))) :
+                        CircleAvatar(backgroundImage: NetworkImage(image!.path)) ,
                       ),
                     ),
                   ),

@@ -32,7 +32,6 @@ class _MedicineOrderScreenState extends State<MedicineOrderScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController noteController = TextEditingController();
   TextEditingController medicineTitle = TextEditingController();
   TextEditingController medicineDetails = TextEditingController();
 
@@ -64,7 +63,6 @@ class _MedicineOrderScreenState extends State<MedicineOrderScreen> {
     var address = addressController.text;
     var details = medicineDetails.text;
     var title = medicineTitle.text;
-    var note = noteController.text;
     if (name.isEmpty || phone.isEmpty || address.isEmpty) {
       if (!mounted) return;
       showToast(context, "Fill all the required details");
@@ -92,8 +90,8 @@ class _MedicineOrderScreenState extends State<MedicineOrderScreen> {
     hashMap["name"] = name.toString();
     hashMap["medicineOrder"] = true;
     hashMap["phone"] = phone.toString();
+    hashMap["device"] = kIsWeb ? "WEB" : "APP";
     hashMap["address"] = address.toString();
-    hashMap["note"] = note.toString();
     hashMap["medicineDetails"] = details.toString();
     hashMap["medicineTitle"] = title.toString();
     if (promoCode != null) {
@@ -171,7 +169,6 @@ class _MedicineOrderScreenState extends State<MedicineOrderScreen> {
         nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "");
         phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ;
         addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ;
-        noteController.text = box.get("note", defaultValue: "");
         medicineDetails.text = box.get("medicineDetails", defaultValue: "");
         medicineTitle.text = box.get("medicineTitle", defaultValue: "");
       }
@@ -257,29 +254,29 @@ class _MedicineOrderScreenState extends State<MedicineOrderScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: SizedBox(
-                height: 45,
-                child: TextFormField(
-                  onChanged: (text) {
-                    box.put("note", text.toString());
-                  },
-                  style: const TextStyle(fontSize: 14),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  textAlignVertical: TextAlignVertical.top,
-                  controller: noteController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(8), // A
-                    isDense: true,
-                    border: OutlineInputBorder(),
-                    labelText: 'Note',
-                  ),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding:
+            //   const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            //   child: SizedBox(
+            //     height: 45,
+            //     child: TextFormField(
+            //       onChanged: (text) {
+            //         box.put("note", text.toString());
+            //       },
+            //       style: const TextStyle(fontSize: 14),
+            //       keyboardType: TextInputType.multiline,
+            //       maxLines: null,
+            //       textAlignVertical: TextAlignVertical.top,
+            //       controller: noteController,
+            //       decoration: const InputDecoration(
+            //         contentPadding: EdgeInsets.all(8), // A
+            //         isDense: true,
+            //         border: OutlineInputBorder(),
+            //         labelText: 'Note',
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Padding(
               padding:
               const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -346,7 +343,8 @@ class _MedicineOrderScreenState extends State<MedicineOrderScreen> {
                             Icons.camera_alt,
                             color: textWhite,
                           )
-                              : Image.file(File(image!.path)),
+                              : kIsWeb ? Image.network(image!.path) :
+                          Image.file(File(image!.path)),
                         ),
                       ),
                     )

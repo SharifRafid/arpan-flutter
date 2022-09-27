@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:ui_test/global/models/shop_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
@@ -233,11 +234,36 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
+  handleAppLifecycleState() {
+    AppLifecycleState _lastLifecyleState;
+    SystemChannels.lifecycle.setMessageHandler((msg) {
+      print('SystemChannels> $msg');
+      switch (msg) {
+        case "AppLifecycleState.paused":
+          _lastLifecyleState = AppLifecycleState.paused;
+          break;
+        case "AppLifecycleState.inactive":
+          _lastLifecyleState = AppLifecycleState.inactive;
+          break;
+        case "AppLifecycleState.resumed":
+          _lastLifecyleState = AppLifecycleState.resumed;
+          getLastOrderData();
+          break;
+        case "AppLifecycleState.suspending":
+          break;
+        default:
+          break;
+      }
+      throw "";
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getHomeResponse();
     initFirebaseMessaging();
+    handleAppLifecycleState();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       debugPrint('Got a message whilst in the foreground!');
       debugPrint('Message data: ${message.data}');
@@ -391,6 +417,7 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
+
 }
 
 List<Widget> getImageSliders(

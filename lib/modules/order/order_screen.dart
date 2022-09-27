@@ -93,6 +93,7 @@ class _OrderScreenState extends State<OrderScreen> {
     hashMap["phone"] = phone.toString();
     hashMap["address"] = address.toString();
     hashMap["note"] = note.toString();
+    hashMap["device"] = kIsWeb ? "WEB" : "APP";
     hashMap["shopNames"] =
         cartItemsList.map((e) => e.productItemShopName).toList();
     hashMap["productsAmount"] =
@@ -213,7 +214,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const OrderAppBar(
-        title: "Order",
+        title: "Checkout",
         height: appBarHeight,
       ),
       backgroundColor: bgOffWhite,

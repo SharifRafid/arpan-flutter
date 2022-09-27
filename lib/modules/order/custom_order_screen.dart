@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -32,7 +31,6 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController noteController = TextEditingController();
   TextEditingController orderMainController = TextEditingController();
 
   List<Location> _locationsArray = [];
@@ -63,7 +61,6 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
     var phone = phoneController.text;
     var address = addressController.text;
     var details = orderMainController.text;
-    var note = noteController.text;
     if (name.isEmpty || phone.isEmpty || address.isEmpty) {
       if (!mounted) return;
       showToast(context, "Fill all the required details");
@@ -92,8 +89,8 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
     hashMap["customOrder"] = true;
     hashMap["phone"] = phone.toString();
     hashMap["address"] = address.toString();
-    hashMap["note"] = note.toString();
     hashMap["customOrderDetails"] = details.toString();
+    hashMap["device"] = kIsWeb ? "WEB" : "APP";
     if (promoCode != null) {
       hashMap["promo"] = promoCode!.id;
     }
@@ -172,7 +169,6 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
         nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "");
         phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ;
         addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ;
-        noteController.text = box.get("note", defaultValue: "");
         orderMainController.text = box.get("orderDetails", defaultValue: "");
       }
     }
@@ -261,29 +257,6 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: SizedBox(
-                      height: 45,
-                      child: TextFormField(
-                        onChanged: (text) {
-                          box.put("note", text.toString());
-                        },
-                        style: const TextStyle(fontSize: 14),
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        textAlignVertical: TextAlignVertical.top,
-                        controller: noteController,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.all(8), // A
-                          isDense: true,
-                          border: OutlineInputBorder(),
-                          labelText: 'Note',
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: SizedBox(
                       height: 120,
                       child: Stack(
                         alignment: AlignmentDirectional.bottomEnd,
@@ -323,7 +296,8 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
                                         Icons.camera_alt,
                                         color: textWhite,
                                       )
-                                    : Image.file(File(image!.path)),
+                                    : kIsWeb ? Image.network(image!.path) :
+                                Image.file(File(image!.path)),
                               ),
                             ),
                           ),

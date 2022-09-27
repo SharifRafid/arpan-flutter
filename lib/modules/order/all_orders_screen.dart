@@ -46,7 +46,7 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
     return Scaffold(
         appBar: const OrderAppBar(
           height: appBarHeight,
-          title: "All orders",
+          title: "All Orders",
         ),
         backgroundColor: bgOffWhite,
         body: loading

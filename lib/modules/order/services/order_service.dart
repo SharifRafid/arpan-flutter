@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -131,12 +132,20 @@ class OrderService {
       try {
         File file = File(image.path);
         String fileName = file.path.split('/').last;
-        FormData formData = FormData.fromMap({
-          "fileName": await MultipartFile.fromFile(
+        MultipartFile multipartFile;
+        if(kIsWeb){
+          Uint8List bytes = await image.readAsBytes();
+          multipartFile = MultipartFile.fromBytes(bytes, filename: fileName,
+              contentType: MediaType("image", "jpeg"));
+        }else{
+          multipartFile = await MultipartFile.fromFile(
             file.path,
             filename: fileName,
             contentType: MediaType("image", "jpeg"), //important
-          )
+          );
+        }
+        FormData formData = FormData.fromMap({
+          "fileName": multipartFile
         });
         Response response = await _dio.post("${baseUrl}file/upload-user",
             data: formData, options: options);

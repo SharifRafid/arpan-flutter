@@ -32,7 +32,6 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController noteController = TextEditingController();
   TextEditingController parcelTitle = TextEditingController();
   TextEditingController parcelDetails = TextEditingController();
 
@@ -64,7 +63,6 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
     var address = addressController.text;
     var details = parcelDetails.text;
     var title = parcelTitle.text;
-    var note = noteController.text;
     if (name.isEmpty || phone.isEmpty || address.isEmpty) {
       if (!mounted) return;
       showToast(context, "Fill all the required details");
@@ -92,8 +90,8 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
     hashMap["name"] = name.toString();
     hashMap["phone"] = phone.toString();
     hashMap["address"] = address.toString();
-    hashMap["note"] = note.toString();
     hashMap["parcelOrder"] = true;
+    hashMap["device"] = kIsWeb ? "WEB" : "APP";
     hashMap["parcelDetails"] = details.toString();
     hashMap["parcelTitle"] = title.toString();
     if (promoCode != null) {
@@ -171,7 +169,6 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
         nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "");
         phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ;
         addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ;
-        noteController.text = box.get("note", defaultValue: "");
         parcelDetails.text = box.get("parcelDetails", defaultValue: "");
         parcelTitle.text = box.get("parcelTitle", defaultValue: "");
       }
@@ -257,29 +254,29 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: SizedBox(
-                height: 45,
-                child: TextFormField(
-                  onChanged: (text) {
-                    box.put("note", text.toString());
-                  },
-                  style: const TextStyle(fontSize: 14),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  textAlignVertical: TextAlignVertical.top,
-                  controller: noteController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(8), // A
-                    isDense: true,
-                    border: OutlineInputBorder(),
-                    labelText: 'Note',
-                  ),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding:
+            //   const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            //   child: SizedBox(
+            //     height: 45,
+            //     child: TextFormField(
+            //       onChanged: (text) {
+            //         box.put("note", text.toString());
+            //       },
+            //       style: const TextStyle(fontSize: 14),
+            //       keyboardType: TextInputType.multiline,
+            //       maxLines: null,
+            //       textAlignVertical: TextAlignVertical.top,
+            //       controller: noteController,
+            //       decoration: const InputDecoration(
+            //         contentPadding: EdgeInsets.all(8), // A
+            //         isDense: true,
+            //         border: OutlineInputBorder(),
+            //         labelText: 'Note',
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Padding(
               padding:
               const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -298,7 +295,7 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
                     contentPadding: EdgeInsets.all(8), // A
                     isDense: true,
                     border: OutlineInputBorder(),
-                    labelText: 'Pharmacy Name',
+                    labelText: 'Courier Name',
                   ),
                 ),
               ),
@@ -346,7 +343,8 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
                             Icons.camera_alt,
                             color: textWhite,
                           )
-                              : Image.file(File(image!.path)),
+                              :  kIsWeb ? Image.network(image!.path) :
+                          Image.file(File(image!.path)),
                         ),
                       ),
                     )

@@ -116,6 +116,7 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
     hashMap["addressReceiver"] = addressReceiver.toString();
     hashMap["locationReceiver"] = _selectedLocationReceiver.id;
     hashMap["pickDropParcelDetails"] = details.toString();
+    hashMap["device"] = kIsWeb ? "WEB" : "APP";
     hashMap["location"] = _selectedLocation.id;
     hashMap["payment"] =
         _paymentMethod == PaymentMethod.bKash ? "bKash" : "COD";
@@ -338,7 +339,8 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
                                         Icons.camera_alt,
                                         color: textWhite,
                                       )
-                                    : Image.file(File(image!.path)),
+                                    :  kIsWeb ? Image.network(image!.path) :
+                                Image.file(File(image!.path)),
                               ),
                             ),
                           )
