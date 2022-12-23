@@ -56,8 +56,8 @@ class _AuthMainState extends State<_AuthMain> {
           "accessToken", loginResponse.tokens!.access!.token!);
       await box.put(
           "refreshToken", loginResponse.tokens!.refresh!.token!);
-      await box.put("name", loginResponse.user!.name!);
-      await box.put("address", loginResponse.user!.address!);
+      await box.put("name", loginResponse.user!.name.toString());
+      await box.put("address", loginResponse.user!.address.toString());
       await box.put("phone", loginResponse.user!.phone!);
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(

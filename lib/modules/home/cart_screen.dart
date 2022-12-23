@@ -1,28 +1,72 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ui_test/global/models/cart_item_model.dart';
+import 'package:ui_test/global/utils/constants.dart';
 import 'package:ui_test/modules/order/order_screen.dart';
 import 'package:ui_test/modules/home/widgets/cart_app_bar.dart';
 import 'package:ui_test/modules/home/widgets/editable_cart_item.dart';
+import 'package:ui_test/modules/others/services/others_service.dart';
 
 import '../../global/models/settings_model.dart';
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/theme_data.dart';
 import '../../global/utils/utils.dart';
 
-
-class CartScreen extends StatelessWidget {
-
+class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  var loading = true;
+  Settings? settings;
+  Timer? _autoRefreshTimer;
+
+  void fetchSettingsData({bool? silently}) async {
+    debugPrint("Fetching Settings Data");
+    if(silently!=true){
+      setState((){
+        loading = true;
+      }); 
+    }
+    var response = await OthersService().getSettings();
+    if(response!=null){
+      Hive.box<Settings>("settingsBox")
+          .put("current", response);
+    }else{
+      if(!mounted) return;
+      showToast(context, "Failed to load cart data from server");
+    }
+    setState((){
+      settings = response;
+      loading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSettingsData();
+    _autoRefreshTimer = Timer.periodic(const Duration(seconds: autoRefreshDelaySeconds),
+            (Timer t) => fetchSettingsData(silently: true));
+  }
+
+  @override
+  void dispose() {
+    _autoRefreshTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Box>(
         valueListenable: Hive.box<CartItemMain>('cart').listenable(),
         builder: (context, box, widgetNew) {
-          print("TEST");
           var data = box.values;
           HashMap<String, List<CartItemMain>> cartItems = HashMap();
           for (var item in data) {
@@ -45,34 +89,43 @@ class CartScreen extends StatelessWidget {
               child: Stack(
                 children: [
                   ListView.builder(
-                    itemCount: cartItems.length,
+                      itemCount: cartItems.length,
                       itemBuilder: (BuildContext context, int index) {
-                    return CartCard(cartItems.keys.toList()[index],
-                        cartItems[cartItems.keys.toList()[index]]!);
-                  }),
-                  cartItems.isNotEmpty? Positioned(
-                    bottom: 15,
-                    right: 15,
-                    child: MaterialButton(
+                        return CartCard(cartItems.keys.toList()[index],
+                            cartItems[cartItems.keys.toList()[index]]!);
+                      }),
+                  cartItems.isNotEmpty
+                      ? Positioned(
+                          bottom: 15,
+                          right: 15,
+                          child: loading?
+                    const CircularProgressIndicator() :
+                    settings != null ?
+                    MaterialButton(
                       color: orderingTimeCheck() ? bgBlue : Colors.grey,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                       onPressed: () {
-                        Settings settings = Hive.box<Settings>("settingsBox").get("current")!;
-                        if (cartItems.length > settings.maxShopPerOrder!) {
+                        Settings settings =
+                        Hive.box<Settings>("settingsBox")
+                            .get("current")!;
+                        if (cartItems.length >
+                            settings.maxShopPerOrder!) {
                           showToast(context,
                               "You can only order from maximum ${settings.maxShopPerOrder} shops in each order. Please delete the additional items.");
                           return;
                         }
                         if (!orderingTimeCheck()) {
                           showToast(context,
-                              "Please order at the correct ordering times");
+                              "We are not receiving orders at this moment. Please order at the correct ordering times");
                           return;
                         }
                         var authBox = Hive.box('authBox');
-                        if (authBox.get("accessToken", defaultValue: "") ==
-                                "" ||
-                            authBox.get("refreshToken", defaultValue: "") ==
+                        if (authBox.get("accessToken",
+                            defaultValue: "") ==
+                            "" ||
+                            authBox.get("refreshToken",
+                                defaultValue: "") ==
                                 "") {
                           showLoginToast(context);
                           return;
@@ -80,11 +133,15 @@ class CartScreen extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const OrderScreen()));
+                                builder: (context) =>
+                                const OrderScreen()));
                       },
                       child: Padding(
                           padding: const EdgeInsets.only(
-                              left: 15.0, right: 8.0, top: 10, bottom: 10),
+                              left: 15.0,
+                              right: 8.0,
+                              top: 10,
+                              bottom: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -101,8 +158,17 @@ class CartScreen extends StatelessWidget {
                               )
                             ],
                           )),
+                    ):MaterialButton(
+                      color: bgBlue ,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                      onPressed: () {
+                        fetchSettingsData();
+                      },
+                      child: const Icon(Icons.refresh, color: textWhite,),
                     ),
-                  ) : Container()
+                        )
+                      : Container()
                 ],
               ),
             ),

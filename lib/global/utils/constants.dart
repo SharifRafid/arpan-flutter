@@ -10,3 +10,4 @@ const String daReg = "Regular";
 enum PaymentMethod { bKash, COD }
 const double bkashMultiplier = 0.0185;
 const String numStrConvConst = "ARPNDELIVY";
+const int autoRefreshDelaySeconds = 5;

@@ -17,11 +17,7 @@ Widget iconButton(
           children: [
             Padding(
               padding: const EdgeInsets.all(5.0),
-              child: IconButton(
-                color: textWhite,
-                onPressed: () {},
-                icon: Icon(iconData),
-              ),
+              child: Icon(iconData, color: textWhite,),
             ),
             cartCount > 0
                 ? Positioned(

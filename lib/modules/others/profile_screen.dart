@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -89,13 +88,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Hive.box('authBox').put("name", response["name"]);
     Hive.box('authBox').put("address", response["address"]);
     Hive.box('authBox').put("phone", response["phone"]);
-    oldName = response["name"];
-    name = response["name"];
-    nameController.text = response["name"];
-    address = response["address"];
-    oldAddress = response["address"];
-    addressController.text = response["address"];
-    phone = response["phone"];
+    oldName = response["name"] ?? "";
+    name = response["name"] ?? "";
+    nameController.text = response["name"] ?? "";
+    address = response["address"] ?? "";
+    oldAddress = response["address"] ?? "";
+    addressController.text = response["address"] ?? "";
+    phone = response["phone"] ?? "";
     imageUrl = response["image"] ?? "";
     setState((){
       loading = false;

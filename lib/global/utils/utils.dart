@@ -7,6 +7,7 @@ import '../models/settings_model.dart';
 import 'dart:math';
 import 'dart:convert';
 
+import '../models/shop_model.dart';
 import 'constants.dart';
 
 bool isNumeric(String s) {
@@ -20,6 +21,10 @@ String fetchTime(int timeStamp) {
 
 bool orderingTimeCheck() {
   Settings settings = Hive.box<Settings>("settingsBox").get("current")!;
+  if(settings.appOn != true){
+    debugPrint("App Is Not Turned On From Server");
+    return false;
+  }
   if (settings.orderOverTimeAllowed == true) {
     return true;
   }
@@ -96,5 +101,43 @@ String orderNumberToString(String num) {
     var char = num[i];
     newString = newString + alphaArray[int.parse(char)];
   }
-  return newString;
+  return num;
+}
+
+bool checkShopStatus(Shop element){
+  if(element.activeHours == null){
+    return true;
+  }
+  if(element.activeHours!.isEmpty){
+    return true;
+  }
+  String timeRange = element.activeHours.toString();
+  String startTime = timeRange.split("TO")[0].toString();
+  String endTime = timeRange.split("TO")[1].toString();
+  double startTimeDouble = double.parse(startTime.split(":")[0])
+      +(double.parse(startTime.split(":")[1])/60.0);
+  double endTimeDouble = double.parse(endTime.split(":")[0])
+      +(double.parse(endTime.split(":")[1])/60.0);
+  DateTime dateTime = DateTime.now();
+  double currentTime = double.parse(dateTime.hour.toString())
+      + (double.parse(dateTime.minute.toString())/60);
+  if(startTimeDouble<currentTime && endTimeDouble>currentTime){
+    return true;
+  }
+  return false;
+}
+
+String convertTo12HoursFormat(String time){
+  int tInt = int.parse(time.split("TO")[0].split(":")[0]);
+  if(tInt == 0){
+    return "12:${time.split("TO")[0].split(":")[1]} AM";
+  }
+  if(tInt > 12){
+    tInt = tInt - 12;
+    return "$tInt:${time.split("TO")[0].split(":")[1]} PM";
+  }
+  if(tInt == 12){
+    return "$tInt:${time.split("TO")[0].split(":")[1]} PM";
+  }
+  return "$tInt:${time.split("TO")[0].split(":")[1]} AM";
 }

@@ -19,6 +19,8 @@ class AuthService {
       try{
         Tokens tokens = Tokens.fromJson(response.data);
         Box box = Hive.box("authBox");
+        debugPrint("AccessToken : ${tokens.access!.token}");
+        debugPrint("RefreshToken : ${tokens.refresh!.token}");
         await box.put("accessToken", tokens.access!.token.toString());
         await box.put("refreshToken", tokens.refresh!.token.toString());
         return tokens;

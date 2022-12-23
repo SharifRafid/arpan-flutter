@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -27,7 +28,6 @@ import 'services/home_service.dart';
 import '../../global/models/banner_model.dart' as banner_model;
 import '../../global/models/category_model.dart' as category_model;
 import 'widgets/home_sticky_tabs.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -36,8 +36,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late HomeResponse _homeResponse;
   List<Widget> imageSliders = [];
   List<Widget> noticeSliders = [];
@@ -64,7 +63,10 @@ class _HomeScreenState extends State<HomeScreen>
 
   OrderItemResponse? lastOrderData;
 
-  void getLastOrderData() async {
+  Timer? _autoRefreshTimer;
+
+  void getLastOrderData({bool? silently}) async {
+    debugPrint("Get Last Order Data Called");
     var data = await OrderService().getLastOrder();
     if (data != null) {
       if (data.orderId != null) {
@@ -79,40 +81,42 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  void getHomeResponse() async {
+  void getHomeResponse({bool? silently}) async {
+    debugPrint("Get Home Response Called. Silently : $silently");
     if (!mounted) return;
     var response = await homeService.getHomeDataMain();
     if (response == null) {
-      if (kDebugMode) {
-        print("Response is null");
+      debugPrint("Response is null");
+      if (silently != true) {
+        showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Connection failed!'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: const <Widget>[
+                    Text(
+                        'Failed to fetch data. Are you sure you\'re connected to internet?'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Yes, Reload'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    getHomeResponse();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
-      showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Connection failed!'),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: const <Widget>[
-                  Text(
-                      'Failed to fetch data. Are you sure you\'re connected to internet?'),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Yes, Reload'),
-                onPressed: () {
-                  Navigator.pop(context);
-                  getHomeResponse();
-                },
-              ),
-            ],
-          );
-        },
-      );
     } else {
+      debugPrint(response.toString());
       _homeResponse = response;
       if (_homeResponse.banners != null ||
           _homeResponse.shops != null ||
@@ -142,36 +146,36 @@ class _HomeScreenState extends State<HomeScreen>
           if (_homeResponse.shopCategories != null) {
             _homeResponse.shopCategories!
                 .insert(0, category_model.Category(name: "All", id: "ALL"));
-            tabController = TabController(
-                length: _homeResponse.shopCategories!.length, vsync: this);
+            if (silently != true) {
+              tabController = TabController(
+                  length: _homeResponse.shopCategories!.length, vsync: this);
+            }
             showShopCategories = true;
           }
         });
-        if (_homeResponse.shops != null) {
+        if (_homeResponse.shops != null && silently != true) {
           filterShops(0);
         }
       } else {
-        if (kDebugMode) {
-          print("Response get error");
-        }
+        debugPrint("Response get error");
         if (!mounted) return;
         showToast(context, "No data found");
       }
     }
-    getLastOrderData();
+    getLastOrderData(silently: silently);
   }
 
   void filterShops(int index) {
     currentSelectedCategory = index;
     if (_homeResponse.shops != null && _homeResponse.shopCategories != null) {
       setState(() {
-        if (currentSelectedCategory == 0) {
-          filteredShops = _homeResponse.shops!;
-        } else {
+        if (currentSelectedCategory != 0) {
           filteredShops = _homeResponse.shops!
               .where((element) => element.categories!.contains(
                   _homeResponse.shopCategories![currentSelectedCategory].id))
               .toList();
+        } else {
+          filteredShops = _homeResponse.shops!;
         }
       });
     }
@@ -273,6 +277,15 @@ class _HomeScreenState extends State<HomeScreen>
       }
       getLastOrderData();
     });
+    _autoRefreshTimer = Timer.periodic(
+        const Duration(seconds: autoRefreshDelaySeconds),
+        (Timer t) => getHomeResponse(silently: true));
+  }
+
+  @override
+  void dispose() {
+    _autoRefreshTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -320,7 +333,8 @@ class _HomeScreenState extends State<HomeScreen>
               filteredShops[index].location.toString(),
               filteredShops[index].coverPhoto.toString(),
               filteredShops[index].notices);
-        }),
+        }, checkShopStatus(filteredShops[index]),
+            filteredShops[index].activeHours),
         childCount: filteredShops.length,
       ),
     );
@@ -350,74 +364,98 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Card buildShopCard(
-      String image, String name, String location, VoidCallback onClick) {
+  Card buildShopCard(String image, String name, String location,
+      VoidCallback onClick, bool shopStatus, String? activeHours) {
     return Card(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
       color: bgWhite,
       elevation: 2,
       child: InkWell(
-        onTap: onClick,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        onTap: shopStatus
+            ? onClick
+            : () {
+                showToast(context, "This shop is currently closed!");
+              },
+        child: Stack(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox.fromSize(
-                size: const Size.fromRadius(45),
-                child: CachedNetworkImage(
-                  height: 90,
-                  width: 90,
-                  imageUrl: image,
-                  placeholder: (context, url) =>
-                      Image.asset("assets/images/transparent.png"),
-                  errorWidget: (context, url, error) => Image.asset(
-                    "assets/images/Default_Image_Thumbnail.png",
-                    fit: BoxFit.cover,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: SizedBox.fromSize(
+                    size: const Size.fromRadius(45),
+                    child: CachedNetworkImage(
+                      height: 90,
+                      width: 90,
+                      imageUrl: image,
+                      placeholder: (context, url) =>
+                          Image.asset("assets/images/transparent.png"),
+                      errorWidget: (context, url, error) => Image.asset(
+                        "assets/images/Default_Image_Thumbnail.png",
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: textBlack,
-                      ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: textBlack,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          child: Divider(
+                            thickness: .5,
+                            height: .5,
+                            color: textBlack,
+                          ),
+                        ),
+                        Text(
+                          location,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: textBlack,
+                          ),
+                        ),
+                      ],
                     ),
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                      child: Divider(
-                        thickness: .5,
-                        height: .5,
-                        color: textBlack,
-                      ),
-                    ),
-                    Text(
-                      location,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: textBlack,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
+            shopStatus
+                ? Container()
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      child: Center(
+                        child: Text(
+                          "Closed Now!\nWill be open at ${convertTo12HoursFormat(activeHours!.split("TO")[0])}",
+                          style: TextStyle(color: textWhite),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      color: overlayColor,
+                      width: double.infinity,
+                      height: 90,
+                    ),
+                  ),
           ],
         ),
       ),
     );
   }
-
 }
 
 List<Widget> getImageSliders(

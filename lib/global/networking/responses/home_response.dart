@@ -13,10 +13,10 @@ class HomeResponse {
 
   HomeResponse(
       {this.shops,
-        this.shopCategories,
-        this.banners,
-        this.notices,
-        this.settings});
+      this.shopCategories,
+      this.banners,
+      this.notices,
+      this.settings});
 
   HomeResponse.fromJson(Map<String, dynamic> json) {
     if (json['shops'] != null) {
@@ -43,9 +43,8 @@ class HomeResponse {
         notices!.add(Notice.fromJson(v));
       });
     }
-    settings = json['settings'] != null
-        ? Settings.fromJson(json['settings'])
-        : null;
+    settings =
+        json['settings'] != null ? Settings.fromJson(json['settings']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -54,8 +53,7 @@ class HomeResponse {
       data['shops'] = shops!.map((v) => v.toJson()).toList();
     }
     if (shopCategories != null) {
-      data['shopCategories'] =
-          shopCategories!.map((v) => v.toJson()).toList();
+      data['shopCategories'] = shopCategories!.map((v) => v.toJson()).toList();
     }
     if (banners != null) {
       data['banners'] = banners!.map((v) => v.toJson()).toList();

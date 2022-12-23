@@ -26,6 +26,7 @@ class OrderItemResponse {
   int? orderId;
   String? id;
   PickDropOrderItem? pickDropOrderItem;
+  String? paymentRequestedNumber;
 
   OrderItemResponse(
       {this.userName,
@@ -49,7 +50,9 @@ class OrderItemResponse {
         this.deliveryCharge,
         this.totalPrice,
         this.orderId,
-        this.id,this.pickDropOrderItem});
+        this.id,
+        this.pickDropOrderItem,
+        this.paymentRequestedNumber});
 
   OrderItemResponse.fromJson(Map<String, dynamic> json) {
     userName = json['userName'];
@@ -86,6 +89,7 @@ class OrderItemResponse {
     pickDropOrderItem = json['pickDropOrderItem'] != null
         ? PickDropOrderItem.fromJson(json['pickDropOrderItem'])
         : null;
+    paymentRequestedNumber = json['paymentRequestedNumber'];
   }
 
   Map<String, dynamic> toJson() {
@@ -121,6 +125,7 @@ class OrderItemResponse {
     if (this.pickDropOrderItem != null) {
       data['pickDropOrderItem'] = this.pickDropOrderItem!.toJson();
     }
+    data['paymentRequestedNumber'] = this.paymentRequestedNumber;
     return data;
   }
 }

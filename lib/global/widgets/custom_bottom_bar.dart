@@ -20,7 +20,8 @@ class CustomBottomBar extends StatelessWidget {
         valueListenable: Hive.box('bottomBarM').listenable(),
         builder: (context, box, widgetNew) {
           if (box.keys.contains(order.id.toString())) {
-            if (box.get(order.id.toString(), defaultValue: "") == order.orderStatus.toString()) {
+            if (box.get(order.id.toString(), defaultValue: "") ==
+                order.orderStatus.toString()) {
               return const SizedBox(
                 height: 0,
                 width: 0,
@@ -33,7 +34,9 @@ class CustomBottomBar extends StatelessWidget {
                 : order.orderStatus == "VERIFIED"
                     ? const Color(0xFFFA831B)
                     : order.orderStatus == "PICKED UP"
-                        ? const Color(0xFFED9D34)
+                        ? order.paymentRequested == true
+                            ? const Color(0xFFdc146c)
+                            : const Color(0xFFED9D34)
                         : order.orderStatus == "COMPLETED"
                             ? const Color(0xFF43A047)
                             : order.orderStatus == "CANCELLED"
@@ -67,7 +70,9 @@ class CustomBottomBar extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          order.orderStatus.toString(),
+                          order.paymentRequested != true
+                              ? order.orderStatus.toString()
+                              : "PAYMENT REQUESTED",
                           style: const TextStyle(
                             color: textWhite,
                           ),
@@ -78,7 +83,8 @@ class CustomBottomBar extends StatelessWidget {
                           child: IconButton(
                               padding: const EdgeInsets.only(left: 10),
                               onPressed: () {
-                                box.put(order.id.toString(), order.orderStatus.toString());
+                                box.put(order.id.toString(),
+                                    order.orderStatus.toString());
                               },
                               icon: const Icon(
                                 Icons.close,

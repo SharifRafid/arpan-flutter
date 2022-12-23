@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:ui_test/global/utils/show_toast.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
@@ -6,6 +8,7 @@ import 'package:ui_test/modules/order/models/order_item_response.dart';
 import 'package:ui_test/modules/order/order_details_screen.dart';
 import 'package:ui_test/modules/order/services/order_service.dart';
 
+import '../../global/utils/constants.dart';
 import '../../global/utils/utils.dart';
 
 class AllOrdersScreen extends StatefulWidget {
@@ -22,7 +25,10 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
 
   bool loading = true;
 
+  Timer? _autoRefreshTimer;
+
   void loadOrdersData() async {
+    debugPrint("LoadAllOrdersCalled");
     var response = await orderService.getOrders();
     if (response == null) {
       if (!mounted) return;
@@ -39,6 +45,14 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
   void initState() {
     super.initState();
     loadOrdersData();
+    _autoRefreshTimer = Timer.periodic(const Duration(seconds: autoRefreshDelaySeconds),
+            (Timer t) => loadOrdersData());
+  }
+
+  @override
+  void dispose() {
+    _autoRefreshTimer?.cancel();
+    super.dispose();
   }
 
   @override

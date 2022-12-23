@@ -85,7 +85,7 @@ class HomeStickyTabs extends SliverAppBar {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
-                    width: 100,
+                    width: 95,
                     height: 80,
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -119,7 +119,7 @@ class HomeStickyTabs extends SliverAppBar {
                     ),
                   ),
                   SizedBox(
-                    width: 100,
+                    width: 95,
                     height: 80,
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -152,7 +152,7 @@ class HomeStickyTabs extends SliverAppBar {
                     ),
                   ),
                   SizedBox(
-                    width: 100,
+                    width: 95,
                     height: 80,
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -186,7 +186,7 @@ class HomeStickyTabs extends SliverAppBar {
                     ),
                   ),
                   SizedBox(
-                    width: 100,
+                    width: 95,
                     height: 80,
                     child: Card(
                       shape: RoundedRectangleBorder(

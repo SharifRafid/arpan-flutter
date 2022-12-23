@@ -33,6 +33,8 @@ class Settings {
   String? alertDialogeEmergencyStatus;
   @HiveField(15)
   String? id;
+  @HiveField(16)
+  bool? appOn;
 
   Settings(
       {this.orderStartTime,
@@ -49,7 +51,7 @@ class Settings {
         this.alertDialogEmergencyTitleText,
         this.alertDialogEmergencyMessageText,
         this.alertDialogeEmergencyStatus,
-        this.id});
+        this.id,this.appOn});
 
   Settings.fromJson(Map<String, dynamic> json) {
     orderStartTime = json['orderStartTime'];
@@ -67,6 +69,7 @@ class Settings {
     alertDialogEmergencyMessageText = json['alertDialogEmergencyMessageText'];
     alertDialogeEmergencyStatus = json['alertDialogeEmergencyStatus'];
     id = json['id'];
+    appOn = json['appOn'];
   }
 
   Map<String, dynamic> toJson() {
@@ -88,6 +91,7 @@ class Settings {
         alertDialogEmergencyMessageText;
     data['alertDialogeEmergencyStatus'] = alertDialogeEmergencyStatus;
     data['id'] = id;
+    data['appOn'] = appOn;
     return data;
   }
 }
