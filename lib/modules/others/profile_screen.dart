@@ -68,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         imageUrl = status;
       });
       if (!mounted) return;
-      showToast(context, "Successfully updated profile");
+      showToast(context, "Successfully updated profile.");
     }
   }
 
@@ -80,8 +80,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
     HashMap<String, dynamic>? response = await OthersService().getProfile();
-    if(response == null){
-      if(!mounted) return;
+    if (response == null) {
+      if (!mounted) return;
       showToast(context, "Failed to fetch data");
       return;
     }
@@ -96,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     addressController.text = response["address"] ?? "";
     phone = response["phone"] ?? "";
     imageUrl = response["image"] ?? "";
-    setState((){
+    setState(() {
       loading = false;
     });
   }
@@ -126,125 +126,183 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: "My Profile",
         height: appBarHeight,
       ),
-      backgroundColor: bgOffWhite,
+      backgroundColor: bgBlue,
       body: loading
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: Card(
-                      elevation: 0,
-                      margin: const EdgeInsets.all(0),
-                      color: bgBlue,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40)),
-                      child: InkWell(
-                        onTap: () {
-                          pickImage();
-                        },
-                        child: image == null
-                            ? imageUrl == ""
-                                ? const Icon(
-                                    Icons.camera_alt,
-                                    color: textWhite,
-                                  )
-                                : CircleAvatar(backgroundImage: NetworkImage(serverFilesBaseURL + imageUrl))
-                            : !kIsWeb ? CircleAvatar(backgroundImage: FileImage(File(image!.path))) :
-                        CircleAvatar(backgroundImage: NetworkImage(image!.path)) ,
-                      ),
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Card(
+                    elevation: 0,
+                    margin: const EdgeInsets.all(0),
+                    color: bgBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50)),
+                    child: InkWell(
+                      onTap: () {
+                        pickImage();
+                      },
+                      child: image == null
+                          ? imageUrl == ""
+                              ? const Icon(
+                                  Icons.camera_alt,
+                                  color: textWhite,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      serverFilesBaseURL + imageUrl),
+                                  child: Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.only(top: 60,left: 60),
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius: BorderRadius.all(Radius.circular(20)
+                                            )),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Icon(
+                                                Icons.edit,
+                                            size: 20,),
+                                          )),
+                                    ),
+                                  ),)
+                          : !kIsWeb
+                              ? CircleAvatar(
+                                  backgroundImage: FileImage(File(image!.path)))
+                              : CircleAvatar(
+                                  backgroundImage: NetworkImage(image!.path),
+                                  child: Expanded(
+                                    child: Container(
+                                      padding: const EdgeInsets.only(top: 60,left: 60),
+                                      child: Container(
+                                          decoration: const BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius: BorderRadius.all(Radius.circular(20)
+                                              )),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Icon(
+                                              Icons.edit,
+                                              size: 20,),
+                                          )),
+                                    ),
+                                  )),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10, right: 10, top: 15, bottom: 5),
-                    child: TextFormField(
-                      style: const TextStyle(fontSize: 14),
-                      controller: nameController,
-                      onChanged: (text) {
-                        setState((){
-                          name = text;
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(8), // Added this
-                        isDense: true,
-                        border: OutlineInputBorder(),
-                        labelText: 'Name',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10, right: 10, top: 15, bottom: 5),
-                    child: SizedBox(
-                      height: 35,
-                      child: InputDecorator(
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            isDense: false,
-                            labelText: 'Phone',
-                            contentPadding:
-                            EdgeInsets.only(left: 10, right: 10)),
-                        child: Text(phone),
-                      ),
-                    )
-                    ,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10, right: 10, top: 15, bottom: 5),
-                    child: TextFormField(
-                      style: const TextStyle(fontSize: 14),
-                      controller: addressController,
-                      onChanged: (text) {
-                        setState((){
-                          address = text;
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(8), // Added this
-                        isDense: true,
-                        border: OutlineInputBorder(),
-                        labelText: 'Address',
-                      ),
-                    ),
-                  ),
-                  nameController.text.toString() != oldName || addressController.text.toString() != oldAddress || image != null?
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    height: 50,
-                    margin: const EdgeInsets.only(left: 5, right: 5),
-                    child: MaterialButton(
-                      onPressed: () {
-                        updateProfile();
-                      },
-                      color: Colors.green,
-                      child: const Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 15, right: 15),
-                          child: Text(
-                            "Update",
-                            style: TextStyle(color: textWhite),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: const BoxDecoration(
+                          color: bgOffWhite,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          )),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 20, bottom: 5),
+                            child: TextFormField(
+                              style: const TextStyle(fontSize: 14),
+                              controller: nameController,
+                              onChanged: (text) {
+                                setState(() {
+                                  name = text;
+                                });
+                              },
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(8), // Added this
+                                isDense: true,
+                                border: OutlineInputBorder(),
+                                labelText: 'Name',
+                              ),
+                            ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 15, bottom: 5),
+                            child: SizedBox(
+                              height: 35,
+                              child: InputDecorator(
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    isDense: false,
+                                    labelText: 'Phone',
+                                    contentPadding:
+                                        EdgeInsets.only(left: 10, right: 10)),
+                                child: Text(phone),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 15, bottom: 5),
+                            child: TextFormField(
+                              style: const TextStyle(fontSize: 14),
+                              controller: addressController,
+                              onChanged: (text) {
+                                setState(() {
+                                  address = text;
+                                });
+                              },
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(8), // Added this
+                                isDense: true,
+                                border: OutlineInputBorder(),
+                                labelText: 'Address',
+                              ),
+                            ),
+                          ),
+                          nameController.text.toString() != oldName ||
+                                  addressController.text.toString() !=
+                                      oldAddress ||
+                                  image != null
+                              ? Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  height: 50,
+                                  margin:
+                                      const EdgeInsets.only(left: 5, right: 5),
+                                  child: MaterialButton(
+                                    onPressed: () {
+                                      updateProfile();
+                                    },
+                                    color: Colors.green,
+                                    child: const Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 15, right: 15),
+                                        child: Text(
+                                          "Update",
+                                          style: TextStyle(color: textWhite),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
+                          Container(
+                            height: 15,
+                          ),
+                        ],
                       ),
                     ),
-                  ):Container(),
-                  Container(
-                    height: 15,
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
     );
   }

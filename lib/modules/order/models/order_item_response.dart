@@ -27,6 +27,7 @@ class OrderItemResponse {
   String? id;
   PickDropOrderItem? pickDropOrderItem;
   String? paymentRequestedNumber;
+  String? cancelledOrderReasonFromAdmin;
 
   OrderItemResponse(
       {this.userName,
@@ -52,6 +53,7 @@ class OrderItemResponse {
         this.orderId,
         this.id,
         this.pickDropOrderItem,
+        this.cancelledOrderReasonFromAdmin,
         this.paymentRequestedNumber});
 
   OrderItemResponse.fromJson(Map<String, dynamic> json) {
@@ -90,6 +92,7 @@ class OrderItemResponse {
         ? PickDropOrderItem.fromJson(json['pickDropOrderItem'])
         : null;
     paymentRequestedNumber = json['paymentRequestedNumber'];
+    cancelledOrderReasonFromAdmin = json['cancelledOrderReasonFromAdmin'];
   }
 
   Map<String, dynamic> toJson() {
@@ -126,6 +129,7 @@ class OrderItemResponse {
       data['pickDropOrderItem'] = this.pickDropOrderItem!.toJson();
     }
     data['paymentRequestedNumber'] = this.paymentRequestedNumber;
+    data['cancelledOrderReasonFromAdmin'] = this.cancelledOrderReasonFromAdmin;
     return data;
   }
 }

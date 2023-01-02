@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:ui_test/global/models/product_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
+import 'package:ui_test/global/utils/utils.dart';
 import 'package:ui_test/modules/home/models/product_category_file.dart';
+
+import '../../../global/utils/show_toast.dart';
 
 class CategorySection extends StatelessWidget {
   final ProductCategorized category;
@@ -80,31 +83,82 @@ class CategorySection extends StatelessWidget {
     required bool isLastIndex,
     required Product food,
   }) {
+    debugPrint(food.activeHours.toString());
+    if(food.activeHours != null){
+      debugPrint(food.name.toString());
+    }
     return Column(
       children: [
-        Card(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          color: bgWhite,
-          elevation: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildFoodDetail(food: food, context: context),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _buildFoodImage(food.icon),
-                    _buildAddIcon(food),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
+        checkShopStatus(food.activeHours)
+            ? Card(
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                color: bgWhite,
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildFoodDetail(food: food, context: context),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _buildFoodImage(food.icon),
+                          _buildAddIcon(food),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              )
+            : Card(
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                color: bgWhite,
+                elevation: 2,
+                child: InkWell(
+                  onTap: () {
+                    showToast(context, "This shop is currently closed!");
+                  },
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _buildFoodDetail(food: food, context: context),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                _buildFoodImage(food.icon),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              "Unavailable now!\nWill be available at ${convertTo12HoursFormat(food.activeHours!.split("TO")[0])}",
+                              style: TextStyle(color: textWhite),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          color: overlayColor,
+                          width: double.infinity,
+                          height: 105,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
         !isLastIndex ? const SizedBox(height: 2.0) : const SizedBox(height: 2.0)
       ],
     );
@@ -145,8 +199,10 @@ class CategorySection extends StatelessWidget {
           imageUrl: serverFilesBaseURL + url.toString(),
           width: 76,
           height: 76,
-          placeholder: (context, url) => Image.asset("assets/images/transparent.png"),
-          errorWidget: (context, url, error) => Image.asset("assets/images/transparent.png"),
+          placeholder: (context, url) =>
+              Image.asset("assets/images/transparent.png"),
+          errorWidget: (context, url, error) =>
+              Image.asset("assets/images/transparent.png"),
         ),
       ),
     );
@@ -160,7 +216,7 @@ class CategorySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 200,
+            width: 200,
             child: Text(food.name!, style: _textTheme(context).subtitle1)),
         SizedBox(
           width: 200,

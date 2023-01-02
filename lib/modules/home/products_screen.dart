@@ -111,6 +111,9 @@ class _ProductsPageState extends State<ProductsPage>
 
   bool _isSnackbarActive = false ;
 
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+  new GlobalKey<RefreshIndicatorState>();
+
   void addItemToCart(Product product) async {
     Box box = Hive.box<CartItemMain>("cart");
     var result = box.values.where((element) => element.sId == product.id);
@@ -121,8 +124,7 @@ class _ProductsPageState extends State<ProductsPage>
       cartItemMain.productItem = true;
       cartItemMain.productArpanProfit = product.arpanCharge;
       cartItemMain.productItemAmount = 1;
-      cartItemMain.productItemCategoryTag =
-          product.categories != null ? product.categories![0] : "";
+      cartItemMain.productItemCategoryTag = product.categories != null ? product.categories![0] : "";
       cartItemMain.productItemKey = product.id;
       cartItemMain.productItemDesc = product.shortDescription;
       cartItemMain.productItemOfferPrice = product.offerPrice;

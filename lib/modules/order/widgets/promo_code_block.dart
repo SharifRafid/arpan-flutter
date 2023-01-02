@@ -59,7 +59,7 @@ class _PromoCodeBlockState extends State<PromoCodeBlock> {
           return;
         } else {
           appliedMessage =
-              "You have successfully applied promo code ${promo.promoCodeName}";
+              "You have successfully applied promo code ${promo.promoCodeName}.";
           widget.setPromoCode(promo);
           setState(() {
             currentState = _CurrentState.applied;
@@ -70,7 +70,7 @@ class _PromoCodeBlockState extends State<PromoCodeBlock> {
         var tp = 0;
         for (var element in widget.cartItemsList) { tp = tp + element.productItemOfferPrice!; }
         if(tp >= promo.minimumPrice!){
-          appliedMessage = "You have successfully applied promo code ${promo.promoCodeName}";
+          appliedMessage = "You have successfully applied promo code ${promo.promoCodeName}.";
           widget.setPromoCode(promo);
           setState(() {
             currentState = _CurrentState.applied;

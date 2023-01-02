@@ -35,7 +35,7 @@ Widget customDrawer(BuildContext context) {
               DrawerHeader(
                 padding: const EdgeInsets.all(0),
                 decoration: const BoxDecoration(
-                  color: bgGreyDeep,
+                  color: bgBlue,
                 ),
                 child: Center(
                   child: Image.asset(
@@ -45,7 +45,7 @@ Widget customDrawer(BuildContext context) {
                   ),
                 ),
               ),
-              const Divider(),
+              const Divider(color: bgGreyDeep,),
               box.get("accessToken", defaultValue: "") != "" &&
                       box.get("refreshToken", defaultValue: "") != ""
                   ? ListTile(
@@ -100,7 +100,7 @@ Widget customDrawer(BuildContext context) {
                   : Container(),
               box.get("accessToken", defaultValue: "") != "" &&
                       box.get("refreshToken", defaultValue: "") != ""
-                  ? const Divider()
+                  ?const Divider(color: bgGreyDeep,)
                   : Container(),
               ListTile(
                 visualDensity: const VisualDensity(vertical: -3),
@@ -196,7 +196,7 @@ Widget customDrawer(BuildContext context) {
                               const PickDropOrderScreen()));
                 },
               ),
-              const Divider(),
+              const Divider(color: bgGreyDeep,),
               ListTile(
                 visualDensity: const VisualDensity(vertical: -3),
                 // to compact
@@ -257,28 +257,28 @@ Widget customDrawer(BuildContext context) {
               //     !await launchUrl(_url);
               //   },
               // ),
-              kIsWeb
-                  ? Container()
-                  : ListTile(
-                      visualDensity: const VisualDensity(vertical: -3),
-                      // to compact
-                      dense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 0.0, horizontal: 16.0),
-                      title: const Text(
-                        'Call us',
-                        style: TextStyle(
-                            color: textWhite,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      leading: const Icon(Icons.call, color: textWhite),
-                      onTap: () async {
-                        Navigator.pop(context);
-                        await FlutterPhoneDirectCaller.callNumber(
-                            "+8801845568015");
-                      },
-                    ),
+              // kIsWeb
+              //     ? Container()
+              //     : ListTile(
+              //         visualDensity: const VisualDensity(vertical: -3),
+              //         // to compact
+              //         dense: true,
+              //         contentPadding: const EdgeInsets.symmetric(
+              //             vertical: 0.0, horizontal: 16.0),
+              //         title: const Text(
+              //           'Call us',
+              //           style: TextStyle(
+              //               color: textWhite,
+              //               fontSize: 15,
+              //               fontWeight: FontWeight.bold),
+              //         ),
+              //         leading: const Icon(Icons.call, color: textWhite),
+              //         onTap: () async {
+              //           Navigator.pop(context);
+              //           await FlutterPhoneDirectCaller.callNumber(
+              //               "+8801845568015");
+              //         },
+              //       ),
               ListTile(
                 visualDensity: const VisualDensity(vertical: -3),
                 // to compact
@@ -350,7 +350,7 @@ Widget customDrawer(BuildContext context) {
               //                 const BeClientScreen()));
               //   },
               // ),
-              const Divider(),
+              const Divider(color: bgGreyDeep,),
               box.get("accessToken", defaultValue: "") != "" &&
                       box.get("refreshToken", defaultValue: "") != ""
                   ? ListTile(
@@ -402,7 +402,7 @@ Widget customDrawer(BuildContext context) {
                                         box.get("FCMTOKEN", defaultValue: "");
                                     box.clear();
                                     showToast(
-                                        context, "Logged out successfully");
+                                        context, "Logged out successfully.");
                                     await OthersService()
                                         .logout(hashMap, accessToken);
                                   },

@@ -5,6 +5,8 @@ import 'package:ui_test/global/widgets/icon_button.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ui_test/modules/home/cart_screen.dart';
 
+import '../utils/show_toast.dart';
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
   final String title;
@@ -59,11 +61,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   iconButton(
                     onClickAction: () {
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CartScreen()));
+                      if(box.isNotEmpty){
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CartScreen()));
+                      }else{
+                        showToast(context, "Your cart is empty. Please add any item.");
+                      }
                     },
                     iconData: Icons.shopping_cart,
                     cartCount: box.length,

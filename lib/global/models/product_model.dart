@@ -14,23 +14,25 @@ class Product {
   int? arpanCharge;
   String? shop;
   String? id;
+  String? activeHours;
 
   Product(
       {this.inStock,
-        this.offerActive,
-        this.categories,
-        this.name,
-        this.order,
-        this.shortDescription,
-        this.description,
-        this.offerDetails,
-        this.coverPhoto,
-        this.icon,
-        this.price,
-        this.offerPrice,
-        this.arpanCharge,
-        this.shop,
-        this.id});
+      this.offerActive,
+      this.categories,
+      this.name,
+      this.order,
+      this.shortDescription,
+      this.description,
+      this.offerDetails,
+      this.coverPhoto,
+      this.icon,
+      this.price,
+      this.offerPrice,
+      this.arpanCharge,
+      this.shop,
+      this.id,
+      this.activeHours});
 
   Product.fromJson(Map<String, dynamic> json) {
     inStock = json['inStock'];
@@ -49,6 +51,7 @@ class Product {
     arpanCharge = json['arpanCharge'];
     shop = json['shop'];
     id = json['id'];
+    activeHours = json['activeHours'];
   }
 
   Map<String, dynamic> toJson() {
@@ -68,6 +71,7 @@ class Product {
     data['arpanCharge'] = arpanCharge;
     data['shop'] = shop;
     data['id'] = id;
+    data['activeHours'] = activeHours;
     return data;
   }
 }

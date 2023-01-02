@@ -78,6 +78,9 @@ class _CartScreenState extends State<CartScreen> {
               cartItems[item.productItemShopName!] = [item];
             }
           }
+          if(cartItems.isEmpty){
+            Navigator.pop(context);
+          }
           return Scaffold(
             backgroundColor: bgOffWhite,
             appBar: const CartAppBar(
@@ -109,15 +112,14 @@ class _CartScreenState extends State<CartScreen> {
                         Settings settings =
                         Hive.box<Settings>("settingsBox")
                             .get("current")!;
-                        if (cartItems.length >
-                            settings.maxShopPerOrder!) {
+                        if (cartItems.length > settings.maxShopPerOrder!) {
                           showToast(context,
                               "You can only order from maximum ${settings.maxShopPerOrder} shops in each order. Please delete the additional items.");
                           return;
                         }
                         if (!orderingTimeCheck()) {
                           showToast(context,
-                              "We are not receiving orders at this moment. Please order at the correct ordering times");
+                              "We are not receiving orders at this moment.");
                           return;
                         }
                         var authBox = Hive.box('authBox');

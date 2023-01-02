@@ -57,7 +57,7 @@ class _PromoCodeBlockState extends State<PromoCodeBlockCustom> {
         return;
       } else {
         if(widget.dc >= promo.minimumPrice!){
-          appliedMessage = "You have successfully applied promo code ${promo.promoCodeName}";
+          appliedMessage = "You have successfully applied promo code ${promo.promoCodeName}.";
           widget.setPromoCode(promo);
           setState(() {
             currentState = _CurrentState.applied;

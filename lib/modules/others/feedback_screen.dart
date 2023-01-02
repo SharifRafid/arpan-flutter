@@ -62,7 +62,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       box.delete("feedbackName");
       box.delete("feedbackDetails");
       if (!mounted) return;
-      showToast(context, "Successfully submitted feedback");
+      showToast(context, "Successfully submitted the feedback.");
       Navigator.pop(context);
     }
   }

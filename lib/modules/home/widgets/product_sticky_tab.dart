@@ -64,6 +64,7 @@ class ProductStickyTab extends SliverAppBar {
     return PreferredSize(
       preferredSize: const Size.fromHeight(48),
       child: Container(
+        width: double.infinity,
         color: bgOffWhite,
         child: TabBar(
           isScrollable: true,

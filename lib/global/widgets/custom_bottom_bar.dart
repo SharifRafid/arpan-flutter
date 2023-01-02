@@ -29,7 +29,7 @@ class CustomBottomBar extends StatelessWidget {
             }
           }
           return Card(
-            color: order.orderStatus == "PENDING"
+            color: order.orderStatus == "PLACED"
                 ? const Color(0xFF262626)
                 : order.orderStatus == "VERIFIED"
                     ? const Color(0xFFFA831B)
@@ -52,7 +52,7 @@ class CustomBottomBar extends StatelessWidget {
                     context,
                     MaterialPageRoute<void>(
                         builder: (BuildContext context) =>
-                            OrderDetailsScreen(order)));
+                            OrderDetailsScreen(order.id!)));
               },
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
@@ -60,7 +60,7 @@ class CustomBottomBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Order #${orderNumberToString(order.orderId.toString())}",
+                      "Order# ${orderNumberToString(order.orderId.toString())}",
                       style: const TextStyle(
                         color: textWhite,
                       ),

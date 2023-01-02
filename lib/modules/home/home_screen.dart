@@ -37,6 +37,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
   late HomeResponse _homeResponse;
   List<Widget> imageSliders = [];
   List<Widget> noticeSliders = [];
@@ -125,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           _homeResponse.settings != null) {
         Hive.box<Settings>("settingsBox")
             .put("current", _homeResponse.settings!);
-        if (mounted) {
-          checkSettings(context, _homeResponse.settings!);
+        if (mounted && silently!=true) {
+          checkSettingsForAlertDialog(context, _homeResponse.settings!);
         }
         setState(() {
           loadingMain = false;
@@ -139,13 +141,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           }
           if (_homeResponse.notices != null) {
             if (_homeResponse.notices!.isNotEmpty) {
-              noticeSliders = getNoticeSliders(_homeResponse.notices!, context);
+              var tempNotices = <Notice>[];
+              for (Notice notice in _homeResponse.notices!) {
+                if (notice.timeBased == true) {
+                  if (checkNoticeStatus(notice)) {
+                    tempNotices.add(notice);
+                  }
+                } else {
+                  tempNotices.add(notice);
+                }
+              }
+              noticeSliders = getNoticeSliders(tempNotices, context);
               enableNoticesSlider = true;
             }
           }
           if (_homeResponse.shopCategories != null) {
+            var _filCatsTemp = _homeResponse.shopCategories!
+                .where((element) => _homeResponse.shops!.any((element1) =>
+                    element1.categories
+                        ?.any((element2) => element2 == element.id) ??
+                    false))
+                .toList() as List<category_model.Category>;
+            _homeResponse.shopCategories = _filCatsTemp;
             _homeResponse.shopCategories!
                 .insert(0, category_model.Category(name: "All", id: "ALL"));
+
             if (silently != true) {
               tabController = TabController(
                   length: _homeResponse.shopCategories!.length, vsync: this);
@@ -288,6 +308,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  Future<void> _refresh() async {
+    setState(() {
+      loadingMain = true;
+    });
+    getHomeResponse();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -311,11 +338,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget buildSliverScrollView() {
-    return CustomScrollView(
-      slivers: [
-        buildHomeStickyTabs(),
-        buildBody(),
-      ],
+    return RefreshIndicator(
+      key: _refreshIndicatorKey,
+      onRefresh: _refresh,
+      child: CustomScrollView(
+        slivers: [
+          buildHomeStickyTabs(),
+          buildBody(),
+        ],
+      ),
     );
   }
 
@@ -333,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               filteredShops[index].location.toString(),
               filteredShops[index].coverPhoto.toString(),
               filteredShops[index].notices);
-        }, checkShopStatus(filteredShops[index]),
+        }, checkShopStatus(filteredShops[index].activeHours),
             filteredShops[index].activeHours),
         childCount: filteredShops.length,
       ),

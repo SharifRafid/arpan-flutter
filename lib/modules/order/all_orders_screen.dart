@@ -84,7 +84,7 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
           final value = await Navigator.push(
             context,
             MaterialPageRoute<void>(
-                builder: (BuildContext context) => OrderDetailsScreen(order)),
+                builder: (BuildContext context) => OrderDetailsScreen(order.id!)),
           );
           loadOrdersData();
         },
@@ -131,7 +131,7 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
                   borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(5),
                       topRight: Radius.circular(5)),
-                  color: order.orderStatus == "PENDING"
+                  color: order.orderStatus == "PLACED"
                       ? const Color(0xFF262626)
                       : order.orderStatus == "VERIFIED"
                           ? const Color(0xFFFA831B)

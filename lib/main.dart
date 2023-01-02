@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:ui_test/global/models/cart_item_model.dart';
@@ -26,7 +27,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseMessaging.instance.subscribeToTopic("common_user");
+  if(!kIsWeb){
+    await FirebaseMessaging.instance.subscribeToTopic("common_user");
+  }
   runApp(MyApp(accessToken, refreshToken));
   if(refreshToken != ""){
     await AuthService().refreshTokens(refreshToken);

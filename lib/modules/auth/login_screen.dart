@@ -110,7 +110,7 @@ class _AuthMainState extends State<_AuthMain> {
         showTimer = true;
       });
       if (!mounted) return;
-      showToast(context, "OTP sent successfully");
+      showToast(context, "OTP sent successfully.");
     }
   }
 

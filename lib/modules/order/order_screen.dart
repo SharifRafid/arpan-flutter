@@ -17,6 +17,7 @@ import '../../global/models/promo_code_model.dart';
 import '../../global/models/settings_model.dart';
 import '../../global/utils/theme_data.dart';
 import '../../global/utils/utils.dart';
+import 'order_details_screen.dart';
 import 'widgets/promo_code_block.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -117,13 +118,13 @@ class _OrderScreenState extends State<OrderScreen> {
       box.clear();
       Hive.box<CartItemMain>("cart").clear();
       if (!mounted) return;
-      showToast(context, "Successfully placed order");
+      showToast(context, "Successfully placed order.");
       Navigator.pop(context);
       Navigator.pop(context);
       Navigator.push(
           context,
           MaterialPageRoute<void>(
-              builder: (BuildContext context) => const AllOrdersScreen()));
+              builder: (BuildContext context) => OrderDetailsScreen(orderId)));
     }
   }
 
@@ -155,10 +156,19 @@ class _OrderScreenState extends State<OrderScreen> {
       }
     }
 
+    totalPrice = tp;
+    deliveryCharge = dc;
+
+    var tpBkash = 0;
+    if(((tp + dc) * bkashMultiplier) > ((tp + dc) * bkashMultiplier).toInt()){
+      tpBkash = (tp + ((tp + dc) * bkashMultiplier)).toInt()+1;
+      print(tpBkash.toString());
+    }else{
+      tpBkash = (tp + ((tp + dc) * bkashMultiplier)).toInt();
+      print(tpBkash.toString());
+    }
     setState(() {
-      totalPrice = tp;
-      deliveryCharge = dc;
-      totalPriceBkash = (tp + ((tp + dc) * bkashMultiplier).toInt());
+      totalPriceBkash = tpBkash;
     });
   }
 

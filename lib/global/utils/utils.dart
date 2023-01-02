@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ui_test/global/utils/assymetric_encryption.dart';
 
+import '../models/notice_model.dart';
 import '../models/settings_model.dart';
 
 import 'dart:math';
@@ -30,13 +31,13 @@ bool orderingTimeCheck() {
   }
   DateTime date = DateTime.now();
   DateTime startDate = DateTime(
-      2022,
+      date.year,
       date.month,
       date.day,
       int.parse(settings.orderStartTime.toString().split(":")[0]),
       int.parse(settings.orderStartTime.toString().split(":")[1]));
   DateTime endDate = DateTime(
-      2022,
+      date.year,
       date.month,
       date.day,
       int.parse(settings.orderEndTime.toString().split(":")[0]),
@@ -44,7 +45,7 @@ bool orderingTimeCheck() {
   return startDate.isBefore(date) && endDate.isAfter(date);
 }
 
-void checkSettings(BuildContext context, Settings settings) {
+void checkSettingsForAlertDialog(BuildContext context, Settings settings) {
   if (settings.alertDialogeEmergencyStatus == "active") {
     showDialog<void>(
       context: context,
@@ -104,16 +105,47 @@ String orderNumberToString(String num) {
   return num;
 }
 
-bool checkShopStatus(Shop element){
-  if(element.activeHours == null){
+bool checkShopStatus(String? activeHours){
+  if(activeHours == null){
     return true;
   }
-  if(element.activeHours!.isEmpty){
+  if(activeHours.isEmpty){
     return true;
   }
-  String timeRange = element.activeHours.toString();
+  String timeRange = activeHours.toString();
   String startTime = timeRange.split("TO")[0].toString();
   String endTime = timeRange.split("TO")[1].toString();
+  if(startTime.trim().isEmpty && endTime.trim().isEmpty){
+    return true;
+  }
+  double startTimeDouble = double.parse(startTime.split(":")[0])
+      +(double.parse(startTime.split(":")[1])/60.0);
+  double endTimeDouble = double.parse(endTime.split(":")[0])
+      +(double.parse(endTime.split(":")[1])/60.0);
+  DateTime dateTime = DateTime.now();
+  double currentTime = double.parse(dateTime.hour.toString())
+      + (double.parse(dateTime.minute.toString())/60);
+  if(startTimeDouble<currentTime && endTimeDouble>currentTime){
+    return true;
+  }
+  return false;
+}
+
+bool checkNoticeStatus(Notice element){
+  if(element.startTimeString == null){
+    return true;
+  }
+  if(element.startTimeString!.isEmpty){
+    return true;
+  }
+  if(element.endTimeString == null){
+    return true;
+  }
+  if(element.endTimeString!.isEmpty){
+    return true;
+  }
+  String startTime = element.startTimeString.toString();
+  String endTime = element.endTimeString.toString();
   double startTimeDouble = double.parse(startTime.split(":")[0])
       +(double.parse(startTime.split(":")[1])/60.0);
   double endTimeDouble = double.parse(endTime.split(":")[0])

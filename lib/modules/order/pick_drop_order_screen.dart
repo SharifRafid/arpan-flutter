@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 
@@ -8,13 +9,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ui_test/modules/order/services/order_service.dart';
 
 import '../../global/models/location_model.dart';
+import '../../global/models/settings_model.dart';
 import '../../global/utils/constants.dart';
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/theme_data.dart';
 import '../../global/utils/utils.dart';
 import '../home/services/home_service.dart';
 import '../home/widgets/order_app_bar.dart';
+import '../others/services/others_service.dart';
 import 'all_orders_screen.dart';
+import 'order_details_screen.dart';
 
 class PickDropOrderScreen extends StatefulWidget {
   const PickDropOrderScreen({Key? key}) : super(key: key);
@@ -49,6 +53,10 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
   int deliveryCharge = 0;
 
   late Box box;
+
+  Settings? settings;
+  Timer? _autoRefreshTimer;
+  bool settingsLoading = true;
 
   void placeOrder() async {
     if(!orderingTimeCheck()){
@@ -131,12 +139,12 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
       debugPrint(orderId);
       box.clear();
       if (!mounted) return;
-      showToast(context, "Successfully placed order");
+      showToast(context, "Successfully placed order.");
       Navigator.pop(context);
       Navigator.push(
           context,
           MaterialPageRoute<void>(
-              builder: (BuildContext context) => const AllOrdersScreen()));
+              builder: (BuildContext context) => OrderDetailsScreen(orderId)));
     }
   }
 
@@ -179,6 +187,7 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
         parcelDetails.text = box.get("pickDropParcelDetails", defaultValue: "");
       }
     }
+    fetchSettingsData();
   }
 
   void openBox() async {
@@ -186,10 +195,39 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
     getLocationsResponse();
   }
 
+  void fetchSettingsData({bool? silently}) async {
+    debugPrint("Fetching Settings Data");
+    if (silently != true) {
+      setState(() {
+        settingsLoading = true;
+      });
+    }
+    var response = await OthersService().getSettings();
+    if (response != null) {
+      Hive.box<Settings>("settingsBox").put("current", response);
+    } else {
+      if (!mounted) return;
+      showToast(context, "Failed to load cart data from server");
+    }
+    setState(() {
+      settings = response;
+      settingsLoading = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     openBox();
+    _autoRefreshTimer = Timer.periodic(
+        const Duration(seconds: autoRefreshDelaySeconds),
+            (Timer t) => fetchSettingsData(silently: true));
+  }
+
+  @override
+  void dispose() {
+    _autoRefreshTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -327,7 +365,7 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
                             child: Card(
                               elevation: 0,
                               margin: const EdgeInsets.all(0),
-                              color: bgBlue,
+                              color: bgOffWhite,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5)),
                               child: InkWell(
@@ -337,7 +375,7 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
                                 child: image == null
                                     ? const Icon(
                                         Icons.camera_alt,
-                                        color: textWhite,
+                                        color: textGrey,
                                       )
                                     :  kIsWeb ? Image.network(image!.path) :
                                 Image.file(File(image!.path)),
@@ -526,19 +564,75 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
                           height: 38,
                           width: 140,
                           margin: const EdgeInsets.only(left: 5, right: 5),
-                          child: MaterialButton(
+                          child: settingsLoading
+                              ? Container(
+                              height: 38,
+                              child: const Center(
+                                  child: CircularProgressIndicator()))
+                              : settings != null
+                              ? MaterialButton(
+                            color: orderingTimeCheck()
+                                ? Colors.green
+                                : Colors.grey,
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.circular(5)),
                             onPressed: () {
+                              if (!orderingTimeCheck()) {
+                                showToast(context,
+                                    "We are not receiving orders at this moment.");
+                                return;
+                              }
+                              var authBox = Hive.box('authBox');
+                              if (authBox.get("accessToken",
+                                  defaultValue: "") ==
+                                  "" ||
+                                  authBox.get("refreshToken",
+                                      defaultValue: "") ==
+                                      "") {
+                                showLoginToast(context);
+                                return;
+                              }
                               placeOrder();
                             },
-                            color: Colors.green,
-                            child: const Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 15, right: 15),
-                                child: Text(
-                                  "Place Order",
-                                  style: TextStyle(color: textWhite),
-                                ),
-                              ),
+                            child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 8.0,
+                                    right: 0.0,
+                                    top: 8,
+                                    bottom: 8),
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.center,
+                                  children: const [
+                                    Text("Place Order",
+                                        style: TextStyle(
+                                            color: textWhite)),
+                                    Padding(
+                                      padding:
+                                      EdgeInsets.only(left: 8.0),
+                                      child: Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: textWhite,
+                                        size: 16,
+                                      ),
+                                    )
+                                  ],
+                                )),
+                          )
+                              : MaterialButton(
+                            color: bgBlue,
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.circular(5)),
+                            onPressed: () {
+                              fetchSettingsData();
+                            },
+                            child: const Icon(
+                              Icons.refresh,
+                              color: textWhite,
                             ),
                           ),
                         )

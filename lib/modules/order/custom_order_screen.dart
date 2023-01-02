@@ -1,19 +1,23 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ui_test/modules/order/order_details_screen.dart';
 import 'package:ui_test/modules/order/services/order_service.dart';
 
 import '../../global/models/location_model.dart';
 import '../../global/models/promo_code_model.dart';
+import '../../global/models/settings_model.dart';
 import '../../global/utils/constants.dart';
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/theme_data.dart';
 import '../../global/utils/utils.dart';
 import '../home/services/home_service.dart';
 import '../home/widgets/order_app_bar.dart';
+import '../others/services/others_service.dart';
 import 'all_orders_screen.dart';
 import 'widgets/promo_code_block_custom.dart';
 
@@ -41,13 +45,17 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
   XFile? image;
 
   bool loading = true;
+  bool settingsLoading = true;
 
   int deliveryCharge = 0;
 
   late Box box;
 
+  Settings? settings;
+  Timer? _autoRefreshTimer;
+
   void placeOrder() async {
-    if(!orderingTimeCheck()){
+    if (!orderingTimeCheck()) {
       showToast(context, "Please order at the correct ordering times");
       return;
     }
@@ -111,12 +119,12 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
       print(orderId);
       box.clear();
       if (!mounted) return;
-      showToast(context, "Successfully placed order");
+      showToast(context, "Successfully placed order.");
       Navigator.pop(context);
       Navigator.push(
           context,
           MaterialPageRoute<void>(
-              builder: (BuildContext context) => const AllOrdersScreen()));
+              builder: (BuildContext context) => OrderDetailsScreen(orderId)));
     }
   }
 
@@ -150,6 +158,16 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
     });
   }
 
+  String roundBkashCharge(int charge) {
+    var tpBkash = 0;
+    if ((charge * bkashMultiplier) > (charge * bkashMultiplier).toInt()) {
+      tpBkash = (charge + (charge * bkashMultiplier)).toInt() + 1;
+    } else {
+      tpBkash = (charge + (charge * bkashMultiplier)).toInt();
+    }
+    return tpBkash.toString();
+  }
+
   void getLocationsResponse() async {
     if (mounted) {
       var response = await homeService.getLocationDataMain();
@@ -166,12 +184,16 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
           loading = false;
         });
         calculateTotalPrices();
-        nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "");
-        phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ;
-        addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ;
+        nameController.text = box.get("name", defaultValue: null) ??
+            Hive.box('authBox').get("name", defaultValue: "");
+        phoneController.text = box.get("phone", defaultValue: null) ??
+            Hive.box('authBox').get("phone", defaultValue: "");
+        addressController.text = box.get("address", defaultValue: null) ??
+            Hive.box('authBox').get("address", defaultValue: "");
         orderMainController.text = box.get("orderDetails", defaultValue: "");
       }
     }
+    fetchSettingsData();
   }
 
   void openBox() async {
@@ -179,10 +201,39 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
     getLocationsResponse();
   }
 
+  void fetchSettingsData({bool? silently}) async {
+    debugPrint("Fetching Settings Data");
+    if (silently != true) {
+      setState(() {
+        settingsLoading = true;
+      });
+    }
+    var response = await OthersService().getSettings();
+    if (response != null) {
+      Hive.box<Settings>("settingsBox").put("current", response);
+    } else {
+      if (!mounted) return;
+      showToast(context, "Failed to load cart data from server");
+    }
+    setState(() {
+      settings = response;
+      settingsLoading = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     openBox();
+    _autoRefreshTimer = Timer.periodic(
+        const Duration(seconds: autoRefreshDelaySeconds),
+        (Timer t) => fetchSettingsData(silently: true));
+  }
+
+  @override
+  void dispose() {
+    _autoRefreshTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -284,7 +335,7 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
                             child: Card(
                               elevation: 0,
                               margin: const EdgeInsets.all(0),
-                              color: bgBlue,
+                              color: bgOffWhite,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5)),
                               child: InkWell(
@@ -294,10 +345,11 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
                                 child: image == null
                                     ? const Icon(
                                         Icons.camera_alt,
-                                        color: textWhite,
+                                        color: textGrey,
                                       )
-                                    : kIsWeb ? Image.network(image!.path) :
-                                Image.file(File(image!.path)),
+                                    : kIsWeb
+                                        ? Image.network(image!.path)
+                                        : Image.file(File(image!.path)),
                               ),
                             ),
                           ),
@@ -414,7 +466,7 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
                               child: Center(
                                 child: _paymentMethod == PaymentMethod.bKash
                                     ? Text(
-                                        "Delivery charge : ${deliveryCharge + (deliveryCharge * bkashMultiplier).toInt()} ৳",
+                                        "Delivery charge : ${roundBkashCharge(deliveryCharge)} ৳",
                                         style:
                                             const TextStyle(color: textBlack),
                                       )
@@ -431,21 +483,77 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
                           height: 38,
                           width: 140,
                           margin: const EdgeInsets.only(left: 5, right: 5),
-                          child: MaterialButton(
-                            onPressed: () {
-                              placeOrder();
-                            },
-                            color: Colors.green,
-                            child: const Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 15, right: 15),
-                                child: Text(
-                                  "Place Order",
-                                  style: TextStyle(color: textWhite),
-                                ),
-                              ),
-                            ),
-                          ),
+                          child: settingsLoading
+                              ? Container(
+                                  height: 38,
+                                  child: const Center(
+                                      child: CircularProgressIndicator()))
+                              : settings != null
+                                  ? MaterialButton(
+                                      color: orderingTimeCheck()
+                                          ? Colors.green
+                                          : Colors.grey,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      onPressed: () {
+                                        if (!orderingTimeCheck()) {
+                                          showToast(context,
+                                              "We are not receiving orders at this moment.");
+                                          return;
+                                        }
+                                        var authBox = Hive.box('authBox');
+                                        if (authBox.get("accessToken",
+                                                    defaultValue: "") ==
+                                                "" ||
+                                            authBox.get("refreshToken",
+                                                    defaultValue: "") ==
+                                                "") {
+                                          showLoginToast(context);
+                                          return;
+                                        }
+                                        placeOrder();
+                                      },
+                                      child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0,
+                                              right: 0.0,
+                                              top: 8,
+                                              bottom: 8),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: const [
+                                              Text("Place Order",
+                                                  style: TextStyle(
+                                                      color: textWhite)),
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 8.0),
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: textWhite,
+                                                  size: 16,
+                                                ),
+                                              )
+                                            ],
+                                          )),
+                                    )
+                                  : MaterialButton(
+                                      color: bgBlue,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      onPressed: () {
+                                        fetchSettingsData();
+                                      },
+                                      child: const Icon(
+                                        Icons.refresh,
+                                        color: textWhite,
+                                      ),
+                                    ),
                         )
                       ],
                     ),
