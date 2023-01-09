@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ui_test/global/models/cart_item_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
+import 'package:ui_test/global/utils/router.dart';
 import 'package:ui_test/modules/order/order_screen.dart';
 import 'package:ui_test/modules/home/widgets/cart_app_bar.dart';
 import 'package:ui_test/modules/home/widgets/editable_cart_item.dart';
@@ -14,6 +15,7 @@ import '../../global/models/settings_model.dart';
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/theme_data.dart';
 import '../../global/utils/utils.dart';
+import '../../main.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -40,6 +42,7 @@ class _CartScreenState extends State<CartScreen> {
           .put("current", response);
     }else{
       if(!mounted) return;
+      if(silently==true) return;
       showToast(context, "Failed to load cart data from server");
     }
     setState((){
@@ -77,9 +80,6 @@ class _CartScreenState extends State<CartScreen> {
             } else {
               cartItems[item.productItemShopName!] = [item];
             }
-          }
-          if(cartItems.isEmpty){
-            Navigator.pop(context);
           }
           return Scaffold(
             backgroundColor: bgOffWhite,
@@ -132,11 +132,7 @@ class _CartScreenState extends State<CartScreen> {
                           showLoginToast(context);
                           return;
                         }
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                const OrderScreen()));
+                        navigatorKey.currentState?.pushNamed(Routes.order);
                       },
                       child: Padding(
                           padding: const EdgeInsets.only(

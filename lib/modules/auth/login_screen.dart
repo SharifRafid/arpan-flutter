@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:ui_test/global/utils/router.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/modules/auth/widgets/resend_button.dart';
 import 'package:ui_test/modules/home/home_screen.dart';
@@ -10,6 +11,7 @@ import '../../global/networking/responses/default_response.dart';
 import '../../global/networking/responses/login_response.dart';
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/utils.dart';
+import '../../main.dart';
 import 'services/auth_service.dart';
 import 'widgets/text_field_number.dart';
 import 'widgets/verify_button.dart';
@@ -60,12 +62,7 @@ class _AuthMainState extends State<_AuthMain> {
       await box.put("address", loginResponse.user!.address.toString());
       await box.put("phone", loginResponse.user!.phone!);
       if (!mounted) return;
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute<void>(
-            builder: (BuildContext context) => const HomeScreen()),
-            (route)=>false,
-      );
+      navigatorKey.currentState?.pushReplacementNamed(Routes.home);
     } else {
       setState(() {
         showLoading = false;

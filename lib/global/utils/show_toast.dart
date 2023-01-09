@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:ui_test/global/utils/router.dart';
 import 'package:ui_test/modules/auth/login_screen.dart';
+
+import '../../main.dart';
 
 void showToast(BuildContext context, String message) {
   ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -20,9 +23,10 @@ void showLoginToast(BuildContext context) {
       action: SnackBarAction(
         label: 'Login',
         onPressed: () {
-          Navigator.push(context,
-            MaterialPageRoute<void>(
-                builder: (BuildContext context) => const AuthMain()),);
+          navigatorKey.currentState?.pushNamedAndRemoveUntil(
+            Routes.login,
+                (route) => route.isCurrent,
+          );
         },
       ),
     ),

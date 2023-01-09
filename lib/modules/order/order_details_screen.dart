@@ -13,6 +13,7 @@ import 'package:ui_test/modules/order/widgets/order_steps_view.dart';
 import '../../global/models/cart_item_model.dart';
 import '../../global/utils/constants.dart';
 import '../../global/utils/utils.dart';
+import '../../main.dart';
 import 'services/order_service.dart';
 import 'widgets/order_cart_item.dart';
 
@@ -619,15 +620,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                             TextButton(
                                               child: const Text('Yes'),
                                               onPressed: () {
-                                                Navigator.of(context).pop();
+                                                navigatorKey.currentState?.pop();
                                                 cancelOrder();
                                               },
                                             ),
                                             TextButton(
                                               child: const Text('No'),
                                               onPressed: () {
-                                                Navigator.pop(
-                                                    context, 'Cancel');
+                                                navigatorKey.currentState?.pop('Cancel');
                                               },
                                             ),
                                           ],
@@ -652,7 +652,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       ],
                     ),
                   ),
-                  orderItemResponse!.orderStatus == "CANCELLED"
+                  orderItemResponse!.orderStatus == "CANCELLED" && orderItemResponse!.cancelledOrderReasonFromAdmin != null
                       ? Card(
                           elevation: 1,
                           shape: RoundedRectangleBorder(

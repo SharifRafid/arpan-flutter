@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ui_test/global/utils/assymetric_encryption.dart';
 
+import '../../main.dart';
 import '../models/notice_model.dart';
 import '../models/settings_model.dart';
 
@@ -64,7 +65,7 @@ void checkSettingsForAlertDialog(BuildContext context, Settings settings) {
             TextButton(
               child: const Text('Okay'),
               onPressed: () {
-                Navigator.pop(context);
+                navigatorKey.currentState?.pop();
               },
             ),
           ],

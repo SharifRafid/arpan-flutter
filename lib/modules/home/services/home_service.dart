@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:ui_test/global/models/location_model.dart';
+import 'package:ui_test/global/utils/router.dart';
+import 'package:ui_test/main.dart';
 import '../../../global/networking/responses/home_response.dart';
 import '../../../global/networking/responses/products_response.dart';
 import '../../../global/utils/constants.dart';
@@ -15,6 +19,13 @@ class HomeService {
       );
       if (response.statusCode == 200) {
         return HomeResponse.fromJson(response.data);
+      }else if (response.statusCode == 401) {
+        Box box = Hive.box("authBox");
+        await box.put("accessToken", "");
+        await box.put("refreshToken", "");
+        navigatorKey.currentState?.pushNamedAndRemoveUntil(Routes.splash,
+                (Route<dynamic> route) => false);
+        return null;
       } else {
         return null;
       }

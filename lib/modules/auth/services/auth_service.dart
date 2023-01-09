@@ -10,25 +10,37 @@ class AuthService {
   final Dio _dio = Dio();
 
   Future<Tokens?> refreshTokens(String refreshToken) async {
+    Box box = Hive.box("authBox");
     try {
       Response response = await _dio.post(
         "${baseUrl}auth/refresh",
         data: {'refreshToken': refreshToken},
       );
       //returns the successful user data json object
-      try{
+      if (response.statusCode == 401) {
+        await box.put("accessToken", "");
+        await box.put("refreshToken", "");
+      }
+      try {
         Tokens tokens = Tokens.fromJson(response.data);
-        Box box = Hive.box("authBox");
         debugPrint("AccessToken : ${tokens.access!.token}");
         debugPrint("RefreshToken : ${tokens.refresh!.token}");
         await box.put("accessToken", tokens.access!.token.toString());
         await box.put("refreshToken", tokens.refresh!.token.toString());
         return tokens;
-      }catch(e){
+      } catch (e) {
+        if (response.statusCode == 401) {
+          await box.put("accessToken", "");
+          await box.put("refreshToken", "");
+        }
         debugPrint(e.toString());
         return null;
       }
     } on DioError catch (e) {
+      if (e.response?.statusCode == 401) {
+        await box.put("accessToken", "");
+        await box.put("refreshToken", "");
+      }
       //returns the error object if any
       debugPrint(e.message);
       return null;

@@ -3,6 +3,8 @@ import 'package:ui_test/global/models/cart_item_model.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../../main.dart';
+
 class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
   final String title;
@@ -30,14 +32,14 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: const Text('Yes'),
               onPressed: () {
                 box.clear();
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
+                navigatorKey.currentState?.pop();
+                navigatorKey.currentState?.pop();
               },
             ),
             TextButton(
               child: const Text('No'),
               onPressed: () {
-                Navigator.pop(context, 'Cancel');
+                navigatorKey.currentState?.pop('Cancel');
               },
             ),
           ],
@@ -75,7 +77,7 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
                         color: textWhite,
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
+                        navigatorKey.currentState?.pop();
                       },
                     ),
                   ),

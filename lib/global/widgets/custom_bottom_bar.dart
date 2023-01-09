@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:ui_test/global/utils/router.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/global/utils/utils.dart';
 import 'package:ui_test/modules/order/all_orders_screen.dart';
 import 'package:ui_test/modules/order/models/order_item_response.dart';
 
+import '../../main.dart';
 import '../../modules/order/order_details_screen.dart';
 
 class CustomBottomBar extends StatelessWidget {
@@ -48,11 +50,8 @@ class CustomBottomBar extends StatelessWidget {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             child: InkWell(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                        builder: (BuildContext context) =>
-                            OrderDetailsScreen(order.id!)));
+                navigatorKey.currentState?.pushNamed(Routes.orderDetails,
+                    arguments: {"orderId": order.id});
               },
               child: Padding(
                 padding: const EdgeInsets.all(15.0),

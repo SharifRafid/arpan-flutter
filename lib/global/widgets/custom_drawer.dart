@@ -3,7 +3,9 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:ui_test/global/utils/router.dart';
 import 'package:ui_test/global/utils/show_toast.dart';
+import 'package:ui_test/main.dart';
 import 'package:ui_test/modules/order/custom_order_screen.dart';
 import 'package:ui_test/modules/order/medicine_order_screen.dart';
 import 'package:ui_test/modules/order/parcel_order_screen.dart';
@@ -45,7 +47,9 @@ Widget customDrawer(BuildContext context) {
                   ),
                 ),
               ),
-              const Divider(color: bgGreyDeep,),
+              const Divider(
+                color: bgGreyDeep,
+              ),
               box.get("accessToken", defaultValue: "") != "" &&
                       box.get("refreshToken", defaultValue: "") != ""
                   ? ListTile(
@@ -63,12 +67,8 @@ Widget customDrawer(BuildContext context) {
                       ),
                       leading: const Icon(Icons.person, color: textWhite),
                       onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                                builder: (BuildContext context) =>
-                                    const ProfileScreen()));
+                        navigatorKey.currentState?.pop();
+                        navigatorKey.currentState?.pushNamed(Routes.profile);
                       },
                     )
                   : Container(),
@@ -89,18 +89,16 @@ Widget customDrawer(BuildContext context) {
                       ),
                       leading: const Icon(Icons.history, color: textWhite),
                       onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                                builder: (BuildContext context) =>
-                                    const AllOrdersScreen()));
+                        navigatorKey.currentState?.pop();
+                        navigatorKey.currentState?.pushNamed(Routes.pastOrders);
                       },
                     )
                   : Container(),
               box.get("accessToken", defaultValue: "") != "" &&
                       box.get("refreshToken", defaultValue: "") != ""
-                  ?const Divider(color: bgGreyDeep,)
+                  ? const Divider(
+                      color: bgGreyDeep,
+                    )
                   : Container(),
               ListTile(
                 visualDensity: const VisualDensity(vertical: -3),
@@ -118,12 +116,8 @@ Widget customDrawer(BuildContext context) {
                 leading:
                     const Icon(Icons.dashboard_customize, color: textWhite),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const CustomOrderScreen()));
+                  navigatorKey.currentState?.pop();
+                  navigatorKey.currentState?.pushNamed(Routes.customOrder);
                 },
               ),
               ListTile(
@@ -141,12 +135,8 @@ Widget customDrawer(BuildContext context) {
                 ),
                 leading: const Icon(Icons.medical_services, color: textWhite),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const MedicineOrderScreen()));
+                  navigatorKey.currentState?.pop();
+                  navigatorKey.currentState?.pushNamed(Routes.medicineOrder);
                 },
               ),
               ListTile(
@@ -165,12 +155,8 @@ Widget customDrawer(BuildContext context) {
                 leading:
                     const Icon(Icons.delivery_dining_rounded, color: textWhite),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const ParcelOrderScreen()));
+                  navigatorKey.currentState?.pop();
+                  navigatorKey.currentState?.pushNamed(Routes.parcelOrder);
                 },
               ),
               ListTile(
@@ -188,15 +174,13 @@ Widget customDrawer(BuildContext context) {
                 ),
                 leading: const Icon(Icons.cached_rounded, color: textWhite),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const PickDropOrderScreen()));
+                  navigatorKey.currentState?.pop();
+                  navigatorKey.currentState?.pushNamed(Routes.pickUpAndDrop);
                 },
               ),
-              const Divider(color: bgGreyDeep,),
+              const Divider(
+                color: bgGreyDeep,
+              ),
               ListTile(
                 visualDensity: const VisualDensity(vertical: -3),
                 // to compact
@@ -212,7 +196,7 @@ Widget customDrawer(BuildContext context) {
                 ),
                 leading: const Icon(Icons.share, color: textWhite),
                 onTap: () {
-                  Navigator.pop(context);
+                  navigatorKey.currentState?.pop();
                   Share.share('Check out Arpan https://arpan.delivery');
                 },
               ),
@@ -231,7 +215,7 @@ Widget customDrawer(BuildContext context) {
                 ),
                 leading: const Icon(Icons.star_rate, color: textWhite),
                 onTap: () async {
-                  Navigator.pop(context);
+                  navigatorKey.currentState?.pop();
                   final Uri _url = Uri.parse(
                       'https://play.google.com/store/apps/details?id=arpan.delivery&hl=en&gl=US');
                   !await launchUrl(_url);
@@ -294,12 +278,8 @@ Widget customDrawer(BuildContext context) {
                 ),
                 leading: const Icon(Icons.feedback, color: textWhite),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const FeedbackScreen()));
+                  navigatorKey.currentState?.pop();
+                  navigatorKey.currentState?.pushNamed(Routes.feedback);
                 },
               ),
               // const Divider(),
@@ -350,7 +330,9 @@ Widget customDrawer(BuildContext context) {
               //                 const BeClientScreen()));
               //   },
               // ),
-              const Divider(color: bgGreyDeep,),
+              const Divider(
+                color: bgGreyDeep,
+              ),
               box.get("accessToken", defaultValue: "") != "" &&
                       box.get("refreshToken", defaultValue: "") != ""
                   ? ListTile(
@@ -368,7 +350,7 @@ Widget customDrawer(BuildContext context) {
                       ),
                       leading: const Icon(Icons.logout, color: textWhite),
                       onTap: () {
-                        Navigator.pop(context);
+                        navigatorKey.currentState?.pop();
                         showDialog<void>(
                           context: context,
                           barrierDismissible: true,
@@ -386,12 +368,9 @@ Widget customDrawer(BuildContext context) {
                                 TextButton(
                                   child: const Text('Yes'),
                                   onPressed: () async {
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute<void>(
-                                            builder: (BuildContext context) =>
-                                                const AuthMain()),
-                                        (route)=>false);
+                                    navigatorKey.currentState
+                                        ?.pushNamedAndRemoveUntil(
+                                            Routes.login, (route) => false);
                                     String accessToken = box.get("accessToken",
                                         defaultValue: "");
                                     HashMap<String, dynamic> hashMap =
@@ -410,7 +389,7 @@ Widget customDrawer(BuildContext context) {
                                 TextButton(
                                   child: const Text('No'),
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    navigatorKey.currentState?.pop();
                                   },
                                 ),
                               ],
@@ -434,13 +413,8 @@ Widget customDrawer(BuildContext context) {
                       ),
                       leading: const Icon(Icons.login, color: textWhite),
                       onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute<void>(
-                              builder: (BuildContext context) =>
-                                  const AuthMain()),
-                        );
+                        navigatorKey.currentState?.pop();
+                        navigatorKey.currentState?.pushNamed(Routes.login);
                       },
                     ),
             ],

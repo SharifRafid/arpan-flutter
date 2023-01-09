@@ -11,9 +11,12 @@ import 'package:ui_test/modules/order/services/order_service.dart';
 import '../../global/models/location_model.dart';
 import '../../global/models/settings_model.dart';
 import '../../global/utils/constants.dart';
+import '../../global/utils/router.dart';
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/theme_data.dart';
 import '../../global/utils/utils.dart';
+import '../../main.dart';
+import '../home/home_screen.dart';
 import '../home/services/home_service.dart';
 import '../home/widgets/order_app_bar.dart';
 import '../others/services/others_service.dart';
@@ -140,11 +143,13 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
       box.clear();
       if (!mounted) return;
       showToast(context, "Successfully placed order.");
-      Navigator.pop(context);
-      Navigator.push(
-          context,
-          MaterialPageRoute<void>(
-              builder: (BuildContext context) => OrderDetailsScreen(orderId)));
+      navigatorKey.currentState?.popUntil(ModalRoute.withName(Routes.home));
+      final value = await navigatorKey.currentState?.pushNamed(
+          Routes.orderDetails,
+          arguments: {
+            "orderId" : orderId
+          }
+      );
     }
   }
 
@@ -176,15 +181,15 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
         setState(() {
           loading = false;
         });
-        nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "");
-        phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ;
-        addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ;
+        nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "") ?? "";
+        phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ?? "";
+        addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ?? "";
         nameControllerReceiver.text = box.get("nameReceiver", defaultValue: "");
         phoneControllerReceiver.text =
-            box.get("phoneReceiver", defaultValue: "");
+            box.get("phoneReceiver", defaultValue: "") ?? "";
         addressControllerReceiver.text =
-            box.get("addressReceiver", defaultValue: "");
-        parcelDetails.text = box.get("pickDropParcelDetails", defaultValue: "");
+            box.get("addressReceiver", defaultValue: "") ?? "";
+        parcelDetails.text = box.get("pickDropParcelDetails", defaultValue: "") ?? "";
       }
     }
     fetchSettingsData();
@@ -362,24 +367,17 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
                           SizedBox(
                             width: 75,
                             height: 65,
-                            child: Card(
-                              elevation: 0,
-                              margin: const EdgeInsets.all(0),
-                              color: bgOffWhite,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: InkWell(
-                                onTap: () {
-                                  pickImage();
-                                },
-                                child: image == null
-                                    ? const Icon(
-                                        Icons.camera_alt,
-                                        color: textGrey,
-                                      )
-                                    :  kIsWeb ? Image.network(image!.path) :
-                                Image.file(File(image!.path)),
-                              ),
+                            child: InkWell(
+                              onTap: () {
+                                pickImage();
+                              },
+                              child: image == null
+                                  ? const Icon(
+                                      Icons.camera_alt,
+                                      color: textGrey,
+                                    )
+                                  :  kIsWeb ? Image.network(image!.path) :
+                              Image.file(File(image!.path)),
                             ),
                           )
                         ],

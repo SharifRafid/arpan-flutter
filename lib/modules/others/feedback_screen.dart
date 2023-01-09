@@ -6,6 +6,7 @@ import 'package:ui_test/modules/others/services/others_service.dart';
 
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/theme_data.dart';
+import '../../main.dart';
 import '../home/widgets/order_app_bar.dart';
 
 class FeedbackScreen extends StatefulWidget {
@@ -63,7 +64,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       box.delete("feedbackDetails");
       if (!mounted) return;
       showToast(context, "Successfully submitted the feedback.");
-      Navigator.pop(context);
+      navigatorKey.currentState?.pop();
     }
   }
 

@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:ui_test/global/models/cart_item_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
+import 'package:ui_test/global/utils/show_toast.dart';
 
 import '../../../global/utils/theme_data.dart';
+import '../../../main.dart';
 
 class CartCard extends StatelessWidget {
   final String item;
@@ -143,6 +146,9 @@ class _ProductItemCart extends StatelessWidget {
                 MaterialButton(
                   onPressed: () async {
                     await product.delete();
+                    if(Hive.box<CartItemMain>('cart').isEmpty){
+                      navigatorKey.currentState?.pop();
+                    }
                   },
                   color: Colors.redAccent,
                   textColor: textWhite,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ui_test/modules/auth/login_screen.dart';
+import 'package:ui_test/global/utils/router.dart';
 
 import '../../global/utils/theme_data.dart';
+import '../../main.dart';
 import 'widgets/button_main.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -63,35 +64,30 @@ class _SplashScreenState extends State<SplashScreen> {
                 opacity: offsetButtons,
                 duration: const Duration(milliseconds: 500),
                 child: Column(
-                    children: [
+                  children: [
                     ButtonMain(
-                    "Login",
-                        () =>
-                    {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                            const AuthMain()),
-                      ),
-                    }),
-                // ButtonMain("Go to home", () =>
-                // {
-                //   Navigator.pushAndRemoveUntil(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (BuildContext context) =>
-                //         const HomeScreen()),
-                //     ModalRoute.withName('/'),
-                //   ),
-                // }),
+                        "Login",
+                        () => {
+                              navigatorKey.currentState
+                                  ?.pushReplacementNamed(Routes.login),
+                            }),
+                    // ButtonMain("Go to home", () =>
+                    // {
+                    //   Navigator.pushAndRemoveUntil(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (BuildContext context) =>
+                    //         const HomeScreen()),
+                    //     ModalRoute.withName('/'),
+                    //   ),
+                    // }),
+                  ],
+                ),
+              )
             ],
           ),
-        )
-        ],
+        ),
       ),
-    ),)
-    ,
     );
   }
 }

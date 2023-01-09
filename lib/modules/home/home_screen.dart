@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:ui_test/global/models/shop_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
+import 'package:ui_test/global/utils/router.dart';
+import 'package:ui_test/global/utils/screen_wrapper.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/global/widgets/custom_app_bar.dart';
 import 'package:ui_test/global/widgets/custom_bottom_bar.dart';
@@ -23,6 +25,7 @@ import '../../global/networking/responses/home_response.dart';
 import '../../global/utils/colors_converter.dart';
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/utils.dart';
+import '../../main.dart';
 import 'products_screen.dart';
 import 'services/home_service.dart';
 import '../../global/models/banner_model.dart' as banner_model;
@@ -108,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 TextButton(
                   child: const Text('Yes, Reload'),
                   onPressed: () {
-                    Navigator.pop(context);
+                    navigatorKey.currentState?.pop();
                     getHomeResponse();
                   },
                 ),
@@ -127,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           _homeResponse.settings != null) {
         Hive.box<Settings>("settingsBox")
             .put("current", _homeResponse.settings!);
-        if (mounted && silently!=true) {
+        if (mounted && silently != true) {
           checkSettingsForAlertDialog(context, _homeResponse.settings!);
         }
         setState(() {
@@ -156,13 +159,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             }
           }
           if (_homeResponse.shopCategories != null) {
-            var _filCatsTemp = _homeResponse.shopCategories!
+            var filCatsTemp = _homeResponse.shopCategories!
                 .where((element) => _homeResponse.shops!.any((element1) =>
                     element1.categories
                         ?.any((element2) => element2 == element.id) ??
                     false))
-                .toList() as List<category_model.Category>;
-            _homeResponse.shopCategories = _filCatsTemp;
+                .toList();
+            _homeResponse.shopCategories = filCatsTemp;
             _homeResponse.shopCategories!
                 .insert(0, category_model.Category(name: "All", id: "ALL"));
 
@@ -203,17 +206,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void openShop(String shopId, String name, String icon, String shopLocation,
       String coverPhoto, List<Notices>? notices) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProductsPage(
-              shopId: shopId,
-              shopName: name,
-              shopIcon: icon,
-              shopLocation: shopLocation,
-              shopCoverPhoto: coverPhoto,
-              notices: notices),
-        ));
+    navigatorKey.currentState?.pushNamed(Routes.products, arguments: {
+      "shopId": shopId,
+      "shopName": name,
+      "shopIcon": icon,
+      "shopLocation": shopLocation,
+      "shopCoverPhoto": coverPhoto,
+      "notices": notices
+    });
   }
 
   void initFirebaseMessaging() async {
@@ -258,36 +258,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
-  handleAppLifecycleState() {
-    AppLifecycleState _lastLifecyleState;
-    SystemChannels.lifecycle.setMessageHandler((msg) {
-      print('SystemChannels> $msg');
-      switch (msg) {
-        case "AppLifecycleState.paused":
-          _lastLifecyleState = AppLifecycleState.paused;
-          break;
-        case "AppLifecycleState.inactive":
-          _lastLifecyleState = AppLifecycleState.inactive;
-          break;
-        case "AppLifecycleState.resumed":
-          _lastLifecyleState = AppLifecycleState.resumed;
-          getLastOrderData();
-          break;
-        case "AppLifecycleState.suspending":
-          break;
-        default:
-          break;
-      }
-      throw "";
-    });
-  }
-
   @override
   void initState() {
     super.initState();
+    debugPrint("User Entered The HomePage First Time");
     getHomeResponse();
     initFirebaseMessaging();
-    handleAppLifecycleState();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       debugPrint('Got a message whilst in the foreground!');
       debugPrint('Message data: ${message.data}');
@@ -317,23 +293,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        height: appBarHeight,
-        title: "Arpan",
+    return ScreenWrapper(
+      onLeaveScreen: () {
+        debugPrint("User Left The HomePage");
+        _autoRefreshTimer?.cancel();
+      },
+      routeName: Routes.home,
+      onEnterScreen: () {
+        debugPrint("User Returned To The HomePage");
+        _autoRefreshTimer = Timer.periodic(
+            const Duration(seconds: autoRefreshDelaySeconds),
+                (Timer t) => getHomeResponse(silently: true));
+      },
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          height: appBarHeight,
+          title: "Arpan",
+        ),
+        backgroundColor: bgOffWhite,
+        bottomNavigationBar: lastOrderData != null
+            ? CustomBottomBar(context, lastOrderData!)
+            : null,
+        drawer: customDrawer(context),
+        body: loadingMain
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: textBlue,
+                ),
+              )
+            : buildSliverScrollView(),
       ),
-      backgroundColor: bgOffWhite,
-      bottomNavigationBar: lastOrderData != null
-          ? CustomBottomBar(context, lastOrderData!)
-          : null,
-      drawer: customDrawer(context),
-      body: loadingMain
-          ? const Center(
-              child: CircularProgressIndicator(
-                color: textBlue,
-              ),
-            )
-          : buildSliverScrollView(),
     );
   }
 
@@ -491,24 +480,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
 List<Widget> getImageSliders(
     List<banner_model.Banner> carouselResponse, BuildContext context) {
+
   return carouselResponse
       .map(
-        (item) => Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: CachedNetworkImage(
-              imageUrl: serverFilesBaseURL + item.icon!,
-              fit: BoxFit.cover,
-              placeholder: (context, url) =>
-                  Image.asset("assets/images/transparent.png"),
-              errorWidget: (context, url, error) => Image.asset(
-                "assets/images/Default_Image_Thumbnail.png",
+        (item)
+        {
+          debugPrint("CarouselImageLink: ${serverFilesBaseURL + item.icon.toString()}");
+          return Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: CachedNetworkImage(
+                imageUrl: serverFilesBaseURL + item.icon!,
                 fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    Image.asset("assets/images/transparent.png"),
+                errorWidget: (context, url, error) => Image.asset(
+                  "assets/images/Default_Image_Thumbnail.png",
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       )
       .toList();
 }

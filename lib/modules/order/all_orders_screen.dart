@@ -9,7 +9,9 @@ import 'package:ui_test/modules/order/order_details_screen.dart';
 import 'package:ui_test/modules/order/services/order_service.dart';
 
 import '../../global/utils/constants.dart';
+import '../../global/utils/router.dart';
 import '../../global/utils/utils.dart';
+import '../../main.dart';
 
 class AllOrdersScreen extends StatefulWidget {
   const AllOrdersScreen({Key? key}) : super(key: key);
@@ -81,11 +83,9 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
       child: InkWell(
         onTap: () async {
           if (!mounted) return;
-          final value = await Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-                builder: (BuildContext context) => OrderDetailsScreen(order.id!)),
-          );
+          final value = await navigatorKey.currentState?.pushNamed(
+              Routes.orderDetails,
+              arguments: {"orderId": order.id});
           loadOrdersData();
         },
         child: Row(

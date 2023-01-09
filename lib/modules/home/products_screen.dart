@@ -4,6 +4,7 @@ import 'package:rect_getter/rect_getter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:ui_test/global/models/cart_item_model.dart';
 import 'package:ui_test/global/models/shop_model.dart';
+import 'package:ui_test/global/utils/router.dart';
 import 'package:ui_test/global/utils/show_toast.dart';
 import 'package:ui_test/global/utils/theme_data.dart';
 import 'package:ui_test/global/widgets/custom_app_bar.dart';
@@ -15,6 +16,7 @@ import 'package:ui_test/modules/home/widgets/products_app_bar.dart';
 import '../../global/models/category_model.dart';
 import '../../global/models/product_model.dart';
 import '../../global/networking/responses/products_response.dart';
+import '../../main.dart';
 import 'cart_screen.dart';
 import 'widgets/product_category_section.dart';
 
@@ -146,8 +148,7 @@ class _ProductsPageState extends State<ProductsPage>
               label: 'Open cart',
               onPressed: () {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CartScreen()));
+                navigatorKey.currentState?.pushNamed(Routes.cart);
               },
             ),
           ),
@@ -173,7 +174,7 @@ class _ProductsPageState extends State<ProductsPage>
               label: 'Open cart',
               onPressed: () {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen()));
+                navigatorKey.currentState?.pushNamed(Routes.cart);
               },
             ),
           ),

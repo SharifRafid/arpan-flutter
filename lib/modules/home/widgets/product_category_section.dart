@@ -83,10 +83,6 @@ class CategorySection extends StatelessWidget {
     required bool isLastIndex,
     required Product food,
   }) {
-    debugPrint(food.activeHours.toString());
-    if(food.activeHours != null){
-      debugPrint(food.name.toString());
-    }
     return Column(
       children: [
         checkShopStatus(food.activeHours)

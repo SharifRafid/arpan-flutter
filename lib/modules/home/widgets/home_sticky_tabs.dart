@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:ui_test/global/models/category_model.dart';
+import 'package:ui_test/global/utils/router.dart';
 import 'package:ui_test/modules/home/widgets/image_slider.dart';
 import 'package:ui_test/modules/home/widgets/notice_slider.dart';
 import 'package:ui_test/modules/order/parcel_order_screen.dart';
@@ -8,6 +9,7 @@ import 'package:ui_test/modules/order/pick_drop_order_screen.dart';
 
 import '../../../global/utils/colors_converter.dart';
 import '../../../global/utils/theme_data.dart';
+import '../../../main.dart';
 import '../../order/custom_order_screen.dart';
 import '../../order/medicine_order_screen.dart';
 
@@ -92,11 +94,7 @@ class HomeStickyTabs extends SliverAppBar {
                           borderRadius: BorderRadius.circular(10)),
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                  builder: (BuildContext context) =>
-                                      const CustomOrderScreen()));
+                          navigatorKey.currentState?.pushNamed(Routes.customOrder);
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,10 +124,7 @@ class HomeStickyTabs extends SliverAppBar {
                           borderRadius: BorderRadius.circular(10)),
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute<void>(
-                                  builder: (BuildContext context) => const MedicineOrderScreen())
-                          );
+                          navigatorKey.currentState?.pushNamed(Routes.medicineOrder);
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -159,11 +154,7 @@ class HomeStickyTabs extends SliverAppBar {
                           borderRadius: BorderRadius.circular(10)),
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                  builder: (BuildContext context) =>
-                                      const ParcelOrderScreen()));
+                          navigatorKey.currentState?.pushNamed(Routes.parcelOrder);
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -193,11 +184,7 @@ class HomeStickyTabs extends SliverAppBar {
                           borderRadius: BorderRadius.circular(10)),
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                  builder: (BuildContext context) =>
-                                      const PickDropOrderScreen()));
+                          navigatorKey.currentState?.pushNamed(Routes.pickUpAndDrop);
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,

@@ -9,9 +9,11 @@ import 'package:ui_test/modules/auth/services/auth_service.dart';
 import 'package:ui_test/modules/auth/splash_screen.dart';
 import 'package:ui_test/modules/home/home_screen.dart';
 
-import 'modules/auth/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'global/utils/router.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,11 +29,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  if(!kIsWeb){
+  if (!kIsWeb) {
     await FirebaseMessaging.instance.subscribeToTopic("common_user");
   }
   runApp(MyApp(accessToken, refreshToken));
-  if(refreshToken != ""){
+  if (refreshToken != "") {
     await AuthService().refreshTokens(refreshToken);
   }
 }
@@ -39,27 +41,29 @@ void main() async {
 class MyApp extends StatelessWidget {
   final String accessToken;
   final String refreshToken;
+  static final RouteObserver<PageRoute> routeObserver =
+  RouteObserver<PageRoute>();
 
   const MyApp(this.accessToken, this.refreshToken, {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String _initialRoute = Routes.splash;
+    if (accessToken.isNotEmpty && refreshToken.isNotEmpty) {
+      _initialRoute = Routes.home;
+    }
     return MaterialApp(
       title: "Arpan",
       theme: ThemeData(
         fontFamily: 'HindSiliguri',
         colorScheme: ColorScheme.fromSwatch().copyWith(primary: primaryColor),
       ),
-      home: _getHome(accessToken, refreshToken),
+      navigatorObservers: [routeObserver],
+      navigatorKey: navigatorKey,
+      onGenerateRoute: AppRouter.generateRoute,
+      initialRoute: _initialRoute,
     );
   }
 
-  Widget _getHome(String accessToken, String refreshToken) {
-    if (accessToken.isEmpty || refreshToken.isEmpty) {
-      return const SplashScreen();
-    } else {
-      return const HomeScreen();
-    }
-  }
 }

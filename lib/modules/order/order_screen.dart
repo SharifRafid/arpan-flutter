@@ -6,6 +6,7 @@ import 'package:hive/hive.dart';
 import 'package:ui_test/global/models/location_model.dart';
 import 'package:ui_test/global/utils/constants.dart';
 import 'package:ui_test/global/utils/show_toast.dart';
+import 'package:ui_test/modules/home/home_screen.dart';
 import 'package:ui_test/modules/home/services/home_service.dart';
 import 'package:ui_test/modules/home/widgets/order_app_bar.dart';
 import 'package:ui_test/modules/order/all_orders_screen.dart';
@@ -15,8 +16,10 @@ import 'package:ui_test/modules/order/widgets/order_cart_item.dart';
 import '../../global/models/cart_item_model.dart';
 import '../../global/models/promo_code_model.dart';
 import '../../global/models/settings_model.dart';
+import '../../global/utils/router.dart';
 import '../../global/utils/theme_data.dart';
 import '../../global/utils/utils.dart';
+import '../../main.dart';
 import 'order_details_screen.dart';
 import 'widgets/promo_code_block.dart';
 
@@ -114,22 +117,23 @@ class _OrderScreenState extends State<OrderScreen> {
         loading = false;
       });
     } else {
-      print(orderId);
       box.clear();
       Hive.box<CartItemMain>("cart").clear();
       if (!mounted) return;
       showToast(context, "Successfully placed order.");
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.push(
-          context,
-          MaterialPageRoute<void>(
-              builder: (BuildContext context) => OrderDetailsScreen(orderId)));
+      navigatorKey.currentState?.popUntil(ModalRoute.withName(Routes.home));
+      final value = await navigatorKey.currentState?.pushNamed(
+          Routes.orderDetails,
+          arguments: {
+            "orderId" : orderId
+          }
+      );
     }
   }
 
   void openBox() async {
     box = await Hive.openBox("orderInputs");
+    loadCartItems();
   }
 
   void calculateTotalPrices() {
@@ -188,9 +192,9 @@ class _OrderScreenState extends State<OrderScreen> {
           loading = false;
         });
         calculateTotalPrices();
-        nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "");
-        phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ;
-        addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ;
+        nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "") ?? "";
+        phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ?? "" ;
+        addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ?? "" ;
         noteController.text = box.get("note", defaultValue: "");
       }
     }
@@ -217,7 +221,6 @@ class _OrderScreenState extends State<OrderScreen> {
   void initState() {
     super.initState();
     openBox();
-    loadCartItems();
   }
 
   @override
