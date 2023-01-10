@@ -30,7 +30,7 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
   Timer? _autoRefreshTimer;
 
   void loadOrdersData() async {
-    debugPrint("LoadAllOrdersCalled");
+    // debugPrint("LoadAllOrdersCalled");
     var response = await orderService.getOrders();
     if (response == null) {
       if (!mounted) return;

@@ -57,35 +57,26 @@ class _PromoCodeBlockState extends State<PromoCodeBlock> {
             currentState = _CurrentState.apply;
           });
           return;
-        } else {
-          appliedMessage =
-              "You have successfully applied promo code ${promo.promoCodeName}.";
-          widget.setPromoCode(promo);
-          setState(() {
-            currentState = _CurrentState.applied;
-          });
-          return;
         }
-      } else {
-        var tp = 0;
-        for (var element in widget.cartItemsList) { tp = tp + element.productItemOfferPrice!; }
-        if(tp >= promo.minimumPrice!){
-          appliedMessage = "You have successfully applied promo code ${promo.promoCodeName}.";
-          widget.setPromoCode(promo);
-          setState(() {
-            currentState = _CurrentState.applied;
-          });
-          return;
-        }else{
-          if (!mounted) return;
-          widget.setPromoCode(null);
-          showToast(context,
-              "For applying this promo, minimum price needs to be ${promo.minimumPrice}");
-          setState(() {
-            currentState = _CurrentState.apply;
-          });
-          return;
-        }
+      }
+      var tp = 0;
+      for (var element in widget.cartItemsList) { tp = tp + element.productItemOfferPrice!; }
+      if(tp >= promo.minimumPrice!){
+        appliedMessage = "You have successfully applied promo code ${promo.promoCodeName}.";
+        widget.setPromoCode(promo);
+        setState(() {
+          currentState = _CurrentState.applied;
+        });
+        return;
+      }else{
+        if (!mounted) return;
+        widget.setPromoCode(null);
+        showToast(context,
+            "For applying this promo, minimum price needs to be ${promo.minimumPrice}");
+        setState(() {
+          currentState = _CurrentState.apply;
+        });
+        return;
       }
     }
   }

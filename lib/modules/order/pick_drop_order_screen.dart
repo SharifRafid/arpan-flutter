@@ -139,7 +139,7 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
         loading = false;
       });
     } else {
-      debugPrint(orderId);
+      // debugPrint(orderId);
       box.clear();
       if (!mounted) return;
       showToast(context, "Successfully placed order.");
@@ -169,7 +169,7 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
       var response = await homeService.getLocationDataMain();
       if (response == null) {
         if (kDebugMode) {
-          print("Response is null");
+          // debugPrint("Response is null");
         }
       } else {
         _locationsArray = response;
@@ -201,7 +201,7 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
   }
 
   void fetchSettingsData({bool? silently}) async {
-    debugPrint("Fetching Settings Data");
+    // debugPrint("Fetching Settings Data");
     if (silently != true) {
       setState(() {
         settingsLoading = true;

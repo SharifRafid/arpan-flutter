@@ -30,7 +30,7 @@ class OthersService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        debugPrint(e.message.toString());
       }
       return null;
     }
@@ -52,7 +52,7 @@ class OthersService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        debugPrint(e.message.toString());
       }
       return null;
     }
@@ -75,7 +75,7 @@ class OthersService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        debugPrint(e.message.toString());
       }
       return null;
     }
@@ -119,7 +119,7 @@ class OthersService {
         }
       } on DioError catch (e) {
         if (kDebugMode) {
-          print(e.message.toString());
+          debugPrint(e.message.toString());
         }
         return null;
       }
@@ -134,7 +134,7 @@ class OthersService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        debugPrint(e.message.toString());
       }
       return null;
     }
@@ -157,7 +157,7 @@ class OthersService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        debugPrint(e.message.toString());
       }
       return null;
     }
@@ -180,7 +180,7 @@ class OthersService {
     } on DioError catch (e) {
       debugPrint("LOG OUT FAILED");
       if (kDebugMode) {
-        print(e.message.toString());
+        debugPrint(e.message.toString());
       }
       return null;
     }

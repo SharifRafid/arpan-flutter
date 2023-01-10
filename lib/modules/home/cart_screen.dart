@@ -30,7 +30,6 @@ class _CartScreenState extends State<CartScreen> {
   Timer? _autoRefreshTimer;
 
   void fetchSettingsData({bool? silently}) async {
-    debugPrint("Fetching Settings Data");
     if(silently!=true){
       setState((){
         loading = true;

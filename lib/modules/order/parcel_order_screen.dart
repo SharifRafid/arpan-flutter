@@ -118,7 +118,7 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
         loading = false;
       });
     } else {
-      print(orderId);
+      // debugPrint(orderId);
       box.clear();
       if (!mounted) return;
       showToast(context, "Successfully placed order.");
@@ -136,7 +136,6 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
     final ImagePicker _picker = ImagePicker();
     final XFile? pickedImage =
     await _picker.pickImage(source: ImageSource.gallery);
-    print(pickedImage);
     if (pickedImage != null) {
       setState(() {
         image = pickedImage;
@@ -167,7 +166,7 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
       var response = await homeService.getLocationDataMain();
       if (response == null) {
         if (kDebugMode) {
-          print("Response is null");
+          // debugPrint("Response is null");
         }
       } else {
         _locationsArray = response;
@@ -188,7 +187,7 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
   }
 
   void fetchSettingsData({bool? silently}) async {
-    debugPrint("Fetching Settings Data");
+    // debugPrint("Fetching Settings Data");
     if (silently != true) {
       setState(() {
         settingsLoading = true;

@@ -71,7 +71,11 @@ class AppRouter {
       case Routes.login:
         return _generateRoute(settings, const AuthMain());
       case Routes.products:
+        if(settings.arguments == null){
+          return _generateRoute(settings, const HomeScreen());
+        }
         var args = settings.arguments as Map<String, dynamic>;
+        debugPrint(args['shopId']);
         if(args['shopId'] == null) {
           return _generateRoute(settings, const HomeScreen());
         }
@@ -92,6 +96,9 @@ class AppRouter {
       case Routes.pastOrders:
         return _generateRoute(settings, const AllOrdersScreen());
       case Routes.orderDetails:
+        if(settings.arguments == null){
+          return _generateRoute(settings, const HomeScreen());
+        }
         var args = settings.arguments as Map<String, dynamic>;
         if(args['orderId'] != null) {
           return _generateRoute(settings, OrderDetailsScreen(args['orderId']));
@@ -114,13 +121,7 @@ class AppRouter {
       case Routes.about:
         return _generateRoute(settings, const AboutScreen());
       default:
-        return MaterialPageRoute(
-          builder: (context) => const Scaffold(
-            body: Center(
-              child: Text('An error occurred. Please reload the app.'),
-            ),
-          ),
-        );
+        return _generateRoute(settings, const HomeScreen());
     }
   }
 

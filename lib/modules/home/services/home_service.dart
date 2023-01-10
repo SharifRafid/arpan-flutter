@@ -31,7 +31,7 @@ class HomeService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        // debugPrint(e.message.toString());
       }
       //returns the error object if any
       return null;
@@ -57,7 +57,7 @@ class HomeService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        // debugPrint(e.message.toString());
       }
       //returns the error object if any
       return null;
@@ -76,7 +76,7 @@ class HomeService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        // debugPrint(e.message.toString());
       }
       //returns the error object if any
       return null;

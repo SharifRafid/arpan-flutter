@@ -119,7 +119,7 @@ class _MedicineOrderScreenState extends State<MedicineOrderScreen> {
         loading = false;
       });
     } else {
-      print(orderId);
+      // debugPrint(orderId);
       box.clear();
       if (!mounted) return;
       showToast(context, "Successfully placed order.");
@@ -134,7 +134,7 @@ class _MedicineOrderScreenState extends State<MedicineOrderScreen> {
   }
 
   void fetchSettingsData({bool? silently}) async {
-    debugPrint("Fetching Settings Data");
+    // debugPrint("Fetching Settings Data");
     if (silently != true) {
       setState(() {
         settingsLoading = true;
@@ -157,7 +157,6 @@ class _MedicineOrderScreenState extends State<MedicineOrderScreen> {
     final ImagePicker _picker = ImagePicker();
     final XFile? pickedImage =
         await _picker.pickImage(source: ImageSource.gallery);
-    print(pickedImage);
     if (pickedImage != null) {
       setState(() {
         image = pickedImage;

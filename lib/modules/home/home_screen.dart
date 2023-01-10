@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Timer? _autoRefreshTimer;
 
   void getLastOrderData({bool? silently}) async {
-    debugPrint("Get Last Order Data Called");
+    // debugPrint("Get Last Order Data Called");
     var data = await OrderService().getLastOrder();
     if (data != null) {
       if (data.orderId != null) {
@@ -87,11 +87,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void getHomeResponse({bool? silently}) async {
-    debugPrint("Get Home Response Called. Silently : $silently");
+    // debugPrint("Get Home Response Called. Silently : $silently");
     if (!mounted) return;
     var response = await homeService.getHomeDataMain();
     if (response == null) {
-      debugPrint("Response is null");
+      // debugPrint("Response is null");
       if (silently != true) {
         showDialog<void>(
           context: context,
@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         );
       }
     } else {
-      debugPrint(response.toString());
+      // debugPrint(response.toString());
       _homeResponse = response;
       if (_homeResponse.banners != null ||
           _homeResponse.shops != null ||
@@ -180,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           filterShops(0);
         }
       } else {
-        debugPrint("Response get error");
+        // debugPrint("Response get error");
         if (!mounted) return;
         showToast(context, "No data found");
       }
@@ -261,15 +261,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    debugPrint("User Entered The HomePage First Time");
+    // debugPrint("User Entered The HomePage First Time");
     getHomeResponse();
     initFirebaseMessaging();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      debugPrint('Got a message whilst in the foreground!');
-      debugPrint('Message data: ${message.data}');
+      // debugPrint('Got a message whilst in the foreground!');
+      // debugPrint('Message data: ${message.data}');
       if (message.notification != null) {
-        debugPrint(
-            'Message also contained a notification: ${message.notification}');
+        // debugPrint(
+        //     'Message also contained a notification: ${message.notification}');
       }
       getLastOrderData();
     });
@@ -485,7 +485,7 @@ List<Widget> getImageSliders(
       .map(
         (item)
         {
-          debugPrint("CarouselImageLink: ${serverFilesBaseURL + item.icon.toString()}");
+          // debugPrint("CarouselImageLink: ${serverFilesBaseURL + item.icon.toString()}");
           return Padding(
             padding: const EdgeInsets.only(top: 10),
             child: ClipRRect(

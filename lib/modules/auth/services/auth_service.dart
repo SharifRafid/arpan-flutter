@@ -23,8 +23,8 @@ class AuthService {
       }
       try {
         Tokens tokens = Tokens.fromJson(response.data);
-        debugPrint("AccessToken : ${tokens.access!.token}");
-        debugPrint("RefreshToken : ${tokens.refresh!.token}");
+        // debugPrint("AccessToken : ${tokens.access!.token}");
+        // debugPrint("RefreshToken : ${tokens.refresh!.token}");
         await box.put("accessToken", tokens.access!.token.toString());
         await box.put("refreshToken", tokens.refresh!.token.toString());
         return tokens;
@@ -42,8 +42,9 @@ class AuthService {
         await box.put("refreshToken", "");
       }
       //returns the error object if any
-      debugPrint(e.message);
+      // debugPrint(e.message);
       return null;
+
     }
   }
 

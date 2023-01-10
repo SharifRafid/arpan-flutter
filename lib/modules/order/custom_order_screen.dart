@@ -118,7 +118,7 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
       setState(() {
         loading = false;
       });
-      print(orderId);
+      // debugPrint(orderId);
       box.clear();
       if (!mounted) return;
       showToast(context, "Successfully placed order.");
@@ -136,7 +136,6 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
     final ImagePicker _picker = ImagePicker();
     final XFile? pickedImage =
         await _picker.pickImage(source: ImageSource.gallery);
-    print(pickedImage);
     if (pickedImage != null) {
       setState(() {
         image = pickedImage;
@@ -177,7 +176,7 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
       var response = await homeService.getLocationDataMain();
       if (response == null) {
         if (kDebugMode) {
-          print("Response is null");
+          // debugPrint("Response is null");
         }
       } else {
         _locationsArray = response;
@@ -206,7 +205,7 @@ class _CustomOrderScreenState extends State<CustomOrderScreen> {
   }
 
   void fetchSettingsData({bool? silently}) async {
-    debugPrint("Fetching Settings Data");
+    // debugPrint("Fetching Settings Data");
     if (silently != true) {
       setState(() {
         settingsLoading = true;

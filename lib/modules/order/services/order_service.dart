@@ -33,7 +33,7 @@ class OrderService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        // debugPrint(e.message.toString());
       }
       return PromoResponse(
           error: true, message: e.response!.statusMessage.toString());
@@ -64,7 +64,7 @@ class OrderService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        // debugPrint(e.message.toString());
       }
       return null;
     }
@@ -91,7 +91,7 @@ class OrderService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        // debugPrint(e.message.toString());
       }
       return null;
     }
@@ -118,7 +118,7 @@ class OrderService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        // debugPrint(e.message.toString());
       }
       return null;
     }
@@ -141,7 +141,7 @@ class OrderService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        // debugPrint(e.message.toString());
       }
       return null;
     }
@@ -183,7 +183,7 @@ class OrderService {
         }
       } on DioError catch (e) {
         if (kDebugMode) {
-          print(e.message.toString());
+          // debugPrint(e.message.toString());
         }
         return null;
       }
@@ -200,7 +200,7 @@ class OrderService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        // debugPrint(e.message.toString());
       }
       return null;
     }
@@ -223,7 +223,7 @@ class OrderService {
       }
     } on DioError catch (e) {
       if (kDebugMode) {
-        print(e.message.toString());
+        // debugPrint(e.message.toString());
       }
       return null;
     }

@@ -55,7 +55,7 @@ class _OrderScreenState extends State<OrderScreen> {
   late Box box;
 
   void placeOrder() async {
-    if(!orderingTimeCheck()){
+    if (!orderingTimeCheck()) {
       showToast(context, "Please order at the correct ordering times");
       return;
     }
@@ -122,12 +122,8 @@ class _OrderScreenState extends State<OrderScreen> {
       if (!mounted) return;
       showToast(context, "Successfully placed order.");
       navigatorKey.currentState?.popUntil(ModalRoute.withName(Routes.home));
-      final value = await navigatorKey.currentState?.pushNamed(
-          Routes.orderDetails,
-          arguments: {
-            "orderId" : orderId
-          }
-      );
+      final value = await navigatorKey.currentState
+          ?.pushNamed(Routes.orderDetails, arguments: {"orderId": orderId});
     }
   }
 
@@ -146,10 +142,12 @@ class _OrderScreenState extends State<OrderScreen> {
 
     if (promoCode != null) {
       if (promoCode!.shopDiscount == true) {
-        if (promoCode!.discountPrice! > tp) {
-          tp = 0;
-        } else {
-          tp = tp - promoCode!.discountPrice!;
+        if(promoCode!.minimumPrice! > tp){
+          if (promoCode!.discountPrice! > tp) {
+            tp = 0;
+          } else {
+            tp = tp - promoCode!.discountPrice!;
+          }
         }
       } else if (promoCode!.deliveryDiscount == true) {
         if (promoCode!.discountPrice! > dc) {
@@ -164,12 +162,12 @@ class _OrderScreenState extends State<OrderScreen> {
     deliveryCharge = dc;
 
     var tpBkash = 0;
-    if(((tp + dc) * bkashMultiplier) > ((tp + dc) * bkashMultiplier).toInt()){
-      tpBkash = (tp + ((tp + dc) * bkashMultiplier)).toInt()+1;
-      print(tpBkash.toString());
-    }else{
+    if (((tp + dc) * bkashMultiplier) > ((tp + dc) * bkashMultiplier).toInt()) {
+      tpBkash = (tp + ((tp + dc) * bkashMultiplier)).toInt() + 1;
+      // debugPrint(tpBkash.toString());
+    } else {
       tpBkash = (tp + ((tp + dc) * bkashMultiplier)).toInt();
-      print(tpBkash.toString());
+      // debugPrint(tpBkash.toString());
     }
     setState(() {
       totalPriceBkash = tpBkash;
@@ -181,7 +179,7 @@ class _OrderScreenState extends State<OrderScreen> {
       var response = await homeService.getLocationDataMain();
       if (response == null) {
         if (kDebugMode) {
-          print("Response is null");
+          // debugPrint("Response is null");
         }
       } else {
         _locationsArray = response;
@@ -192,9 +190,15 @@ class _OrderScreenState extends State<OrderScreen> {
           loading = false;
         });
         calculateTotalPrices();
-        nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "") ?? "";
-        phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ?? "" ;
-        addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ?? "" ;
+        nameController.text = box.get("name", defaultValue: null) ??
+            Hive.box('authBox').get("name", defaultValue: "") ??
+            "";
+        phoneController.text = box.get("phone", defaultValue: null) ??
+            Hive.box('authBox').get("phone", defaultValue: "") ??
+            "";
+        addressController.text = box.get("address", defaultValue: null) ??
+            Hive.box('authBox').get("address", defaultValue: "") ??
+            "";
         noteController.text = box.get("note", defaultValue: "");
       }
     }
@@ -405,12 +409,12 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                   _paymentMethod == PaymentMethod.bKash
                       ? const Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: Text(
+                          padding: EdgeInsets.only(bottom: 8.0),
+                          child: Text(
                             "Extra charge added for bKash",
                             style: TextStyle(color: Colors.pink),
                           ),
-                      )
+                        )
                       : Container(),
                   PromoCodeBlock(cartItemsList, (id) {
                     promoCode = id;
