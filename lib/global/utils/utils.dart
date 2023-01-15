@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:ui_test/global/utils/assymetric_encryption.dart';
+import 'package:Arpan/global/utils/assymetric_encryption.dart';
 
 import '../../main.dart';
 import '../models/notice_model.dart';

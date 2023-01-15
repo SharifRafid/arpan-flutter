@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:ui_test/global/models/cart_item_model.dart';
-import 'package:ui_test/global/utils/constants.dart';
-import 'package:ui_test/global/utils/show_toast.dart';
+import 'package:Arpan/global/models/cart_item_model.dart';
+import 'package:Arpan/global/utils/constants.dart';
+import 'package:Arpan/global/utils/show_toast.dart';
 
 import '../../../global/utils/theme_data.dart';
 import '../../../main.dart';

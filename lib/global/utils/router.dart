@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:ui_test/modules/auth/login_screen.dart';
-import 'package:ui_test/modules/auth/splash_screen.dart';
-import 'package:ui_test/modules/home/cart_screen.dart';
-import 'package:ui_test/modules/home/home_screen.dart';
-import 'package:ui_test/modules/home/products_screen.dart';
-import 'package:ui_test/modules/order/all_orders_screen.dart';
-import 'package:ui_test/modules/order/custom_order_screen.dart';
-import 'package:ui_test/modules/order/medicine_order_screen.dart';
-import 'package:ui_test/modules/order/order_details_screen.dart';
-import 'package:ui_test/modules/order/order_screen.dart';
-import 'package:ui_test/modules/order/parcel_order_screen.dart';
-import 'package:ui_test/modules/order/pick_drop_order_screen.dart';
-import 'package:ui_test/modules/others/be_client_screen.dart';
-import 'package:ui_test/modules/others/feedback_screen.dart';
-import 'package:ui_test/modules/others/profile_screen.dart';
+import 'package:Arpan/modules/auth/login_screen.dart';
+import 'package:Arpan/modules/auth/splash_screen.dart';
+import 'package:Arpan/modules/home/cart_screen.dart';
+import 'package:Arpan/modules/home/home_screen.dart';
+import 'package:Arpan/modules/home/products_screen.dart';
+import 'package:Arpan/modules/order/all_orders_screen.dart';
+import 'package:Arpan/modules/order/custom_order_screen.dart';
+import 'package:Arpan/modules/order/medicine_order_screen.dart';
+import 'package:Arpan/modules/order/order_details_screen.dart';
+import 'package:Arpan/modules/order/order_screen.dart';
+import 'package:Arpan/modules/order/parcel_order_screen.dart';
+import 'package:Arpan/modules/order/pick_drop_order_screen.dart';
+import 'package:Arpan/modules/others/be_client_screen.dart';
+import 'package:Arpan/modules/others/feedback_screen.dart';
+import 'package:Arpan/modules/others/profile_screen.dart';
 
 import '../../modules/others/about_screen.dart';
 

@@ -1,4 +1,4 @@
-import 'package:ui_test/global/models/product_model.dart';
+import 'package:Arpan/global/models/product_model.dart';
 
 class ProductCategorized {
   String id;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ui_test/global/utils/theme_data.dart';
+import 'package:Arpan/global/utils/theme_data.dart';
 
 Widget resendButton({required Function onClickAction, required String title}){
   return Container(

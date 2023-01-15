@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ui_test/global/utils/router.dart';
+import 'package:Arpan/global/utils/router.dart';
 
 import '../../global/utils/theme_data.dart';
 import '../../main.dart';

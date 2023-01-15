@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ui_test/modules/order/order_details_screen.dart';
-import 'package:ui_test/modules/order/services/order_service.dart';
+import 'package:Arpan/modules/order/order_details_screen.dart';
+import 'package:Arpan/modules/order/services/order_service.dart';
 
 import '../../global/models/location_model.dart';
 import '../../global/models/promo_code_model.dart';

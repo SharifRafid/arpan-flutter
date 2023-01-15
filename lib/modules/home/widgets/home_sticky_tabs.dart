@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-import 'package:ui_test/global/models/category_model.dart';
-import 'package:ui_test/global/utils/router.dart';
-import 'package:ui_test/modules/home/widgets/image_slider.dart';
-import 'package:ui_test/modules/home/widgets/notice_slider.dart';
-import 'package:ui_test/modules/order/parcel_order_screen.dart';
-import 'package:ui_test/modules/order/pick_drop_order_screen.dart';
+import 'package:Arpan/global/models/category_model.dart';
+import 'package:Arpan/global/utils/router.dart';
+import 'package:Arpan/modules/home/widgets/image_slider.dart';
+import 'package:Arpan/modules/home/widgets/notice_slider.dart';
+import 'package:Arpan/modules/order/parcel_order_screen.dart';
+import 'package:Arpan/modules/order/pick_drop_order_screen.dart';
 
 import '../../../global/utils/colors_converter.dart';
 import '../../../global/utils/theme_data.dart';

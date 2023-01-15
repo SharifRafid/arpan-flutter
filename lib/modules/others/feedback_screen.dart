@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:ui_test/modules/others/services/others_service.dart';
+import 'package:Arpan/modules/others/services/others_service.dart';
 
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/theme_data.dart';

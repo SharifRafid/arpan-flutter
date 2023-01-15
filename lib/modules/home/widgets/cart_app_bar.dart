@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ui_test/global/models/cart_item_model.dart';
-import 'package:ui_test/global/utils/theme_data.dart';
+import 'package:Arpan/global/models/cart_item_model.dart';
+import 'package:Arpan/global/utils/theme_data.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../main.dart';

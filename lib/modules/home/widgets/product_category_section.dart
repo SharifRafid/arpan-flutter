@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:ui_test/global/models/product_model.dart';
-import 'package:ui_test/global/utils/constants.dart';
-import 'package:ui_test/global/utils/theme_data.dart';
-import 'package:ui_test/global/utils/utils.dart';
-import 'package:ui_test/modules/home/models/product_category_file.dart';
+import 'package:Arpan/global/models/product_model.dart';
+import 'package:Arpan/global/utils/constants.dart';
+import 'package:Arpan/global/utils/theme_data.dart';
+import 'package:Arpan/global/utils/utils.dart';
+import 'package:Arpan/modules/home/models/product_category_file.dart';
 
 import '../../../global/utils/show_toast.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ui_test/global/utils/router.dart';
-import 'package:ui_test/modules/auth/login_screen.dart';
+import 'package:Arpan/global/utils/router.dart';
+import 'package:Arpan/modules/auth/login_screen.dart';
 
 import '../../main.dart';
 

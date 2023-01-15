@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ui_test/global/utils/constants.dart';
-import 'package:ui_test/modules/others/services/others_service.dart';
+import 'package:Arpan/global/utils/constants.dart';
+import 'package:Arpan/modules/others/services/others_service.dart';
 
 import '../../global/utils/show_toast.dart';
 import '../../global/utils/theme_data.dart';

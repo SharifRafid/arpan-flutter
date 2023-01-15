@@ -1,4 +1,4 @@
-import 'package:ui_test/global/models/cart_item_model.dart';
+import 'package:Arpan/global/models/cart_item_model.dart';
 
 import '../../../global/models/pick_drop_item_model.dart';
 

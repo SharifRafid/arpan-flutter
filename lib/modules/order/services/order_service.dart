@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ui_test/global/networking/responses/promo_response.dart';
+import 'package:Arpan/global/networking/responses/promo_response.dart';
 import '../../../global/utils/constants.dart';
 import '../models/order_item_response.dart';
 

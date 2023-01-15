@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:ui_test/global/utils/router.dart';
-import 'package:ui_test/global/utils/theme_data.dart';
-import 'package:ui_test/global/utils/utils.dart';
-import 'package:ui_test/modules/order/all_orders_screen.dart';
-import 'package:ui_test/modules/order/models/order_item_response.dart';
+import 'package:Arpan/global/utils/router.dart';
+import 'package:Arpan/global/utils/theme_data.dart';
+import 'package:Arpan/global/utils/utils.dart';
+import 'package:Arpan/modules/order/all_orders_screen.dart';
+import 'package:Arpan/modules/order/models/order_item_response.dart';
 
 import '../../main.dart';
 import '../../modules/order/order_details_screen.dart';

@@ -4,11 +4,11 @@ import 'dart:collection';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ui_test/global/utils/show_toast.dart';
-import 'package:ui_test/global/utils/theme_data.dart';
-import 'package:ui_test/modules/home/widgets/order_app_bar.dart';
-import 'package:ui_test/modules/order/models/order_item_response.dart';
-import 'package:ui_test/modules/order/widgets/order_steps_view.dart';
+import 'package:Arpan/global/utils/show_toast.dart';
+import 'package:Arpan/global/utils/theme_data.dart';
+import 'package:Arpan/modules/home/widgets/order_app_bar.dart';
+import 'package:Arpan/modules/order/models/order_item_response.dart';
+import 'package:Arpan/modules/order/widgets/order_steps_view.dart';
 
 import '../../global/models/cart_item_model.dart';
 import '../../global/utils/constants.dart';

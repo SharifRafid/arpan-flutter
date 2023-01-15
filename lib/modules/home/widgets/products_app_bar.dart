@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ui_test/global/models/cart_item_model.dart';
-import 'package:ui_test/global/utils/show_toast.dart';
-import 'package:ui_test/global/utils/theme_data.dart';
-import 'package:ui_test/global/widgets/icon_button.dart';
+import 'package:Arpan/global/models/cart_item_model.dart';
+import 'package:Arpan/global/utils/show_toast.dart';
+import 'package:Arpan/global/utils/theme_data.dart';
+import 'package:Arpan/global/widgets/icon_button.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:ui_test/modules/home/cart_screen.dart';
+import 'package:Arpan/modules/home/cart_screen.dart';
 
 import '../../../global/utils/router.dart';
 import '../../../main.dart';

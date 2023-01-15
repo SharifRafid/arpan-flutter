@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ui_test/global/models/shop_model.dart';
-import 'package:ui_test/global/utils/colors_converter.dart';
+import 'package:Arpan/global/models/shop_model.dart';
+import 'package:Arpan/global/utils/colors_converter.dart';
 
 class NoticeSliderText extends StatelessWidget {
   final Notices shopNotice;

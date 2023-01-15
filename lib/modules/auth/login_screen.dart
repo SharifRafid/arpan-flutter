@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:ui_test/global/utils/router.dart';
-import 'package:ui_test/global/utils/theme_data.dart';
-import 'package:ui_test/modules/auth/widgets/resend_button.dart';
-import 'package:ui_test/modules/home/home_screen.dart';
+import 'package:Arpan/global/utils/router.dart';
+import 'package:Arpan/global/utils/theme_data.dart';
+import 'package:Arpan/modules/auth/widgets/resend_button.dart';
+import 'package:Arpan/modules/home/home_screen.dart';
 
 import '../../global/networking/responses/default_response.dart';
 import '../../global/networking/responses/login_response.dart';

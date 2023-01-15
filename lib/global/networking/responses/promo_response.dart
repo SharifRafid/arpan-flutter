@@ -1,4 +1,4 @@
-import 'package:ui_test/global/models/promo_code_model.dart';
+import 'package:Arpan/global/models/promo_code_model.dart';
 
 class PromoResponse {
   String? message;

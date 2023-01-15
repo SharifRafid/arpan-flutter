@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:ui_test/global/models/promo_code_model.dart';
-import 'package:ui_test/global/utils/show_toast.dart';
-import 'package:ui_test/global/utils/theme_data.dart';
-import 'package:ui_test/modules/order/services/order_service.dart';
+import 'package:Arpan/global/models/promo_code_model.dart';
+import 'package:Arpan/global/utils/show_toast.dart';
+import 'package:Arpan/global/utils/theme_data.dart';
+import 'package:Arpan/modules/order/services/order_service.dart';
 
 import '../../../global/models/cart_item_model.dart';
 
