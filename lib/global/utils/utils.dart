@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:Arpan/global/utils/assymetric_encryption.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../main.dart';
 import '../models/notice_model.dart';
@@ -66,6 +68,63 @@ void checkSettingsForAlertDialog(BuildContext context, Settings settings) {
               child: const Text('Okay'),
               onPressed: () {
                 navigatorKey.currentState?.pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  if (appVersionCurrent < settings.minimumAppVersionError!) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Update mandatory!"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("This version of the app is no longer supported. Please update the app to the latest version. "),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Okay'),
+              onPressed: () async {
+                SystemNavigator.pop();
+                final Uri _url = Uri.parse(
+                    'https://play.google.com/store/apps/details?id=arpan.delivery&hl=en&gl=US');
+                !await launchUrl(_url);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }else if (appVersionCurrent < settings.minimumAppVersionWarning!) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Update recommended!"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("There's a new version of the app available. Please update it from the app store. "),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Okay'),
+              onPressed: () async {
+                navigatorKey.currentState?.pop();
+                final Uri _url = Uri.parse(
+                    'https://play.google.com/store/apps/details?id=arpan.delivery&hl=en&gl=US');
+                !await launchUrl(_url);
               },
             ),
           ],

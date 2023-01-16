@@ -35,6 +35,10 @@ class Settings {
   String? id;
   @HiveField(16)
   bool? appOn;
+  @HiveField(17)
+  int? minimumAppVersionError;
+  @HiveField(18)
+  int? minimumAppVersionWarning;
 
   Settings(
       {this.orderStartTime,
@@ -51,7 +55,7 @@ class Settings {
         this.alertDialogEmergencyTitleText,
         this.alertDialogEmergencyMessageText,
         this.alertDialogeEmergencyStatus,
-        this.id,this.appOn});
+        this.id,this.appOn, this.minimumAppVersionError, this.minimumAppVersionWarning});
 
   Settings.fromJson(Map<String, dynamic> json) {
     orderStartTime = json['orderStartTime'];
@@ -70,6 +74,8 @@ class Settings {
     alertDialogeEmergencyStatus = json['alertDialogeEmergencyStatus'];
     id = json['id'];
     appOn = json['appOn'];
+    minimumAppVersionError = json['minimumAppVersionError'];
+    minimumAppVersionWarning = json['minimumAppVersionWarning'];
   }
 
   Map<String, dynamic> toJson() {
@@ -92,6 +98,8 @@ class Settings {
     data['alertDialogeEmergencyStatus'] = alertDialogeEmergencyStatus;
     data['id'] = id;
     data['appOn'] = appOn;
+    data['minimumAppVersionWarning'] = minimumAppVersionWarning;
+    data['minimumAppVersionError'] = minimumAppVersionError;
     return data;
   }
 }
