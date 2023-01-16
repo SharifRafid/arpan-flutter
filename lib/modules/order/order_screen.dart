@@ -142,7 +142,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
     if (promoCode != null) {
       if (promoCode!.shopDiscount == true) {
-        if(promoCode!.minimumPrice! > tp){
+        if (promoCode!.minimumPrice! > tp) {
           if (promoCode!.discountPrice! > tp) {
             tp = 0;
           } else {
@@ -190,15 +190,57 @@ class _OrderScreenState extends State<OrderScreen> {
           loading = false;
         });
         calculateTotalPrices();
-        nameController.text = box.get("name", defaultValue: null) ??
-            Hive.box('authBox').get("name", defaultValue: "") ??
-            "";
-        phoneController.text = box.get("phone", defaultValue: null) ??
-            Hive.box('authBox').get("phone", defaultValue: "") ??
-            "";
-        addressController.text = box.get("address", defaultValue: null) ??
-            Hive.box('authBox').get("address", defaultValue: "") ??
-            "";
+        if (box.get("name", defaultValue: "") != null) {
+          if (box.get("name", defaultValue: "").toString().isNotEmpty && box.get("name", defaultValue: "").toString() != "null") {
+            nameController.text = box.get("name", defaultValue: "").toString();
+          }
+        }
+        if(nameController.text.isEmpty){
+          if (Hive.box('authBox').get("name", defaultValue: "") != null) {
+            if (Hive.box('authBox')
+                .get("name", defaultValue: "")
+                .toString()
+                .isNotEmpty && Hive.box('authBox')
+                .get("name", defaultValue: "")
+                .toString() != "null") {
+              nameController.text = Hive.box('authBox').get("name", defaultValue: "").toString();
+            }
+          }
+        }
+        if (box.get("phone", defaultValue: "") != null) {
+          if (box.get("phone", defaultValue: "").toString().isNotEmpty && box.get("phone", defaultValue: "").toString() != "null") {
+            phoneController.text = box.get("phone", defaultValue: "").toString();
+          }
+        }
+        if(phoneController.text.isEmpty){
+          if (Hive.box('authBox').get("phone", defaultValue: "") != null) {
+            if (Hive.box('authBox')
+                .get("phone", defaultValue: "")
+                .toString()
+                .isNotEmpty && Hive.box('authBox')
+                .get("phone", defaultValue: "")
+                .toString() != "null") {
+              phoneController.text = Hive.box('authBox').get("phone", defaultValue: "").toString();
+            }
+          }
+        }
+        if (box.get("address", defaultValue: "") != null) {
+          if (box.get("address", defaultValue: "").toString().isNotEmpty && box.get("address", defaultValue: "").toString() != "null") {
+            addressController.text = box.get("address", defaultValue: "").toString();
+          }
+        }
+        if(addressController.text.isEmpty){
+          if (Hive.box('authBox').get("address", defaultValue: "") != null) {
+            if (Hive.box('authBox')
+                .get("address", defaultValue: "")
+                .toString()
+                .isNotEmpty && Hive.box('authBox')
+                .get("address", defaultValue: "")
+                .toString() != "null") {
+              addressController.text = Hive.box('authBox').get("address", defaultValue: "").toString();
+            }
+          }
+        }
         noteController.text = box.get("note", defaultValue: "");
       }
     }
@@ -250,7 +292,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       style: const TextStyle(fontSize: 14),
                       controller: nameController,
                       onChanged: (text) {
-                        box.put("name", text.toString());
+                        box.put("name", text);
                       },
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(8), // Added this

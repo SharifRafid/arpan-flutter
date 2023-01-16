@@ -60,6 +60,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         loading = false;
       });
     } else {
+      Hive.box('authBox').put("name", name);
+      Hive.box('authBox').put("address", details);
       setState(() {
         loading = false;
         oldName = name;
@@ -85,9 +87,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       showToast(context, "Failed to fetch data");
       return;
     }
-    Hive.box('authBox').put("name", response["name"]);
-    Hive.box('authBox').put("address", response["address"]);
-    Hive.box('authBox').put("phone", response["phone"]);
+    Hive.box('authBox').put("name", response["name"] ?? "");
+    Hive.box('authBox').put("address", response["address"] ?? "");
+    Hive.box('authBox').put("phone", response["phone"] ?? "");
     oldName = response["name"] ?? "";
     name = response["name"] ?? "";
     nameController.text = response["name"] ?? "";

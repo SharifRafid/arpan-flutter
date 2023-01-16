@@ -162,7 +162,7 @@ class CategorySection extends StatelessWidget {
 
   Widget _buildAddIcon(Product food) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(4.0),
       child: Card(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(4.0))),
@@ -212,10 +212,10 @@ class CategorySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-            width: 200,
+            width: 180,
             child: Text(food.name!, style: _textTheme(context).subtitle1)),
         SizedBox(
-          width: 200,
+          width: 180,
           child: Text(food.shortDescription!,
               style: _textTheme(context).bodyText1),
         ),

@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:Arpan/global/models/shop_model.dart';
 import 'package:Arpan/global/utils/constants.dart';
@@ -216,63 +217,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
-  void initFirebaseMessaging() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-
-    var authBox = Hive.box('authBox');
-    if (authBox.get("accessToken", defaultValue: "") == "" ||
-        authBox.get("refreshToken", defaultValue: "") == "") {
-      return;
-    }
-
-    String? token;
-    if (kIsWeb) {
-      token = await messaging.getToken(
-        vapidKey:
-            "BIgHP7EqgpZXidJsM7wBfTzSgprBDxTK_3FZYju4oP5ggJLUWo2gna-KGDTWgIicbpuoA9VxvLtXZN0sDhrf2XA",
-      );
-    } else {
-      token = await messaging.getToken();
-    }
-
-    if (token != null) {
-      if (authBox.get("FCMTOKEN", defaultValue: "") == "" ||
-          authBox.get("FCMTOKEN", defaultValue: "") != token) {
-        HashMap<String, dynamic> hashMap = HashMap();
-        hashMap["fcmToken"] = token;
-        String? response = await OthersService().addRegistrationToken(hashMap);
-        if (response != null) {
-          authBox.put("FCMTOKEN", token);
-        }
-      }
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     // debugPrint("User Entered The HomePage First Time");
     getHomeResponse();
-    initFirebaseMessaging();
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // debugPrint('Got a message whilst in the foreground!');
-      // debugPrint('Message data: ${message.data}');
-      if (message.notification != null) {
-        // debugPrint(
-        //     'Message also contained a notification: ${message.notification}');
-      }
-      getLastOrderData();
-    });
     _autoRefreshTimer = Timer.periodic(
         const Duration(seconds: autoRefreshDelaySeconds),
         (Timer t) => getHomeResponse(silently: true));
@@ -303,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         debugPrint("User Returned To The HomePage");
         _autoRefreshTimer = Timer.periodic(
             const Duration(seconds: autoRefreshDelaySeconds),
-                (Timer t) => getHomeResponse(silently: true));
+            (Timer t) => getHomeResponse(silently: true));
       },
       child: Scaffold(
         appBar: const CustomAppBar(
@@ -480,31 +429,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
 List<Widget> getImageSliders(
     List<banner_model.Banner> carouselResponse, BuildContext context) {
-
-  return carouselResponse
-      .map(
-        (item)
-        {
-          // debugPrint("CarouselImageLink: ${serverFilesBaseURL + item.icon.toString()}");
-          return Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: CachedNetworkImage(
-                imageUrl: serverFilesBaseURL + item.icon!,
-                fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    Image.asset("assets/images/transparent.png"),
-                errorWidget: (context, url, error) => Image.asset(
-                  "assets/images/Default_Image_Thumbnail.png",
-                  fit: BoxFit.cover,
-                ),
-              ),
+  return carouselResponse.map(
+    (item) {
+      // debugPrint("CarouselImageLink: ${serverFilesBaseURL + item.icon.toString()}");
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: CachedNetworkImage(
+            imageUrl: serverFilesBaseURL + item.icon!,
+            fit: BoxFit.cover,
+            placeholder: (context, url) =>
+                Image.asset("assets/images/transparent.png"),
+            errorWidget: (context, url, error) => Image.asset(
+              "assets/images/Default_Image_Thumbnail.png",
+              fit: BoxFit.cover,
             ),
-          );
-        },
-      )
-      .toList();
+          ),
+        ),
+      );
+    },
+  ).toList();
 }
 
 List<Widget> getNoticeSliders(

@@ -1,3 +1,4 @@
+import 'package:Arpan/global/utils/fcm_notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,10 +33,11 @@ void main() async {
   if (!kIsWeb) {
     await FirebaseMessaging.instance.subscribeToTopic("common_user");
   }
-  runApp(MyApp(accessToken, refreshToken));
   if (refreshToken != "") {
     await AuthService().refreshTokens(refreshToken);
   }
+  runApp(MyApp(accessToken, refreshToken));
+  initFirebaseMessaging();
 }
 
 class MyApp extends StatelessWidget {

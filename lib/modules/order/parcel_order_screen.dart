@@ -177,9 +177,58 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
           loading = false;
         });
         calculateTotalPrices();
-        nameController.text = box.get("name", defaultValue: null) ?? Hive.box('authBox').get("name",defaultValue: "") ?? "";
-        phoneController.text = box.get("phone", defaultValue: null) ?? Hive.box('authBox').get("phone",defaultValue: "") ?? "";
-        addressController.text = box.get("address", defaultValue: null) ?? Hive.box('authBox').get("address",defaultValue: "") ?? "" ;
+
+        if (box.get("name", defaultValue: "") != null) {
+          if (box.get("name", defaultValue: "").toString().isNotEmpty && box.get("name", defaultValue: "").toString() != "null") {
+            nameController.text = box.get("name", defaultValue: "").toString();
+          }
+        }
+        if(nameController.text.isEmpty){
+          if (Hive.box('authBox').get("name", defaultValue: "") != null) {
+            if (Hive.box('authBox')
+                .get("name", defaultValue: "")
+                .toString()
+                .isNotEmpty && Hive.box('authBox')
+                .get("name", defaultValue: "")
+                .toString() != "null") {
+              nameController.text = Hive.box('authBox').get("name", defaultValue: "").toString();
+            }
+          }
+        }
+        if (box.get("phone", defaultValue: "") != null) {
+          if (box.get("phone", defaultValue: "").toString().isNotEmpty && box.get("phone", defaultValue: "").toString() != "null") {
+            phoneController.text = box.get("phone", defaultValue: "").toString();
+          }
+        }
+        if(phoneController.text.isEmpty){
+          if (Hive.box('authBox').get("phone", defaultValue: "") != null) {
+            if (Hive.box('authBox')
+                .get("phone", defaultValue: "")
+                .toString()
+                .isNotEmpty && Hive.box('authBox')
+                .get("phone", defaultValue: "")
+                .toString() != "null") {
+              phoneController.text = Hive.box('authBox').get("phone", defaultValue: "").toString();
+            }
+          }
+        }
+        if (box.get("address", defaultValue: "") != null) {
+          if (box.get("address", defaultValue: "").toString().isNotEmpty && box.get("address", defaultValue: "").toString() != "null") {
+            addressController.text = box.get("address", defaultValue: "").toString();
+          }
+        }
+        if(addressController.text.isEmpty){
+          if (Hive.box('authBox').get("address", defaultValue: "") != null) {
+            if (Hive.box('authBox')
+                .get("address", defaultValue: "")
+                .toString()
+                .isNotEmpty && Hive.box('authBox')
+                .get("address", defaultValue: "")
+                .toString() != "null") {
+              addressController.text = Hive.box('authBox').get("address", defaultValue: "").toString();
+            }
+          }
+        }
         parcelDetails.text = box.get("parcelDetails", defaultValue: "");
         parcelTitle.text = box.get("parcelTitle", defaultValue: "");
       }

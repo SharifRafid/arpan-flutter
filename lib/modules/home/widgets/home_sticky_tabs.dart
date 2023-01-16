@@ -62,6 +62,8 @@ class HomeStickyTabs extends SliverAppBar {
 
   @override
   Widget? get flexibleSpace {
+    double cardWidth = 90;
+    double cardHeight = 80;
     return LayoutBuilder(
       builder: (
         BuildContext context,
@@ -87,8 +89,8 @@ class HomeStickyTabs extends SliverAppBar {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
-                    width: 95,
-                    height: 80,
+                    width: cardWidth,
+                    height: cardHeight,
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
@@ -117,8 +119,8 @@ class HomeStickyTabs extends SliverAppBar {
                     ),
                   ),
                   SizedBox(
-                    width: 95,
-                    height: 80,
+                    width: cardWidth,
+                    height: cardHeight,
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
@@ -147,8 +149,8 @@ class HomeStickyTabs extends SliverAppBar {
                     ),
                   ),
                   SizedBox(
-                    width: 95,
-                    height: 80,
+                    width: cardWidth,
+                    height: cardHeight,
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
@@ -177,8 +179,8 @@ class HomeStickyTabs extends SliverAppBar {
                     ),
                   ),
                   SizedBox(
-                    width: 95,
-                    height: 80,
+                    width: cardWidth,
+                    height: cardHeight,
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
