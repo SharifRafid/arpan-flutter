@@ -11,4 +11,4 @@ enum PaymentMethod { bKash, COD }
 const double bkashMultiplier = 0.0185;
 const String numStrConvConst = "ARPNDELIVY";
 const int autoRefreshDelaySeconds = 5;
-const int appVersionCurrent = 9;
+const int appVersionCurrent = 13;

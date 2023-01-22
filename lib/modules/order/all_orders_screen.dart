@@ -23,6 +23,8 @@ class AllOrdersScreen extends StatefulWidget {
 class _AllOrdersScreenState extends State<AllOrdersScreen> {
   OrderService orderService = OrderService();
 
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
   List<OrderItemResponse> orders = [];
 
   bool loading = true;
@@ -47,14 +49,21 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
   void initState() {
     super.initState();
     loadOrdersData();
-    _autoRefreshTimer = Timer.periodic(const Duration(seconds: autoRefreshDelaySeconds),
-            (Timer t) => loadOrdersData());
+    // _autoRefreshTimer = Timer.periodic(const Duration(seconds: autoRefreshDelaySeconds),
+    //         (Timer t) => loadOrdersData());
   }
 
   @override
   void dispose() {
-    _autoRefreshTimer?.cancel();
+    // _autoRefreshTimer?.cancel();
     super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      loading = true;
+    });
+    loadOrdersData();
   }
 
   @override
@@ -69,9 +78,14 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : SingleChildScrollView(
-                child: Column(
-                  children: [for (var order in orders) buildCard(order)],
+            : RefreshIndicator(
+                key: _refreshIndicatorKey,
+                onRefresh: _refresh,
+                child: SingleChildScrollView(
+                  physics: const  AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    children: [for (var order in orders) buildCard(order)],
+                  ),
                 ),
               ));
   }

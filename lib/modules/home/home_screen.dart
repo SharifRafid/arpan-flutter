@@ -222,14 +222,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.initState();
     // debugPrint("User Entered The HomePage First Time");
     getHomeResponse();
-    _autoRefreshTimer = Timer.periodic(
-        const Duration(seconds: autoRefreshDelaySeconds),
-        (Timer t) => getHomeResponse(silently: true));
+    // _autoRefreshTimer = Timer.periodic(
+    //     const Duration(seconds: autoRefreshDelaySeconds),
+    //     (Timer t) => getLastOrderData(silently: true));
   }
 
   @override
   void dispose() {
-    _autoRefreshTimer?.cancel();
+    // _autoRefreshTimer?.cancel();
     super.dispose();
   }
 
@@ -249,10 +249,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       },
       routeName: Routes.home,
       onEnterScreen: () {
+        getHomeResponse(silently: true);
         debugPrint("User Returned To The HomePage");
-        _autoRefreshTimer = Timer.periodic(
-            const Duration(seconds: autoRefreshDelaySeconds),
-            (Timer t) => getHomeResponse(silently: true));
+        // _autoRefreshTimer = Timer.periodic(
+        //     const Duration(seconds: autoRefreshDelaySeconds),
+        //     (Timer t) => getHomeResponse(silently: true));
       },
       child: Scaffold(
         appBar: const CustomAppBar(
