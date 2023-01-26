@@ -590,12 +590,12 @@ class _PickDropOrderScreenState extends State<PickDropOrderScreen> {
                                 child: _locationsArray.indexOf(_selectedLocation) == 0
                                     ? _paymentMethod == PaymentMethod.bKash
                                         ? Text(
-                                            "Delivery charge : ${_selectedLocationReceiver.deliveryCharge! + (_selectedLocationReceiver.deliveryCharge! * bkashMultiplier).toInt()} ৳",
+                                            "Delivery charge : ${_selectedLocationReceiver.deliveryChargePickDrop! + (_selectedLocationReceiver.deliveryChargePickDrop! * bkashMultiplier).toInt()} ৳",
                                             style: const TextStyle(
                                                 color: textBlack),
                                           )
                                         : Text(
-                                            "Delivery charge : ${_selectedLocationReceiver.deliveryCharge} ৳",
+                                            "Delivery charge : ${_selectedLocationReceiver.deliveryChargePickDrop} ৳",
                                             style: const TextStyle(
                                                 color: textBlack),
                                           )

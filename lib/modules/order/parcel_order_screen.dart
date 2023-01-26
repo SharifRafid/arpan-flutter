@@ -144,7 +144,7 @@ class _ParcelOrderScreenState extends State<ParcelOrderScreen> {
   }
 
   void calculateTotalPrices() {
-    int dc = _selectedLocation.deliveryCharge!;
+    int dc = _selectedLocation.deliveryChargePickDrop!;
 
     if (promoCode != null) {
       if (promoCode!.deliveryDiscount == true) {
